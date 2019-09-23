@@ -43,10 +43,16 @@ const io = socketIO(server);
 io.on('connection', socket => {
   console.log('User connected');
 
+  socket.on('change color', (color) => {
+    console.log('Color changed to: ', color);
+    io.sockets.emit('change color', color);
+  })
+
   socket.on('disconnect', () => {
     console.log('user disconnected');
   })
 })
+
 
 server.listen(port);
 
