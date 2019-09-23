@@ -9,8 +9,6 @@ const tweets = require('./routes/api/tweets');
 
 const app = express();
 
-
-
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(passport.initialize());
@@ -32,10 +30,10 @@ if (process.env.NODE_ENV === 'production') {
   })
 }
 
-
 app.use('/api/users', users);
 app.use('/api/tweets', tweets);
 
 // app.get("/", (req, res) => {
 //   res.send("Hello World")
 // });
+
