@@ -1,0 +1,9 @@
+.app {
+    text-align: center;
+    height: 100vh;
+    width: 100vw;
+    font-family: 'Mansalva', cursive;
+    /* color: #9c1313; */
+    color: #ff0000;
+    background-color: #000000;
+}

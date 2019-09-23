@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom'
-import './navbar.css'
+import '../../style/stylesheets/reset.css'
+import '../../style/stylesheets/app.css'
+import '../../style//stylesheets/navbar.css'
 
 class NavBar extends React.Component {
   constructor(props) {
@@ -37,9 +39,9 @@ class NavBar extends React.Component {
 
   render() {
     return (
-      <div>
-        <h1>Chirper</h1>
-        {this.getLinks()}
+      <div className="app">
+        <div className="navbar-game-title">Don't Die Together</div>
+        <div className="navbar-login-register">{this.getLinks()}</div>
       </div>
     );
   }
