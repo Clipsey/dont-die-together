@@ -7,13 +7,13 @@ Don't Die Together is a web-based multiplayer game. The goal of the project is t
 The application is built using the MERN stack (Mongo, Express, React, and Node.js).
 
 ### Functionality and MVP
-- [] User authentication, frontend and backend
-- [] Player movement
-- [] Player actions
-- [] Enemy functionality
-- [] Real time multiplayer interaction
-- [] Persistence
-- [] Production README
+- [ ] User authentication, frontend and backend
+- [ ] Player movement
+- [ ] Player actions
+- [ ] Enemy functionality
+- [ ] Real time multiplayer interaction
+- [ ] Persistence
+- [ ] Production README
 
 ### Technologies and Technical Challenges
 We will be using Mongo database, Express, React, and Node.js to create our game.
