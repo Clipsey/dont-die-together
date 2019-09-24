@@ -63,9 +63,9 @@ class App extends React.Component {
     return (
       <div className="app">
         <button onClick={this.send}>Click</button>
-        <button onClick={this.setColor('Red')}>Red</button>
-        <button onClick={this.setColor('Blue')}>Blue</button>
+        <br></br>
         <button onClick={this.setHealth(100)}>Health = 100</button>
+        <br></br>
         <button onClick={this.setHealth(50)}>Health = 50</button>
         <div>{this.state.gameState.player.health}</div>
         <NavBarContainer />
