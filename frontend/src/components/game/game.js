@@ -98,18 +98,13 @@ class Game extends React.Component {
 
     render() {
         return (
-<<<<<<< HEAD
             <div>           
-                <div>helloworld222222</div>
-=======
-            <div>
                 {this.state.gameMode === GameMode.StartScreen && <Welcome />}
                 <canvas ref="canvas"
                     width={this.state.screen.width}
                     height={this.state.screen.height}
                     style={canvasStyle}
                 />
->>>>>>> master
             </div>
         );
     }

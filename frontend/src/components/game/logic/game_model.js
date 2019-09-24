@@ -1,4 +1,4 @@
-import gameConfig from '../config';
+import gameConfig from './config';
 
 const sampleState = {
     players: {
@@ -37,7 +37,7 @@ const sampleState = {
     }
 };
 
-export class Game {
+export default class GameModel {
     constructor(initialState = sampleState) {
         this.state = initialState;
         this.speeds = gameConfig.speeds;
@@ -48,20 +48,20 @@ export class Game {
         return this.state;
     }
 
-    movePlayer(inputs, dt) {
+    movePlayers(inputs, dt) {
         let dist = dt*this.speeds.player;
-        this.state.players.each( (player) => {
-            let playerInputs = inputs[player];
-            if (playerInputs[up]) {
+        Object.keys(this.state.players).forEach( (player) => {
+            let playerInputs = inputs['player'];
+            if (playerInputs['up']) {
                 this.state.players[player].y -= dist;
             }
-            if (playerInputs[down]) {
+            if (playerInputs['down']) {
                 this.state.players[player].y += dist;
             }
-            if (playerInputs[right]) {
+            if (playerInputs['right']) {
                 this.state.players[player].x += dist;
             }
-            if (playerInputs[left]) {
+            if (playerInputs['left']) {
                 this.state.players[player].x -= dist;
             }
         });
