@@ -45,7 +45,12 @@ export default class GameModel {
 
     update(inputs, dt) { 
         this.movePlayers(inputs, dt);
+        this.moveEnemies(dt);
         return this.gameState;
+    }
+
+    moveEnemies(dt) {
+        
     }
 
     movePlayers(inputs, dt) {
