@@ -9,18 +9,20 @@ import SignupFormContainer from './session/signup_form_container';
 import ProfileContainer from './profile/profile_container';
 import TweetComposeContainer from './tweets/tweet_compose_container';
 import Game from './game/game';
+import Modal from './modal/modal';
 
 const App = () => (
-  <div>
+  <div className="app">
+    <Modal />
     <NavBarContainer />
     <Switch>
       <AuthRoute exact path="/" component={MainPage} />
-      {/* <AuthRoute exact path="/game" component={Game} />
-      <AuthRoute exact path="/login" component={LoginFormContainer} />
-      <AuthRoute exact path="/signup" component={SignupFormContainer} />
-      <ProtectedRoute exact path="/tweets" component={TweetsContainer} />
-      <ProtectedRoute exact path="/profile" component={ProfileContainer} />
-      <ProtectedRoute exact path="/new_tweet" component={TweetComposeContainer} /> */}
+      <AuthRoute exact path="/game" component={Game} />
+      {/* <AuthRoute exact path="/login" component={LoginFormContainer} /> */}
+      {/* <AuthRoute exact path="/signup" component={SignupFormContainer} /> */}
+      {/* <ProtectedRoute exact path="/tweets" component={TweetsContainer} /> */}
+      {/* <ProtectedRoute exact path="/profile" component={ProfileContainer} /> */}
+      {/* <ProtectedRoute exact path="/new_tweet" component={TweetComposeContainer} /> */}
     </Switch>
   </div>
 );

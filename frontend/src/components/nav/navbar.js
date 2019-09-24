@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import '../../style/stylesheets/reset.css'
 import '../../style/stylesheets/app.css'
 import '../../style//stylesheets/navbar.css'
+import {Modal} from '../modal/modal'
 
 class NavBar extends React.Component {
   constructor(props) {
@@ -30,8 +31,10 @@ class NavBar extends React.Component {
     } else {
       return (
         <div>
-          <Link to={'/signup'}>Signup</Link>
           <Link to={'/login'}>Login</Link>
+          &nbsp;or&nbsp;
+          <Link to={'/signup'}>Register</Link>
+          {/* {this.props.openModal} */}
         </div>
       );
     }
@@ -39,7 +42,8 @@ class NavBar extends React.Component {
 
   render() {
     return (
-      <div className="app">
+      <div>
+        <div className="navbar-top"></div>
         <div className="navbar-game-title">Don't Die Together</div>
         <div className="navbar-login-register">{this.getLinks()}</div>
       </div>

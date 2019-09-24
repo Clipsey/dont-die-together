@@ -7,7 +7,7 @@ class Game extends React.Component {
     render () {
         return (
             <div>
-                <div>helloworld222222</div>
+                <div className="game-box"></div>
             </div>
         )
     }
