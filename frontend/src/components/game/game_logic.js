@@ -5,25 +5,23 @@ const CONFIG = {
 class GameLogic {
     constructor(args){
         this.gameState = {
-            player: {
-                x: 100,
-                y: 100
+            players: {
+                1: {
+                    pos: {
+                        x: 100,
+                        y: 100
+                    }
+                }
             }
         }
     }
 
-    update(keys, dt) {
-        if (keys.right) {
-            this.gameState.player.x += CONFIG.playerSpeed * dt;
+    update(inputs, dt) {
+        if (inputs[1].right) {
+            this.gameState.players[1].pos.x += CONFIG.playerSpeed * dt;
         }
-        if (keys.left) {
-         this.gameState.player.x -= CONFIG.playerSpeed * dt;
-        }
-        if (keys.up) {
-            this.gameState.player.y -= CONFIG.playerSpeed * dt;
-        }
-        if (keys.down) {
-            this.gameState.player.y += CONFIG.playerSpeed * dt;
+        if (inputs[1].left) {
+         this.gameState.players[1].pos.x -= CONFIG.playerSpeed * dt;
         }
         return this.gameState;
     }

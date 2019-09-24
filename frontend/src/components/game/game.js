@@ -1,7 +1,7 @@
 import React from 'react';
 import InputManager from './input_manager';
 import Welcome from './welcome';
-import GameLogic from './game_logic';
+import GameModel from './logic/game_model';
 
 const canvasStyle = {
     display: 'block',
@@ -34,7 +34,7 @@ class Game extends React.Component {
             context: null
         };
         this.lastTime = Date.now();
-        this.GameLogic = new GameLogic();
+        this.GameModel = new GameModel();
     }
 
     componentDidMount() {
@@ -65,7 +65,7 @@ class Game extends React.Component {
     displayPlayer(gameState) {
         const ctx = this.state.context;
         ctx.save();
-        ctx.translate(gameState.player.x, gameState.player.y);
+        ctx.translate(gameState.players[1].pos.x, gameState.players[1].pos.y);
         ctx.strokeStyle = '#ffffff';
         ctx.fillStyle = '#ffffff';
         ctx.lineWidth = 2;
@@ -89,11 +89,16 @@ class Game extends React.Component {
         let now = Date.now();
         let dt = (now - this.lastTime) / 1000;
         const keys = this.state.input.pressedKeys;
+        let inputs = {
+            1: keys,
+            2: keys,
+        };
         if (this.state.gameMode === GameMode.StartScreen && keys.enter) {
             this.startGame();
         }
+
         if (this.state.gameMode === GameMode.Playing) {
-            let nextState = this.GameLogic.update(keys, dt);
+            let nextState = this.GameModel.update(inputs, dt);
             this.display(nextState);
         }
         this.lastTime = now;
@@ -102,10 +107,6 @@ class Game extends React.Component {
 
     render() {
         return (
-<<<<<<< HEAD
-            <div>           
-                <div>helloworld222222</div>
-=======
             <div>
                 {this.state.gameMode === GameMode.StartScreen && <Welcome />}
                 <canvas ref="canvas"
@@ -113,7 +114,6 @@ class Game extends React.Component {
                     height={this.state.screen.height}
                     style={canvasStyle}
                 />
->>>>>>> master
             </div>
         );
     }

@@ -1,4 +1,4 @@
-import gameConfig from '../config';
+import gameConfig from './config';
 
 const sampleState = {
     players: {
@@ -37,32 +37,33 @@ const sampleState = {
     }
 };
 
-export class Game {
+export default class GameModel {
     constructor(initialState = sampleState) {
-        this.state = initialState;
+        this.gameState = initialState;
         this.speeds = gameConfig.speeds;
     }
 
     update(inputs, dt) { 
         this.movePlayers(inputs, dt);
-        return this.state;
+        return this.gameState;
     }
 
-    movePlayer(inputs, dt) {
+    movePlayers(inputs, dt) {
         let dist = dt*this.speeds.player;
-        this.state.players.each( (player) => {
-            let playerInputs = inputs[player];
-            if (playerInputs[up]) {
-                this.state.players[player].y -= dist;
+
+        Object.keys(this.gameState.players).forEach( (player) => {
+            let playerInputs = inputs[parseInt(player)];
+            if (playerInputs.up) {
+                this.gameState.players[parseInt(player)].pos.y -= dist;
             }
-            if (playerInputs[down]) {
-                this.state.players[player].y += dist;
+            if (playerInputs.down) {
+                this.gameState.players[parseInt(player)].pos.y += dist;
             }
-            if (playerInputs[right]) {
-                this.state.players[player].x += dist;
+            if (playerInputs.right) {
+                this.gameState.players[parseInt(player)].pos.x += dist;
             }
-            if (playerInputs[left]) {
-                this.state.players[player].x -= dist;
+            if (playerInputs.left) {
+                this.gameState.players[parseInt(player)].pos.x -= dist;
             }
         });
     }
