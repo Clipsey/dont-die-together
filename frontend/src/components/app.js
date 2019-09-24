@@ -1,5 +1,5 @@
 import React from 'react';
-import socketIOClient from 'socket.io-client';
+// import { socketInit } from '../util/sockets_util';
 import { AuthRoute, ProtectedRoute } from '../util/route_util';
 import { Switch } from 'react-router-dom';
 import NavBarContainer from './nav/navbar_container';
@@ -16,7 +16,6 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      endpoint: 'localhost:5000',
       color: 'white',
       gameState: {
         player: {
@@ -30,16 +29,11 @@ class App extends React.Component {
     this.send = this.send.bind(this);
     this.setColor = this.setColor.bind(this);
     this.setHealth = this.setHealth.bind(this);
-    if (process.env.NODE_ENV === 'development') {
-      this.socket = socketIOClient(this.state.endpoint);
-    } else {
-      this.socket = socketIOClient();
-    }
   } 
 
   send() {
-    this.socket.emit('change color', this.state.color);
-    this.socket.emit('set gameState', this.state.gameState);
+    this.props.emit('change color', this.state.color);
+    this.props.emit('set gameState', this.state.gameState);
   }
 
   setColor(color) {
@@ -56,22 +50,22 @@ class App extends React.Component {
 
   componentDidMount() {
     // setInterval(this.send, 1000);
-    this.socket.on('change color', (col) => {
+    this.props.subscribe('change color', (col) => {
       document.body.style.backgroundColor = col;
     })
-    this.socket.on('receive gameState', (receivedState) => {
-      this.setState({ receivedState })
+    this.props.subscribe('receive gameState', (receivedState) => {
+      debugger;
+      this.setState({ gameState: receivedState })
     })
   }
 
   render() {
-    // const socket = socketIOClient(this.state.endpoint);
     return (
       <div className="app">
         <button onClick={this.send}>Click</button>
-        <button onClick={this.setColor('Red')}>Red</button>
-        <button onClick={this.setColor('Blue')}>Blue</button>
+        <br></br>
         <button onClick={this.setHealth(100)}>Health = 100</button>
+        <br></br>
         <button onClick={this.setHealth(50)}>Health = 50</button>
         <div>{this.state.gameState.player.health}</div>
         <NavBarContainer />
