@@ -1,5 +1,5 @@
 const CONFIG = {
-    playerSpeed: 1,
+    playerSpeed: 800,
 }
 
 class GameLogic {
@@ -12,15 +12,15 @@ class GameLogic {
         }
     }
 
-    update(keys) {
+    update(keys, dt) {
         if (keys.right) {
-            this.gameState.player.x += CONFIG.playerSpeed;
+            this.gameState.player.x += CONFIG.playerSpeed * dt;
         } else if (keys.left) {
-         this.gameState.player.x -= CONFIG.playerSpeed;
+         this.gameState.player.x -= CONFIG.playerSpeed * dt;
         } else if (keys.up) {
-            this.gameState.player.y -= CONFIG.playerSpeed;
+            this.gameState.player.y -= CONFIG.playerSpeed * dt;
         } else if (keys.down) {
-            this.gameState.player.y += CONFIG.playerSpeed;
+            this.gameState.player.y += CONFIG.playerSpeed * dt;
         }
         return this.gameState;
     }

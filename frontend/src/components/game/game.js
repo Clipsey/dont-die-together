@@ -33,7 +33,7 @@ class Game extends React.Component {
             gameMode: GameMode.StartScreen,
             context: null
         };
-
+        this.lastTime = Date.now();
         this.GameLogic = new GameLogic();
     }
 
@@ -82,7 +82,8 @@ class Game extends React.Component {
     }
 
     mainLoop() {
-        let dt = 1000/30;
+        let now = Date.now();
+        let dt = (now - this.lastTime) / 1000.0;
         const keys = this.state.input.pressedKeys;
         if (this.state.gameMode === GameMode.StartScreen && keys.enter) {
             this.startGame();
@@ -91,6 +92,7 @@ class Game extends React.Component {
             let nextState = this.GameLogic.update(keys, dt);
             this.display(nextState);
         }
+        this.lastTime = now;
         requestAnimationFrame(() => this.mainLoop());
     }
 
