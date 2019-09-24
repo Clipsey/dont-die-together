@@ -2,7 +2,6 @@ import React from 'react';
 import socketIOClient from 'socket.io-client';
 import { AuthRoute, ProtectedRoute } from '../util/route_util';
 import { Switch } from 'react-router-dom';
-
 import NavBarContainer from './nav/navbar_container';
 import TweetsContainer from './tweets/tweets_container';
 import MainPage from './main/main_page';
@@ -10,6 +9,8 @@ import LoginFormContainer from './session/login_form_container';
 import SignupFormContainer from './session/signup_form_container';
 import ProfileContainer from './profile/profile_container';
 import TweetComposeContainer from './tweets/tweet_compose_container';
+import Game from './game/game';
+import Modal from './modal/modal';
 
 class App extends React.Component {
   constructor(props) {
@@ -66,7 +67,7 @@ class App extends React.Component {
   render() {
     // const socket = socketIOClient(this.state.endpoint);
     return (
-      <div>
+      <div className="app">
         <button onClick={this.send}>Click</button>
         <button onClick={this.setColor('Red')}>Red</button>
         <button onClick={this.setColor('Blue')}>Blue</button>
@@ -76,6 +77,7 @@ class App extends React.Component {
         <NavBarContainer />
         <Switch>
           <AuthRoute exact path="/" component={MainPage} />
+          <AuthRoute exact path="/game" component={Game} />
           <AuthRoute exact path="/login" component={LoginFormContainer} />
           <AuthRoute exact path="/signup" component={SignupFormContainer} />
 

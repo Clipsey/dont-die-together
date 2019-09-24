@@ -12,7 +12,10 @@ const tweets = require('./routes/api/tweets');
 const GameState = require('./models/GameState');
 
 const app = express();
+<<<<<<< HEAD
+=======
 const server = http.createServer(app);
+>>>>>>> master
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -71,3 +74,4 @@ server.listen(port);
 // app.get("/", (req, res) => {
 //   res.send("Hello World")
 // });
+
