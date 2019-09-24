@@ -1,7 +1,7 @@
 import React from 'react';
 import InputManager from './input_manager';
 import Welcome from './welcome';
-import GameLogic from './game_logic';
+import GameModel from './logic/game_model';
 
 const canvasStyle = {
     display: 'block',
@@ -34,7 +34,7 @@ class Game extends React.Component {
             context: null
         };
         this.lastTime = Date.now();
-        this.GameLogic = new GameLogic();
+        this.GameModel = new GameModel();
     }
 
     componentDidMount() {
@@ -65,14 +65,18 @@ class Game extends React.Component {
     displayPlayer(gameState) {
         const ctx = this.state.context;
         ctx.save();
-        ctx.translate(gameState.player.x, gameState.player.y);
+        ctx.translate(gameState.players[1].pos.x, gameState.players[1].pos.y);
         ctx.strokeStyle = '#ffffff';
         ctx.fillStyle = '#ffffff';
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.arc(100, 75, 50, 0, 2 * Math.PI);
+        ctx.arc(100, 75, 12, 0, 2 * Math.PI);
         ctx.stroke();
         ctx.restore();
+    }
+
+    displayPlayers(gameState) {
+        
     }
 
     startGame() {
@@ -83,13 +87,18 @@ class Game extends React.Component {
 
     mainLoop() {
         let now = Date.now();
-        let dt = (now - this.lastTime) / 1000.0;
+        let dt = (now - this.lastTime) / 1000;
         const keys = this.state.input.pressedKeys;
+        let inputs = {
+            1: keys,
+            2: keys,
+        };
         if (this.state.gameMode === GameMode.StartScreen && keys.enter) {
             this.startGame();
         }
+
         if (this.state.gameMode === GameMode.Playing) {
-            let nextState = this.GameLogic.update(keys, dt);
+            let nextState = this.GameModel.update(inputs, dt);
             this.display(nextState);
         }
         this.lastTime = now;
@@ -98,7 +107,7 @@ class Game extends React.Component {
 
     render() {
         return (
-            <div>           
+            <div>
                 {this.state.gameMode === GameMode.StartScreen && <Welcome />}
                 <canvas ref="canvas"
                     width={this.state.screen.width}
