@@ -9,6 +9,8 @@ const http = require('http');
 const users = require('./routes/api/users');
 const tweets = require('./routes/api/tweets');
 
+const GameState = require('./models/GameState');
+
 const app = express();
 const server = http.createServer(app);
 
@@ -46,6 +48,16 @@ io.on('connection', socket => {
   socket.on('change color', (color) => {
     console.log('Color changed to: ', color);
     io.sockets.emit('change color', color);
+  })
+
+  socket.on('set gameState', (receivedState) => {
+    console.log('GameState will be changed to: ', receivedState);
+    const newGameState = new GameState({
+      GameState: receivedState
+    });
+    newGameState.save().then(() => {
+      io.sockets.emit('receive gameState', receivedState);
+    })
   })
 
   socket.on('disconnect', () => {

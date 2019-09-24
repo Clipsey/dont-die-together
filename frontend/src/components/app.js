@@ -16,41 +16,63 @@ class App extends React.Component {
     super(props);
     this.state = {
       endpoint: 'localhost:5000',
-      // endpoint: ''
-      color: 'white'
+      color: 'white',
+      gameState: {
+        player: {
+          pos: [13, 13],
+          health: 100,
+        },
+        bullets: [],
+        enemies: [],
+      }
     }
     this.send = this.send.bind(this);
     this.setColor = this.setColor.bind(this);
-    // this.socket = socketIOClient(this.state.endpoint);
-    this.socket = socketIOClient();
-  }
+    this.setHealth = this.setHealth.bind(this);
+    if (process.env.NODE_ENV === 'development') {
+      this.socket = socketIOClient(this.state.endpoint);
+    } else {
+      this.socket = socketIOClient();
+    }
+  } 
 
   send() {
-    // debugger;
-    // const socket = socketIOClient(this.state.endpoint);
     this.socket.emit('change color', this.state.color);
+    this.socket.emit('set gameState', this.state.gameState);
   }
 
   setColor(color) {
-    return () => this.setState({color})
+    return () => this.setState({ color })
+  }
+
+  setHealth(health) {
+    return () => {
+      const gameState = this.state.gameState;
+      gameState['player']['health'] = health;
+      return () => this.setState({ gameState });
+    }
   }
 
   componentDidMount() {
-    // const socket = socketIOClient(this.state.endpoint);
     // setInterval(this.send, 1000);
     this.socket.on('change color', (col) => {
       document.body.style.backgroundColor = col;
+    })
+    this.socket.on('receive gameState', (receivedState) => {
+      this.setState({ receivedState })
     })
   }
 
   render() {
     // const socket = socketIOClient(this.state.endpoint);
-    // this.socket(this.state.endpoint);
     return (
       <div>
         <button onClick={this.send}>Click</button>
         <button onClick={this.setColor('Red')}>Red</button>
         <button onClick={this.setColor('Blue')}>Blue</button>
+        <button onClick={this.setHealth(100)}>Health = 100</button>
+        <button onClick={this.setHealth(50)}>Health = 50</button>
+        <div>{this.state.gameState.player.health}</div>
         <NavBarContainer />
         <Switch>
           <AuthRoute exact path="/" component={MainPage} />
