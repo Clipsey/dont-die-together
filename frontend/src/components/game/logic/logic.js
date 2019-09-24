@@ -1,46 +1,69 @@
 import gameConfig from '../config';
 
-export const test = () => {
-    return 'this is the game logic';
-}
-
-const sample = {
-    player: {
-        position: {
-            x: 50,
-            y: 50
+const sampleState = {
+    players: {
+        1: {
+            pos: {
+                x: 100,
+                y: 100
+            },
+            health: 100
+        },
+        2: {
+            pos: {
+                x: 200,
+                y: 100
+            },
+            health: 50
+        }
+    },
+    enemies: {
+        zombies: {
+            1: {
+                pos: {
+                    x: 150,
+                    y: 300
+                },
+                health: 100
+            },
+            2: {
+                pos: {
+                    x: 20,
+                    y: 450
+                },
+                health: 100
+            }
         }
     }
 };
 
 export class Game {
-    constructor(initialState = sample) {
+    constructor(initialState = sampleState) {
         this.state = initialState;
         this.speeds = gameConfig.speeds;
     }
 
-    update(dt, inputs) {   //inputs, e.g. [left, right, up, down, fire]
-        this.movePlayer(dt, inputs);
+    update(inputs, dt) { 
+        this.movePlayers(inputs, dt);
         return this.state;
     }
 
-    movePlayer(dt, inputs) {
-        let dist = dt*this.speeds.player/1000;
-        if (inputs[0]){
-            this.state.player.position.x -= dist;
-        }
-        if (inputs[1]){
-            this.state.player.position.x += dist;
-        }
-        if (inputs[2]){
-            this.state.player.position.y -= dist;
-        }
-        if (inputs[3]){
-            this.state.player.position.y += dist;
-        }
+    movePlayer(inputs, dt) {
+        let dist = dt*this.speeds.player;
+        this.state.players.each( (player) => {
+            let playerInputs = inputs[player];
+            if (playerInputs[up]) {
+                this.state.players[player].y -= dist;
+            }
+            if (playerInputs[down]) {
+                this.state.players[player].y += dist;
+            }
+            if (playerInputs[right]) {
+                this.state.players[player].x += dist;
+            }
+            if (playerInputs[left]) {
+                this.state.players[player].x -= dist;
+            }
+        });
     }
-}
-
-export const update = (dt, inputs) => {
-
 }

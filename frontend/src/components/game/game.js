@@ -1,9 +1,4 @@
 import React from 'react';
-<<<<<<< HEAD
-// import { Link } from 'react-router-dom';
-// import { withRouter } from 'react-router-dom';
-import Test from './logic/test_render';             /////TESTING ONLY
-=======
 import InputManager from './input_manager';
 import Welcome from './welcome';
 import GameLogic from './game_logic';
@@ -24,7 +19,6 @@ const GameMode = {
 const width = 640;
 const height = 480;
 
->>>>>>> master
 class Game extends React.Component {
     constructor(props) {
         super(props);
