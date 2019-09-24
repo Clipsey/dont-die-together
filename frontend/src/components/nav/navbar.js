@@ -8,8 +8,8 @@ import {Modal} from '../modal/modal'
 class NavBar extends React.Component {
   constructor(props) {
     super(props);
-    this.logoutUser = this.logoutUser.bind(this);
-    this.getLinks = this.getLinks.bind(this);
+    this.logoutUser = this.logoutUser.bind(this);  
+    this.getLinks = this.getLinks.bind(this);      
   }
 
   logoutUser(e) {
