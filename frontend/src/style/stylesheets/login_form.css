@@ -1,4 +1,46 @@
+/* .login-form-restriction {
+    height: 1px;
+    width: 1px;
+    background-color: lavender;
+} */
+
 .login-form-main {
-    font-size: 100px;
-    background-color: lightgreen;
+    font-size: 5vw;
+    /* margin-top: 1vh; */
+    /* font-family: 'Special Elite', cursive; */
+    /* font-family: 'Handlee', cursive; */
+    /* font-weight: 900; */
+    /* height: 26vh; */
+    /* background-color: #ffffff; */
+    /* border-radius: 1px; */
+    /* padding-top: 1vh; */
+
+    /* font-family: 'Alegreya Sans SC', sans-serif;
+    width: 90vw;
+    font-size: 6vh;
+    background-color: #ff0000;
+    color: #000000;
+    text-align: center;
+    margin-left: 4vw;
+    margin-top: 4vh; */
 }
+
+::placeholder {
+    color: #FFFFFF;
+    opacity: 1;
+}
+
+/* .login-form-submit {
+    background-color: #de1645;
+    width: 90vw;
+}
+
+.login-form-banner {
+    background-color: #de1645;
+    width: 90vw;
+}
+
+.login-form-form {
+    background-color: #de1645;
+    width: 90vw;
+} */
