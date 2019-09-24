@@ -18,21 +18,19 @@ const sampleState = {
         }
     },
     enemies: {
-        zombies: {
-            1: {
-                pos: {
-                    x: 150,
-                    y: 300
-                },
-                health: 100
+        1: {
+            pos: {
+                x: 150,
+                y: 300
             },
-            2: {
-                pos: {
-                    x: 20,
-                    y: 450
-                },
-                health: 100
-            }
+            health: 100
+        },
+        2: {
+            pos: {
+                x: 20,
+                y: 30
+            },
+            health: 100
         }
     }
 };

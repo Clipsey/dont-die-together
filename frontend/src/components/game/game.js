@@ -59,13 +59,34 @@ class Game extends React.Component {
 
     display(gameState) {
         this.clearScreen();
-        this.displayPlayer(gameState);
+        this.displayPlayers(gameState);
+        this.displayEnemies(gameState);
     }
 
-    displayPlayer(gameState) {
+    displayEnemies(gameState) {
+        let enemies = Object.values(gameState.enemies);
+        for (let i = 0; i < enemies.length; i++) {
+            this.displayEnemy(enemies[i]);
+        }
+    }
+
+    displayEnemy(enemy) {
         const ctx = this.state.context;
         ctx.save();
-        ctx.translate(gameState.players[1].pos.x, gameState.players[1].pos.y);
+        ctx.translate(enemy.pos.x, enemy.pos.y);
+        ctx.strokeStyle = '#ccccfc';
+        ctx.fillStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(100, 75, 12, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    displayPlayer(player) {
+        const ctx = this.state.context;
+        ctx.save();
+        ctx.translate(player.pos.x, player.pos.y);
         ctx.strokeStyle = '#ffffff';
         ctx.fillStyle = '#ffffff';
         ctx.lineWidth = 2;
@@ -76,7 +97,10 @@ class Game extends React.Component {
     }
 
     displayPlayers(gameState) {
-        
+        let players = Object.values(gameState.players);
+        for (let i = 0; i < players.length; i++) {
+            this.displayPlayer(players[i]);
+        }
     }
 
     startGame() {
@@ -91,7 +115,7 @@ class Game extends React.Component {
         const keys = this.state.input.pressedKeys;
         let inputs = {
             1: keys,
-            2: keys,
+            2: { left: false, right: false, up: false, down: false, fire: false, enter: false },
         };
         if (this.state.gameMode === GameMode.StartScreen && keys.enter) {
             this.startGame();
