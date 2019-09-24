@@ -64,23 +64,26 @@ class LoginForm extends React.Component {
     return (
       <div>
         <div className="login-form-main">
-          Logging in...
+              <br />
+          <div className="login-form-banner">Login</div>
           <form onSubmit={this.handleSubmit}>
             <div>
               <input type="text"
+                className="login-form-form"
                 value={this.state.email}
                 onChange={this.update('email')}
                 placeholder="Email"
               />
               <br />
               <input type="password"
+                className="login-form-form"
                 value={this.state.password}
                 onChange={this.update('password')}
                 placeholder="Password"
               />
               <br />
-              <input type="submit" value="Submit" />
-              {this.renderErrors()}
+              <input className="login-form-submit" type="submit" value="Submit" />
+              <div className="login-form-form">{this.renderErrors()}</div>
             </div>
           </form>
         </div>
