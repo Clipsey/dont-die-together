@@ -4,8 +4,8 @@ class Welcome extends React.Component {
     render() {
         return (
             <div>
-                <span className="centerScreen title">Don't Die Together</span>
-                <span className="centerScreen pressSpace">Press Enter to Start</span>
+                <h4>Don't Die Together</h4>
+                <h4>Press Enter to Start</h4>
             </div>
             );
     }

@@ -1,19 +1,19 @@
 import React from 'react';
 import InputManager from './input_manager';
 import Welcome from './welcome';
-import Player from './player';
+import GameLogic from './game_logic';
 
 const canvasStyle = {
     display: 'block',
-    backgroundColor: '#000000',
+    backgroundColor: '#A9A9A9',
     marginLeft: 'auto',
     marginRight: 'auto'
 };
 
-const GameState = {
-    StartScreen : 0,
-    Playing : 1,
-    GameOver : 2
+const GameMode = {
+    StartScreen: 0,
+    Playing: 1,
+    GameOver: 2
 };
 
 const width = 640;
@@ -30,62 +30,74 @@ class Game extends React.Component {
                 height: height,
             },
         
-            gameState: GameState.StartScreen,
+            gameMode: GameMode.StartScreen,
             context: null
         };
 
-        this.player = null;
+        this.GameLogic = new GameLogic();
     }
 
     componentDidMount() {
         this.state.input.bindKeys();
         const context = this.refs.canvas.getContext('2d');
-        this.setState({ context: context })
-        requestAnimationFrame(() => this.update());
+        this.setState({ 
+            context: context 
+        })
+        requestAnimationFrame(() => this.mainLoop());
     }
 
     componentWillUnmount() {
         this.state.input.unbindKeys();
     }
 
-    startGame() {
-        let player = new Player({
-            speed: 1,
-            position: {
-                x: 100,
-                y: 100
-            }
-        });
+    clearScreen() {
+        const ctx = this.state.context;
+        ctx.save();
+        ctx.fillStyle = canvasStyle.backgroundColor;
+        ctx.fillRect(0, 0, this.state.screen.width, this.state.screen.height);
+    }
 
-        this.player = player;
+    display(gameState) {
+        this.clearScreen();
+        this.displayPlayer(gameState);
+    }
+
+    displayPlayer(gameState) {
+        const ctx = this.state.context;
+        ctx.save();
+        ctx.translate(gameState.player.x, gameState.player.y);
+        ctx.strokeStyle = '#ffffff';
+        ctx.fillStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(100, 75, 50, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    startGame() {
         this.setState({
-            gameState: GameState.Playing
+            gameMode: GameMode.Playing
         });
     }
 
-    update() {
+    mainLoop() {
+        let dt = 1000/30;
         const keys = this.state.input.pressedKeys;
-        if (this.state.gameState === GameState.StartScreen && keys.enter) {
+        if (this.state.gameMode === GameMode.StartScreen && keys.enter) {
             this.startGame();
         }
-
-        if (this.state.gameState === GameState.Playing) {
-            let ctx = this.state.context;
-            ctx.save();
-            ctx.fillRect(0, 0, this.state.screen.width, this.state.screen.height);
-            if (this.player !== undefined && this.player !== null) {
-                this.player.update(keys);
-                this.player.render(this.state);
-            }
+        if (this.state.gameMode === GameMode.Playing) {
+            let nextState = this.GameLogic.update(keys, dt);
+            this.display(nextState);
         }
-
-        requestAnimationFrame(() => this.update());
+        requestAnimationFrame(() => this.mainLoop());
     }
 
     render() {
         return (
             <div>
-                {this.state.gameState === GameState.StartScreen && <Welcome />}
+                {this.state.gameMode === GameMode.StartScreen && <Welcome />}
                 <canvas ref="canvas"
                     width={this.state.screen.width}
                     height={this.state.screen.height}
@@ -94,7 +106,6 @@ class Game extends React.Component {
             </div>
         );
     }
-
 }
 
 export default Game;

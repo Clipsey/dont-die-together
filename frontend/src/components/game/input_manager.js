@@ -12,7 +12,7 @@ const KEY = {
 class InputManager extends React.Component {
     constructor() {
         super();
-        this.pressedKeys = { left: 0, right: 0, space: 0, enter: 0 };
+        this.pressedKeys = { left: 0, right: 0, up: 0, down: 0, space: 0, enter: 0 };
     }
 
     bindKeys() {

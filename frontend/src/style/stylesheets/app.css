@@ -1,0 +1,14 @@
+.app {
+    text-align: center;
+    height: 98vh;
+    width: 98vw;
+    font-family: 'Mansalva', cursive;
+    /* color: #9c1313; */
+    color: #ff0000;
+    background-color: #000000;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    padding-left: 1vw;
+    padding-right: 1vw;
+    overflow: scroll;
+}
