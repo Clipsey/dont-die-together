@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom'
 import '../../style/stylesheets/reset.css'
-import '../../style/stylesheets/app.css'
 import '../../style//stylesheets/navbar.css'
 import {Modal} from '../modal/modal'
 

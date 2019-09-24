@@ -62,8 +62,9 @@ class LoginForm extends React.Component {
 
   render() {
     return (
-      <div className="app">
+      <div>
         <div className="login-form-main">
+          Logging in...
           <form onSubmit={this.handleSubmit}>
             <div>
               <input type="text"
