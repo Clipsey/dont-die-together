@@ -1,0 +1,12 @@
+.navbar-top {
+    /* padding-top: 1vh; */
+}
+
+.navbar-game-title {
+    font-size: 12vw;
+}
+
+.navbar-login-register {
+    font-size: 4vw;
+    text-align: right;
+}
