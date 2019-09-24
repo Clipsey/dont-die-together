@@ -70,9 +70,13 @@ class Game extends React.Component {
         ctx.fillStyle = '#ffffff';
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.arc(100, 75, 50, 0, 2 * Math.PI);
+        ctx.arc(100, 75, 12, 0, 2 * Math.PI);
         ctx.stroke();
         ctx.restore();
+    }
+
+    displayPlayers(gameState) {
+        
     }
 
     startGame() {
@@ -83,7 +87,7 @@ class Game extends React.Component {
 
     mainLoop() {
         let now = Date.now();
-        let dt = (now - this.lastTime) / 1000.0;
+        let dt = (now - this.lastTime) / 1000;
         const keys = this.state.input.pressedKeys;
         if (this.state.gameMode === GameMode.StartScreen && keys.enter) {
             this.startGame();

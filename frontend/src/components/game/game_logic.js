@@ -15,11 +15,14 @@ class GameLogic {
     update(keys, dt) {
         if (keys.right) {
             this.gameState.player.x += CONFIG.playerSpeed * dt;
-        } else if (keys.left) {
+        }
+        if (keys.left) {
          this.gameState.player.x -= CONFIG.playerSpeed * dt;
-        } else if (keys.up) {
+        }
+        if (keys.up) {
             this.gameState.player.y -= CONFIG.playerSpeed * dt;
-        } else if (keys.down) {
+        }
+        if (keys.down) {
             this.gameState.player.y += CONFIG.playerSpeed * dt;
         }
         return this.gameState;

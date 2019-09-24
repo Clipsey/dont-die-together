@@ -27,6 +27,7 @@ class InputManager extends React.Component {
       
     handleKeys(value, e){
         let keys = this.pressedKeys;
+        console.table(keys);
         switch (e.keyCode) {
             case KEY.UP:
                 keys.up = value;
