@@ -1,8 +1,8 @@
 const gameConfig = {
     speeds: {           //speeds in pixels/second
-        player: 200,
+        player: 50,
         bullet: 300,
-        zombie: 30
+        zombie: 20
     },
     sizes: {
         player: 10,
@@ -34,9 +34,18 @@ const sampleState = {
         1: {
             type: 'zombie',
             pos: {
-                x: 450,
-                y: 450
-            }
+                x: 150,
+                y: 300
+            },
+            health: 100
+        },
+        2: {
+            type: 'zombie',
+            pos: {
+                x: 20,
+                y: 30
+            },
+            health: 100
         }
     }
 };
