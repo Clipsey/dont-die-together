@@ -4,10 +4,11 @@
 
 .navbar-game-title {
     font-size: 12vw;
+    color: #ff0000;
 }
 
 .navbar-login-register {
     font-size: 3vw;
     text-align: center;
-    padding-bottom: 3vh;
+    /* padding-bottom: 3vh; */
 }
