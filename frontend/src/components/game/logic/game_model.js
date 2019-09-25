@@ -43,7 +43,7 @@ export default class GameModel {
             let player = this.gameState.players[parseInt(playerId)];
             let playerInputs = inputs[parseInt(playerId)];
             if (this.playerCanFire(player) && playerInputs.fire) {
-                let fireVector = [playerInputs.pointX, playerInputs.pointY];  //******CHANGE BACK AFTER INPUTS FIXED
+                let fireVector = [playerInputs.pointX, playerInputs.pointY];
                 let unitVector = [
                     fireVector[0]/vectorMag(fireVector),
                     fireVector[1]/vectorMag(fireVector)
