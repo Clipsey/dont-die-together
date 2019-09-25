@@ -101,6 +101,16 @@ router.get('/current',
   }
 );
 
+router.get('/', (req, res) => {
+  User.find({}, (err, users) => {
+    userMap = []
+    users.forEach((user) => {
+      userMap[user._id] = user;
+    })
+    res.send(usersMap);
+  })
+})
+
 router.use("/", (req, res) => {
   res.json({ msh: "This is the default users route"})
 });
