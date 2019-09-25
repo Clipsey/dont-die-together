@@ -5,12 +5,14 @@ const UsersReducer = (state = {users: {}}, action) => {
     let newState = Object.assign({}, state);
     switch (action.type) {
         case RECEIVE_ALL_USERS:
-            // debugger
+            let arr = Object.values(action.users.data).map((object) => object.name)
             // make it so the object in the state is a key of the usernames and has all the data associated with that username
-            debugger;
-            newState.users = {[action.users.data.username]: action.users.data}
+            let users = {};
+            Object.keys(action.users.data).forEach(ele => {
+                users[arr[parseInt(ele)]] = action.users.data[ele]
+            })
+            newState.users = users;
             return newState;
-            break;
         default:
             return state;
     }
