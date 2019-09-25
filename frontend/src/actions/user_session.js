@@ -15,7 +15,7 @@ export const receiveAllUsers = users => ({
 })
 
 export const receiveUsers = () => dispatch => {
-    APIUtil.userindex()
+    return APIUtil.userindex()
         .then( users => dispatch(receiveAllUsers(users)))
 }
 

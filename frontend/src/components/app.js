@@ -77,20 +77,21 @@ class App extends React.Component {
     this.emit = emitSetup(this.socket);
     this.on = onSetup(this.socket);
  
-  }  
-
+  }
+  
   connectSocket(username) {
 
     if (this.socket !== null) this.socket.disconnect();
 
+    // Get host user's session id, connect to that room
     const host = this.getState().users;
     // this.room = this.getState().users;
 
-    if (process.env.NODE_ENV === 'development') {
-      this.socket = socketIOClient('localhost:5000', { query: { room: this.room } });
-    } else {
-      this.socket = socketIOClient(window.location, { query: { room: this.room } });
-    }
+    // if (process.env.NODE_ENV === 'development') {
+    //   this.socket = socketIOClient('localhost:5000', { query: { room: this.room } });
+    // } else {
+    //   this.socket = socketIOClient(window.location, { query: { room: this.room } });
+    // }
      
     // let socket;
     // if (process.env.NODE_ENV === 'development') {
@@ -147,8 +148,9 @@ class App extends React.Component {
           <AuthRoute exact path="/login" component={LoginFormContainer} />
           <AuthRoute exact path="/signup" component={SignupFormContainer} />
 
-          <ProtectedRoute exact path="/joingame" component={JoinGameSessionContainer} />
-          <ProtectedRoute exact path="/creategame" component={CreateGameSessionContainer} />
+          <ProtectedRoute exact path="/joingame" createSocket={this.createSocket} connectSocket={this.connectSocket} component={JoinGameSessionContainer} />} />
+          <ProtectedRoute exact path="/creategame" createSocket={this.createSocket} connectSocket={this.connectSocket} component={CreateGameSessionContainer} />
+
           <ProtectedRoute exact path="/game" component={Game} />
           {/* <ProtectedRoute exact path="/tweets" component={TweetsContainer} /> */}
           {/* <ProtectedRoute exact path="/profile" component={ProfileContainer} /> */}

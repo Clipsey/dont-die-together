@@ -22,6 +22,8 @@ class GameSession extends React.Component {
         // you can make ajax calls and axios calls here
         // debugger
         event.preventDefault();
+        // console.log(this.props)
+        // debugger
         // this makes it so you fetch the index of all users before you call connectsocket
         this.props.index().then(() => {
             let username = this.state.value;
