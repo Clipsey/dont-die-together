@@ -2,6 +2,8 @@ import React from 'react';
 import InputManager from './input_manager';
 import Welcome from './welcome';
 import GameModel from './logic/game_model';
+const playerImg = require('../../style/images/bk_player_assets/player_chaingun.png');
+const zombieImg = require('../../style/images/bk_player_assets/player_9mmhandgun.png');
 
 const canvasStyle = {
     display: 'block',
@@ -9,15 +11,13 @@ const canvasStyle = {
     marginLeft: 'auto',
     marginRight: 'auto'
 };
-
 const GameMode = {
     StartScreen: 0,
     Playing: 1,
     GameOver: 2
 };
-
-const width = 640;
-const height = 480;
+const screenWidth = 800;
+const screenHeight = 600;
 
 class Game extends React.Component {
     constructor(props) {
@@ -26,8 +26,8 @@ class Game extends React.Component {
         this.state = {
             input: new InputManager(),
             screen: {
-                width: width,
-                height: height,
+                width: screenWidth,
+                height: screenHeight,
             },
         
             gameMode: GameMode.StartScreen,
@@ -35,6 +35,8 @@ class Game extends React.Component {
         };
         this.lastTime = Date.now();
         this.GameModel = new GameModel();
+        this.frames = 0;
+        this.fps = 0;
     }
 
     componentDidMount() {
@@ -57,10 +59,26 @@ class Game extends React.Component {
         ctx.fillRect(0, 0, this.state.screen.width, this.state.screen.height);
     }
 
-    display(gameState) {
+    display(gameState, dt) {
         this.clearScreen();
         this.displayPlayers(gameState);
         this.displayEnemies(gameState);
+        this.displayFPS(dt)
+    }
+
+    displayFPS(dt) {
+        this.frames++;
+        if (this.frames === 60) {
+            this.fps = (1/dt).toFixed(1);
+            this.frames = 0
+        }
+        const ctx = this.state.context;
+        ctx.fillFont = 'bold 10px serif';
+        ctx.strokeText(`FPS: ${this.fps}`, 20, 20);
+
+
+        let mousePos = this.state.input.mousePos;
+        ctx.strokeText(`Mouse pos, x: ${Math.round(mousePos.x)} y: ${Math.round(mousePos.y)}`, 20, 50);
     }
 
     displayEnemies(gameState) {
@@ -72,26 +90,38 @@ class Game extends React.Component {
 
     displayEnemy(enemy) {
         const ctx = this.state.context;
+        let img = new Image();
+        img.src = zombieImg;
+
+
         ctx.save();
+
+        ctx.drawImage(img, enemy.pos.x, enemy.pos.y);
+
         ctx.translate(enemy.pos.x, enemy.pos.y);
         ctx.strokeStyle = '#ccccfc';
         ctx.fillStyle = '#ffffff';
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.arc(100, 75, 12, 0, 2 * Math.PI);
+        ctx.arc(0, 0, 12, 0, 2 * Math.PI);
         ctx.stroke();
         ctx.restore();
     }
 
     displayPlayer(player) {
         const ctx = this.state.context;
+        let img = new Image();
+        img.src = playerImg;
+
         ctx.save();
-        ctx.translate(player.pos.x, player.pos.y);
+        ctx.drawImage(img, player.pos.x, player.pos.y);
+        // ctx.save();
+        // ctx.translate(player.pos.x, player.pos.y);
         ctx.strokeStyle = '#ffffff';
         ctx.fillStyle = '#ffffff';
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.arc(100, 75, 12, 0, 2 * Math.PI);
+        ctx.arc(player.pos.x, player.pos.y, 12, 0, 2 * Math.PI);
         ctx.stroke();
         ctx.restore();
     }
@@ -112,18 +142,24 @@ class Game extends React.Component {
     mainLoop() {
         let now = Date.now();
         let dt = (now - this.lastTime) / 1000;
-        const keys = this.state.input.pressedKeys;
+
+        const myKeyPresses = this.state.input.pressedKeys;
+        if (myKeyPresses.fire === true) {
+            console.log('bang');
+        }
+        
+        let _nullKeyPresses = { left: false, right: false, up: false, down: false, fire: false, enter: false };
         let inputs = {
-            1: keys,
-            2: { left: false, right: false, up: false, down: false, fire: false, enter: false },
+            1: myKeyPresses,
+            2: _nullKeyPresses,
         };
-        if (this.state.gameMode === GameMode.StartScreen && keys.enter) {
+        if (this.state.gameMode === GameMode.StartScreen && myKeyPresses.enter) {
             this.startGame();
         }
 
         if (this.state.gameMode === GameMode.Playing) {
             let nextState = this.GameModel.update(inputs, dt);
-            this.display(nextState);
+            this.display(nextState, dt);
         }
         this.lastTime = now;
         requestAnimationFrame(() => this.mainLoop());
@@ -134,6 +170,7 @@ class Game extends React.Component {
             <div>
                 {this.state.gameMode === GameMode.StartScreen && <Welcome />}
                 <canvas ref="canvas"
+                    id="canvas"
                     width={this.state.screen.width}
                     height={this.state.screen.height}
                     style={canvasStyle}
