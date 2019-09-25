@@ -92,8 +92,10 @@ class App extends React.Component {
     this.joinSocket(this.getState().session.user.id);
   }
   
-  connectSocket(username) {
-    this.joinSocket(username);
+  connectSocket(email) {
+    const sessionId = this.getState().users[email]._id;
+    debugger;
+    this.joinSocket(sessionId);
   }
 
   send() {
