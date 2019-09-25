@@ -7,8 +7,46 @@
     color: #ff0000;
 }
 
+.navbar-game-title {
+    -webkit-animation: color-change 30s infinite;
+    -moz-animation: color-change 30s infinite;
+    -o-animation: color-change 30s infinite;
+    -ms-animation: color-change 30s infinite;
+    animation: color-change 30s infinite;
+}
+
+@-webkit-keyframes color-change {
+    0% { color: #ff0000; }
+    50% { color: #de1645; }
+    100% { color: #ff0000; }
+}
+@-moz-keyframes color-change {
+    0% { color: #ff0000; }
+    50% { color: #de1645; }
+    100% { color: #ff0000; }
+}
+@-ms-keyframes color-change {
+    0% { color: #ff0000; }
+    50% { color: #de1645; }
+    100% { color: #ff0000; }
+}
+@-o-keyframes color-change {
+    0% { color: #ff0000; }
+    50% { color: #de1645; }
+    100% { color: #ff0000; }
+}
+@keyframes color-change {
+    0% { color: #ff0000; }
+    50% { color: #de1645; }
+    100% { color: #ff0000; }
+}
+
 .navbar-login-register {
     font-size: 3vw;
     text-align: center;
     /* padding-bottom: 3vh; */
+}
+
+.navbar-thingy:hover {
+    color: #0d9e61;
 }

@@ -30,9 +30,9 @@ class NavBar extends React.Component {
     } else {
       return (
         <div>
-          <Link to={'/login'}>Login</Link>
+          <Link className="navbar-thingy" to={'/login'}>Login</Link>
           &nbsp;or&nbsp;
-          <Link to={'/signup'}>Register</Link>
+          <Link className="navbar-thingy" to={'/signup'}>Register</Link>
           {/* {this.props.openModal} */}
         </div>
       );
