@@ -5,3 +5,7 @@
 .signup-form-submit:hover {
     color: #0d9e61;
 }
+
+.signup-form-input {
+    color: #ff0000;
+}

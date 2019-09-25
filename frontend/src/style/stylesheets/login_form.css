@@ -48,3 +48,7 @@
 .login-form-submit:hover {
     color: #0d9e61;
 }
+
+.login-form-form {
+    color: #ff0000;
+}
