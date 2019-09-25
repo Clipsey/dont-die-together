@@ -1,5 +1,8 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
+import '../../style/stylesheets/reset.css';
+import '../../style/stylesheets/app.css';
+import '../../style/stylesheets/signup_form.css'
 
 class SignupForm extends React.Component {
   constructor(props) {
@@ -56,10 +59,11 @@ class SignupForm extends React.Component {
 
   render() {
     return (
-      <div className="login-form-container">
+      <div className="signup-form-container">
         <form onSubmit={this.handleSubmit}>
+          <br />
+          Register
           <div className="login-form">
-            <br />
             <input type="text"
               value={this.state.email}
               onChange={this.update('email')}

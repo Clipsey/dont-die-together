@@ -56,7 +56,6 @@ io.on('connection', socket => {
       GameState: receivedState
     });
     newGameState.save().then(() => {
-      debugger;
       io.sockets.emit('receive gameState', receivedState);
     })
   })
