@@ -57,7 +57,6 @@ export default class GameModel {
                 newBullet.vel.x = unitVector[0]*speed;
                 newBullet.vel.y = unitVector[1]*speed;
                 this.gameState.bullets[Math.random()] = newBullet; 
-                console.log(this.gameState);
             } 
         });
     }
