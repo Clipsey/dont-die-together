@@ -4,13 +4,15 @@ const gameConfig = {
         y: 600
     },
     times: {
-        pistolReload: 0.5,      //times in seconds
+        zombieReload: 0.5,      //times in seconds
+        pistolReload: 0.5,      
         zombieDie: 1
     },
     distances: {
         stagger: 6
     },
     damages: {
+        zombie: 10,
         pistol: 20
     },
     speeds: {                   //speeds in pixels/second
@@ -53,7 +55,8 @@ export const sampleState = {
                 x: 150,
                 y: 300
             },
-            health: 100
+            health: 100,
+            timeToAttack: 0
         },
         2: {
             type: 'zombie',
@@ -61,7 +64,8 @@ export const sampleState = {
                 x: 20,
                 y: 30
             },
-            health: 100
+            health: 100,
+            timeToAttack: 0
         }
     },
     bullets: {

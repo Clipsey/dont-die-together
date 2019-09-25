@@ -34,6 +34,12 @@ export default class GameModel {
                     delete this.gameState.enemies[enemyId];
                 }
             }
+            if (enemy.timeToAttack > 0){
+                enemy.timeToAttack -= dt;
+                if (enemy.timeToAttack < 0){
+                    enemy.timeToAttack = 0;
+                }
+            }
         });
     }
 
@@ -117,12 +123,14 @@ export default class GameModel {
                 let enemyPos = enemy.pos;
                 let targetPos = null;
                 let closestDistance = null;
+                let victim = null;
                 Object.values(this.gameState.players).forEach( (player) => {
                     let playerPos = player.pos;
                     let dx = playerPos.x - enemyPos.x;
                     let dy = playerPos.y - enemyPos.y;
                     let thisDistance = Math.sqrt(dx*dx + dy*dy);
                     if (closestDistance === null || thisDistance < closestDistance) {
+                        victim = player;
                         closestDistance = thisDistance;
                         targetPos = playerPos;
                     }
@@ -146,6 +154,12 @@ export default class GameModel {
                     !willCollideWithEnemy(enemy, moveVector, this.gameState, this.sizes)){
                     enemy.pos.x = enemy.pos.x + moveVector[0];
                     enemy.pos.y = enemy.pos.y + moveVector[1];
+                }
+                else {
+                    if (enemy.timeToAttack === 0){
+                        victim.health -= gameConfig.damages[enemy.type];
+                        enemy.timeToAttack = gameConfig.times.zombieReload;
+                    }
                 }
             }
         });
