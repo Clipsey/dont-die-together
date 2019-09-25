@@ -21,18 +21,18 @@ class NavBar extends React.Component {
     if (this.props.loggedIn) {
       return (
         <div>
-          <Link to={'/tweets'}>All Tweets</Link>
+          {/* <Link to={'/tweets'}>All Tweets</Link>
           <Link to={'/profile'}>Profile</Link>
-          <Link to={'/new_tweet'}>Write a Tweet</Link>
+          <Link to={'/new_tweet'}>Write a Tweet</Link> */}
           <button onClick={this.logoutUser}>Logout</button>
         </div>
       );
     } else {
       return (
         <div>
-          <Link to={'/login'}>Login</Link>
+          <Link className="navbar-thingy" to={'/login'}>Login</Link>
           &nbsp;or&nbsp;
-          <Link to={'/signup'}>Register</Link>
+          <Link className="navbar-thingy" to={'/signup'}>Register</Link>
           {/* {this.props.openModal} */}
         </div>
       );
