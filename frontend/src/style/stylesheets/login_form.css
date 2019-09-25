@@ -44,3 +44,7 @@
     background-color: #de1645;
     width: 90vw;
 } */
+
+.login-form-submit:hover {
+    color: #0d9e61;
+}
