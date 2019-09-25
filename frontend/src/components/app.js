@@ -10,6 +10,8 @@ import ProfileContainer from './profile/profile_container';
 import TweetComposeContainer from './tweets/tweet_compose_container';
 import Game from './game/game';
 import Modal from './modal/modal';
+import JoinGameSessionContainer from './game/game_session'
+import CreateGameSessionContainer from './game/create_game_session.js'
 
 import socketIOClient from 'socket.io-client';
 import { emitSetup, onSetup } from '../util/sockets_util';
@@ -142,13 +144,15 @@ class App extends React.Component {
         <NavBarContainer />
         <Switch>
           <AuthRoute exact path="/" component={MainPage} />
-          <AuthRoute exact path="/game" component={Game} />
           <AuthRoute exact path="/login" component={LoginFormContainer} />
           <AuthRoute exact path="/signup" component={SignupFormContainer} />
 
-          <ProtectedRoute exact path="/tweets" component={TweetsContainer} />
-          <ProtectedRoute exact path="/profile" component={ProfileContainer} />
-          <ProtectedRoute exact path="/new_tweet" component={TweetComposeContainer} />
+          <ProtectedRoute exact path="/game" component={JoinGameSessionContainer} />
+          <ProtectedRoute exact path="/creategame" component={CreateGameSessionContainer} />
+          <ProtectedRoute exact path="/game" component={Game} />
+          {/* <ProtectedRoute exact path="/tweets" component={TweetsContainer} /> */}
+          {/* <ProtectedRoute exact path="/profile" component={ProfileContainer} /> */}
+          {/* <ProtectedRoute exact path="/new_tweet" component={TweetComposeContainer} /> */}
         </Switch>
       </div>
     )
