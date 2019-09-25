@@ -36,86 +36,72 @@ class App extends React.Component {
     this.setHealth = this.setHealth.bind(this);
     this.getState = props.getState;
 
-    this.socket = null;
-    this.room = null;
+    this.sockets = [];
 
     this.createSocket = this.createSocket.bind(this);
+    this.connectSocket = this.connectSocket.bind(this);
+    this.joinSocket = this.joinSocket.bind(this);
+  }
+
+  joinSocket(room) {
+    this.room = room;
+
+    if (this.sockets.length > 0) {
+      this.sockets.forEach((socket, idx) => {
+        socket.off('change color');
+        socket.off('receive gameState');
+        socket.off('room change');
+        socket.disconnect();
+      })
+      this.sockets = [];
+    }
+
+    let socket;
+    if (process.env.NODE_ENV === 'development') {
+      socket = socketIOClient('localhost:5000', { query: { room: this.room } });
+    } else {
+      socket = socketIOClient(window.location, { query: { room: this.room } });
+    }
+    this.sockets.push(socket);
+
+    socket.on('change color', (col) => {
+      document.body.style.backgroundColor = col;
+    });
+    socket.on('receive gameState', (receivedState) => {
+      // console.log(this.room);
+      console.log(socket.id);
+      this.setState({ gameState: receivedState })
+    });
+    socket.on('room change', (newRoom) => {
+      console.log(newRoom);
+    });
+    // socket.on('connect', () => {
+    //   console.log(socket);
+    // })
+
+    if (process.env.NODE_ENV === 'development') {
+      socket = socketIOClient('localhost:5000', { query: { room: this.room } });
+    } else {
+      socket = socketIOClient(window.location, { query: { room: this.room } });
+    }
+    this.sockets.push(socket);
+    this.emit = emitSetup(socket);
+    this.on = onSetup(socket);
   }
   
   createSocket() {
-    
-    // this.socket.removeAllListeners();
-    if (this.socket !== null) this.socket.disconnect();
-
-    this.room = this.getState().session.user.id;
-
-    if (process.env.NODE_ENV === 'development') {
-      this.socket = socketIOClient('localhost:5000', { query: {room: this.room } });
-    } else {
-      this.socket = socketIOClient(window.location, { query: {room: this.room } });
-    }
-    
-    // this.emit('join room', String(this.getState().session.user.id));
-
-    // this.on('room change', room => {
-    //   console.log('room cahnge');
-    // })
-  
-    this.socket.on('change color', (col) => {
-      document.body.style.backgroundColor = col;
-    });
-    this.socket.on('receive gameState', (receivedState) => {
-      console.log('receive');
-      this.setState({ gameState: receivedState })
-    });
-
-    if (process.env.NODE_ENV === 'development') {
-      this.socket = socketIOClient('localhost:5000', { query: { room: this.room } });
-    } else {
-      this.socket = socketIOClient(window.location, { query: { room: this.room } });
-    }
-    this.emit = emitSetup(this.socket);
-    this.on = onSetup(this.socket);
- 
+    this.joinSocket(this.getState().session.user.id);
   }
   
   connectSocket(username) {
-
-    if (this.socket !== null) this.socket.disconnect();
-
-    // Get host user's session id, connect to that room
-    const host = this.getState().users;
-    // this.room = this.getState().users;
-
-    // if (process.env.NODE_ENV === 'development') {
-    //   this.socket = socketIOClient('localhost:5000', { query: { room: this.room } });
-    // } else {
-    //   this.socket = socketIOClient(window.location, { query: { room: this.room } });
-    // }
-     
-    // let socket;
-    // if (process.env.NODE_ENV === 'development') {
-    //   socket = socketIOClient('localhost:5000');
-    // } else {
-    //   socket = socketIOClient();
-    // }
-
-    // this.emit = emitSetup(socket);
-    // this.on = onSetup(socket);
-
-    // this.on('change color', (col) => {
-    //   document.body.style.backgroundColor = col;
-    // })
-    // this.on('receive gameState', (receivedState) => {
-    //   this.setState({ gameState: receivedState })
-    // })
+    this.joinSocket('newroom');
 
     // setInterval(this.send, 1000);`
   }
 
   send() {
     // this.emit('change color', this.state.color);
-    this.socket.emit('set gameState', this.state.gameState);
+    this.emit('set gameState', this.state.gameState);
   }
 
   setColor(color) {
@@ -134,6 +120,8 @@ class App extends React.Component {
     return (
       <div className="app">
         <button onClick={this.createSocket}>Create</button>
+        <br></br>
+        <button onClick={this.connectSocket}>Connect</button>
         <br></br>
         <br></br>
         <button onClick={this.send}>Click</button>
