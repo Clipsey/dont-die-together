@@ -5,7 +5,7 @@ const gameConfig = {
     },
     speeds: {           //speeds in pixels/second
         player: 50,
-        bullet: 300,
+        bullet: 1000,
         zombie: 20
     },
     sizes: {
