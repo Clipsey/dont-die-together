@@ -1,7 +1,7 @@
 import gameConfig from './config';
 import { sampleState } from './config';
 import { willCollideWithEnemy } from './model_helper';
-import { vectorMag } from './vector_util';
+import { vectorMag, findDistance } from './vector_util';
 
 export default class GameModel {
     constructor(initialState = sampleState) {
@@ -11,11 +11,21 @@ export default class GameModel {
     }
 
     update(inputs, dt) { 
+        this.updateTimes(dt);
         this.movePlayers(inputs, dt);
         this.moveEnemies(dt);
         this.moveBullets(dt);
-        this.fireBullets(inputs, dt);
+        this.fireBullets(inputs);
         return this.gameState;
+    }
+
+    updateTimes(dt) {
+        Object.values(this.gameState.players).forEach( (player) => {
+            player.timeToFire -= dt;
+            if (player.timeToFire < 0){
+                player.timeToFire = 0;
+            }
+        });
     }
 
     moveBullets(dt) {
@@ -24,6 +34,16 @@ export default class GameModel {
             let yDist = bullet.vel.y*dt;
             bullet.pos.x += xDist;
             bullet.pos.y += yDist;
+            Object.keys(this.gameState.enemies).forEach( (enemyId) => {
+                let enemy = this.gameState.enemies[enemyId];
+                let dist = findDistance([enemy.pos.x, enemy.pos.y], [bullet.pos.x, bullet.pos.y]);
+                if (dist < gameConfig.sizes[enemy.type]){
+                    enemy.health -= gameConfig.damages[bullet.type];
+                    if (enemy.health < 0){
+                        enemy.
+                    }
+                }
+            });
         });
         Object.keys(this.gameState.bullets).forEach( (bulletId) => {
             let bullet = this.gameState.bullets[bulletId];
@@ -36,11 +56,12 @@ export default class GameModel {
         });
     }
 
-    fireBullets(inputs, dt) {
+    fireBullets(inputs) {
         Object.keys(this.gameState.players).forEach((playerId) => {
             let player = this.gameState.players[parseInt(playerId)];
             let playerInputs = inputs[parseInt(playerId)];
             if (this.playerCanFire(player) && playerInputs.fire) {
+                player.timeToFire = gameConfig.times.pistolReload;
                 let fireVector = [playerInputs.pointX, playerInputs.pointY];
                 let unitVector = [
                     fireVector[0]/vectorMag(fireVector),
@@ -57,13 +78,12 @@ export default class GameModel {
                 newBullet.vel.x = unitVector[0]*speed;
                 newBullet.vel.y = unitVector[1]*speed;
                 this.gameState.bullets[Math.random()] = newBullet; 
-                console.log(this.gameState);
             } 
         });
     }
 
     playerCanFire(player) {
-        return true;
+        return (player.timeToFire === 0);
     }
 
     moveEnemies(dt) {
