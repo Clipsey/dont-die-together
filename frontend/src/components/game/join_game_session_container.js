@@ -1,6 +1,6 @@
 import {connect} from 'react-redux';
 import {receiveUsers} from '../../actions/user_session';
-import GameSession from './game_session';
+import GameSession from './join_game_session';
 
 const mapStateToProps = (state) => {
     return {
@@ -11,7 +11,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        index: users => dispatch(receiveUsers(users)))
+        index: () => dispatch(receiveUsers())
     }
 }
 

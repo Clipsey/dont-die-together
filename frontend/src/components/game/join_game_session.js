@@ -20,11 +20,17 @@ class GameSession extends React.Component {
     handleSubmit(event) {
         // pass stuff to backend through here
         // you can make ajax calls and axios calls here
+        // debugger
         event.preventDefault();
-        let users = {
-            value: this.state.values,
-        };
-        this.props.index(users);
+        // console.log(this.props)
+        // debugger
+        // this makes it so you fetch the index of all users before you call connectsocket
+        this.props.index().then(() => {
+            let username = this.state.value;
+            // console.log(username)
+            this.props.connectSocket(username);
+            // give the name, connectsocket gets the sessionid using the name
+        })
     }
 
     render() {
@@ -39,6 +45,7 @@ class GameSession extends React.Component {
                         <br />
                     </label>
                     <input type="submit" value="Enter Lobby" />
+                    <br />
                     Host a lobby instead
                 </form>
             </div>

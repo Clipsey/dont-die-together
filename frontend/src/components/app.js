@@ -10,7 +10,7 @@ import ProfileContainer from './profile/profile_container';
 import TweetComposeContainer from './tweets/tweet_compose_container';
 import Game from './game/game';
 import Modal from './modal/modal';
-import JoinGameSessionContainer from './game/game_session'
+import JoinGameSessionContainer from './game/join_game_session_container'
 import CreateGameSessionContainer from './game/create_game_session.js'
 
 import socketIOClient from 'socket.io-client';
@@ -136,8 +136,9 @@ class App extends React.Component {
           <AuthRoute exact path="/login" component={LoginFormContainer} />
           <AuthRoute exact path="/signup" component={SignupFormContainer} />
 
-          <ProtectedRoute exact path="/game" component={JoinGameSessionContainer} />
-          <ProtectedRoute exact path="/creategame" render={<CreateGameSessionContainer createSocket={this.createSocket} connectSocket={this.connectSocket}/>} />
+          <ProtectedRoute exact path="/joingame" createSocket={this.createSocket} connectSocket={this.connectSocket} component={JoinGameSessionContainer} />} />
+          <ProtectedRoute exact path="/creategame" createSocket={this.createSocket} connectSocket={this.connectSocket} component={CreateGameSessionContainer} />
+
           <ProtectedRoute exact path="/game" component={Game} />
           {/* <ProtectedRoute exact path="/tweets" component={TweetsContainer} /> */}
           {/* <ProtectedRoute exact path="/profile" component={ProfileContainer} /> */}

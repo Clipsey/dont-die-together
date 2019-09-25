@@ -14,12 +14,12 @@ const Auth = ({ component: Component, path, loggedIn, exact }) => (
   )} />
 );
 
-const Protected = ({ component: Component, loggedIn, ...rest }) => (
+const Protected = ({ component: Component, connectSocket, createSocket, loggedIn, ...rest }) => (
   <Route
     {...rest}
     render={props =>
       loggedIn ? (
-        <Component {...props} />
+        <Component connectSocket={connectSocket} createSocket={createSocket} {...props} />
       ) : (
           // Redirect to the login page if the user is already authenticated
           <Redirect to="/" />
