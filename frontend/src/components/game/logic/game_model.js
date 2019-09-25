@@ -37,7 +37,7 @@ export default class GameModel {
             Object.keys(this.gameState.enemies).forEach( (enemyId) => {
                 let enemy = this.gameState.enemies[enemyId];
                 let dist = findDistance([enemy.pos.x, enemy.pos.y], [bullet.pos.x, bullet.pos.y]);
-                if (dist < gameConfig.sizes[enemy.type]){
+                if (dist < gameConfig.sizes[enemy.type] && enemy.status !== 'dying'){
                     enemy.health -= gameConfig.damages[bullet.type];
                     if (enemy.health < 0){
                         enemy.status = 'dying';
