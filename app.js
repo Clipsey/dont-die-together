@@ -44,25 +44,42 @@ const io = socketIO(server);
 
 io.on('connection', socket => {
   console.log('User connected');
+  // console.log(socket.handshake.query.room);
+
+  socket.room = socket.handshake.query.room;
+  socket.join(socket.room);
+
+  socket.on('join room', (room) => {
+    console.log('joined new room')
+    socket.leave(socket.room);
+    // socket.room = room;
+    socket.join(socket.room);
+    socket.to(socket.room).emit('room change', socket.room);
+  })
 
   socket.on('change color', (color) => {
     console.log('Color changed to: ', color);
-    io.sockets.emit('change color', color);
-  })
+    socket.to(socket.room).emit('change color', color);
+  });
 
   socket.on('set gameState', (receivedState) => {
     console.log('GameState will be changed to: ', receivedState);
-    const newGameState = new GameState({
-      GameState: receivedState
-    });
-    newGameState.save().then(() => {
-      io.sockets.emit('receive gameState', receivedState);
-    })
-  })
+    // const newGameState = new GameState({
+      // GameState: receivedState
+    // });
+    // newGameState.save().then(() => {
+    socket.to(socket.room).emit('receive gameState', receivedState);
+    // })
+  });
 
   socket.on('disconnect', () => {
     console.log('user disconnected');
-  })
+    socket.leave(socket.room);
+  });
+
+  // console.log(io.socket.clients);
+  // console.log(io.sockets.manager.roomClients[socket.id])
+
 })
 
 
