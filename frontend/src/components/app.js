@@ -1,6 +1,6 @@
 import React from 'react';
 import { AuthRoute, ProtectedRoute } from '../util/route_util';
-import { Switch } from 'react-router-dom';
+import { Switch, Link } from 'react-router-dom';
 import NavBarContainer from './nav/navbar_container';
 import TweetsContainer from './tweets/tweets_container';
 import MainPage from './main/main_page';
@@ -68,8 +68,7 @@ class App extends React.Component {
       document.body.style.backgroundColor = col;
     });
     socket.on('receive gameState', (receivedState) => {
-      // console.log(this.room);
-      console.log(socket.id);
+      console.log(this.room);
       this.setState({ gameState: receivedState })
     });
     socket.on('room change', (newRoom) => {
@@ -94,9 +93,7 @@ class App extends React.Component {
   }
   
   connectSocket(username) {
-    this.joinSocket('newroom');
-
-    // setInterval(this.send, 1000);`
+    this.joinSocket(username);
   }
 
   send() {
@@ -121,7 +118,7 @@ class App extends React.Component {
       <div className="app">
         <button onClick={this.createSocket}>Create</button>
         <br></br>
-        <button onClick={this.connectSocket}>Connect</button>
+        <Link to="/joingame">Connect To User</Link>
         <br></br>
         <br></br>
         <button onClick={this.send}>Click</button>
