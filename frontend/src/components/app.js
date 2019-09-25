@@ -92,9 +92,9 @@ class App extends React.Component {
     this.joinSocket(this.getState().session.user.id);
   }
   
-  connectSocket(email) {
+  connectSocket(name) {
     // debugger;
-    const sessionId = this.getState().users.users[email]._id;
+    const sessionId = this.getState().users.users[name]._id;
     this.joinSocket(sessionId);
   }
 
@@ -116,7 +116,6 @@ class App extends React.Component {
   }
 
   render() {
-    console.log(this.props.loggedIn);
     return (
       <div className="app">
         {/* { this.props.loggedIn &&  */}
