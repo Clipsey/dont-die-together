@@ -1,9 +1,22 @@
 import * as DisplayConfig from './display_config';
+import gameConfig from './logic/config';
 
 export const clearScreen = ctx => {
     ctx.save();
     ctx.fillStyle = DisplayConfig.canvasStyle.backgroundColor;
     ctx.fillRect(0, 0, DisplayConfig.screenWidth, DisplayConfig.screenHeight);
+};
+
+export const displayBullet = (bullet, ctx) => {
+    ctx.save();
+    ctx.translate(bullet.pos.x, bullet.pos.y);
+    ctx.strokeStyle = '#ccccfc';
+    ctx.fillStyle = '#ffffff';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(0, 0, gameConfig.sizes.bullets, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.restore();
 };
 
 export const displayPlayer = (player, ctx) => {
@@ -12,7 +25,7 @@ export const displayPlayer = (player, ctx) => {
     ctx.fillStyle = '#ffffff';
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.arc(player.pos.x, player.pos.y, 12, 0, 2 * Math.PI);
+    ctx.arc(player.pos.x, player.pos.y, gameConfig.sizes.player, 0, 2 * Math.PI);
     ctx.stroke();
     ctx.restore();
 };
@@ -24,7 +37,7 @@ export const displayEnemy = (enemy, ctx) => {
     ctx.fillStyle = '#ffffff';
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.arc(0, 0, 12, 0, 2 * Math.PI);
+    ctx.arc(0, 0, gameConfig.sizes.zombie, 0, 2 * Math.PI);
     ctx.stroke();
     ctx.restore();
 };

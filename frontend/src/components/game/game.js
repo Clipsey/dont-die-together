@@ -58,7 +58,15 @@ class Game extends React.Component {
         DisplayUtil.clearScreen(this.state.context);
         this.displayPlayers(gameState);
         this.displayEnemies(gameState);
+        this.displayBullets(gameState);
         DisplayUtil.displayFPS(dt, this.state.context)
+    }
+
+    displayBullets(gameState) {
+        let bullets = Object.values(gameState.bullets);
+        for (let i = 0; i < bullets.length; i++) {
+            DisplayUtil.displayBullet(bullets[i], this.state.context);
+        }
     }
 
     displayEnemies(gameState) {
