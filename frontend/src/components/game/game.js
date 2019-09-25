@@ -88,7 +88,6 @@ class Game extends React.Component {
         const hostKeys = this.state.input.pressedKeys;
         hostKeys.pointX = this.state.input.mousePos.x - this.gameState.players[1].pos.x;
         hostKeys.pointY = this.state.input.mousePos.y - this.gameState.players[1].pos.y;
-        console.table(hostKeys);
 
         const inputCollection = {
             1: hostKeys,
