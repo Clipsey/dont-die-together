@@ -1,4 +1,8 @@
 const gameConfig = {
+    gameBounds: {
+        x: 800,
+        y: 600
+    },
     speeds: {           //speeds in pixels/second
         player: 50,
         bullet: 300,
@@ -13,7 +17,7 @@ const gameConfig = {
 
 export default gameConfig;
 
-const sampleState = {
+export const sampleState = {
     players: {
         1: {
             pos: {
@@ -31,21 +35,44 @@ const sampleState = {
         }
     },
     enemies: {
+        // 1: {
+        //     type: 'zombie',
+        //     pos: {
+        //         x: 150,
+        //         y: 300
+        //     },
+        //     health: 100
+        // },
+        // 2: {
+        //     type: 'zombie',
+        //     pos: {
+        //         x: 20,
+        //         y: 30
+        //     },
+        //     health: 100
+        // }
+    },
+    bullets: {
         1: {
-            type: 'zombie',
+            type: 'pistol',
             pos: {
+                x: 50,
+                y: 220,
+            },
+            vel: {
                 x: 150,
-                y: 300
-            },
-            health: 100
-        },
-        2: {
-            type: 'zombie',
-            pos: {
-                x: 20,
-                y: 30
-            },
-            health: 100
+                y: 200
+            }
         }
     }
 };
+
+const inputs = {
+    up: false,
+    down: false,
+    right: true,
+    left: true,
+    fire: false,
+    pointX: 24,
+    pointY: -10
+}
