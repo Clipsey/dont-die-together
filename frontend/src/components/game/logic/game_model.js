@@ -19,21 +19,19 @@ export default class GameModel {
     }
 
     moveBullets(dt) {
-        Object.values(this.gameState.enemies).forEach( (bullet) => {
-        //Object.values(this.gameState.bullets).forEach( (bullet) => {
+        Object.values(this.gameState.bullets).forEach( (bullet) => {
             let xDist = bullet.vel.x*dt;
             let yDist = bullet.vel.y*dt;
             bullet.pos.x += xDist;
             bullet.pos.y += yDist;
         });
-        //CHANGE BELOW WHEN BULLETS RENDERED
-        Object.keys(this.gameState.enemies).forEach( (bulletId) => {
-            let bullet = this.gameState.enemies[bulletId];
+        Object.keys(this.gameState.bullets).forEach( (bulletId) => {
+            let bullet = this.gameState.bullets[bulletId];
             if (bullet.pos.x > gameConfig.gameBounds.x ||
                 bullet.pos.x < 0 ||
                 bullet.pos.y > gameConfig.gameBounds.y ||
                 bullet.pos.y < 0) {
-                delete this.gameState.enemies[bulletId];
+                delete this.gameState.bullets[bulletId];
             }
         });
     }
@@ -58,8 +56,8 @@ export default class GameModel {
                 newBullet.pos.y = player.pos.y;
                 newBullet.vel.x = unitVector[0]*speed;
                 newBullet.vel.y = unitVector[1]*speed;
-                //this.gameState.bullets[Math.random()] = newBullet;  ***CHANGE BACK AFTER BULLET DISPLAY
-                this.gameState.enemies[Math.random()] = newBullet;
+                this.gameState.bullets[Math.random()] = newBullet; 
+                console.log(this.gameState);
             } 
         });
     }

@@ -35,22 +35,22 @@ export const sampleState = {
         }
     },
     enemies: {
-        // 1: {
-        //     type: 'zombie',
-        //     pos: {
-        //         x: 150,
-        //         y: 300
-        //     },
-        //     health: 100
-        // },
-        // 2: {
-        //     type: 'zombie',
-        //     pos: {
-        //         x: 20,
-        //         y: 30
-        //     },
-        //     health: 100
-        // }
+        1: {
+            type: 'zombie',
+            pos: {
+                x: 150,
+                y: 300
+            },
+            health: 100
+        },
+        2: {
+            type: 'zombie',
+            pos: {
+                x: 20,
+                y: 30
+            },
+            health: 100
+        }
     },
     bullets: {
         1: {
