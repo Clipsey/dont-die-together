@@ -8,7 +8,7 @@ const gameConfig = {
         zombieDie: 1
     },
     distances: {
-        stagger: 10
+        stagger: 6
     },
     damages: {
         pistol: 20
@@ -16,7 +16,7 @@ const gameConfig = {
     speeds: {                   //speeds in pixels/second
         player: 50,
         bullet: 1000,
-        zombie: 20
+        zombie: 40
     },
     sizes: {
         player: 10,
