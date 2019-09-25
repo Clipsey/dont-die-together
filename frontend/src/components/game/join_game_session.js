@@ -20,10 +20,12 @@ class GameSession extends React.Component {
     handleSubmit(event) {
         // pass stuff to backend through here
         // you can make ajax calls and axios calls here
+        // debugger
         event.preventDefault();
         let users = {
-            value: this.state.values,
+            value: this.state.value,
         };
+        console.log(users)
         this.props.index(users);
     }
 
@@ -39,6 +41,7 @@ class GameSession extends React.Component {
                         <br />
                     </label>
                     <input type="submit" value="Enter Lobby" />
+                    <br />
                     Host a lobby instead
                 </form>
             </div>

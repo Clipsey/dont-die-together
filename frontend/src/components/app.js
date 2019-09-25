@@ -11,7 +11,7 @@ import ProfileContainer from './profile/profile_container';
 import TweetComposeContainer from './tweets/tweet_compose_container';
 import Game from './game/game';
 import Modal from './modal/modal';
-import JoinGameSessionContainer from './game/game_session'
+import JoinGameSessionContainer from './game/join_game_session_container'
 import CreateGameSessionContainer from './game/create_game_session.js'
 
 class App extends React.Component {
@@ -76,7 +76,7 @@ class App extends React.Component {
           <AuthRoute exact path="/login" component={LoginFormContainer} />
           <AuthRoute exact path="/signup" component={SignupFormContainer} />
 
-          <ProtectedRoute exact path="/game" component={JoinGameSessionContainer} />
+          <ProtectedRoute exact path="/joingame" component={JoinGameSessionContainer} />
           <ProtectedRoute exact path="/creategame" component={CreateGameSessionContainer} />
           <ProtectedRoute exact path="/game" component={Game} />
           {/* <ProtectedRoute exact path="/tweets" component={TweetsContainer} /> */}

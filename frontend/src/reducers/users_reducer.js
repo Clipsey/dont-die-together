@@ -5,6 +5,7 @@ const UsersReducer = (state = {users: {}}, action) => {
     let newState = Object.assign({}, state);
     switch (action.type) {
         case RECEIVE_ALL_USERS:
+            debugger
             newState.users = action.users.data;
             return newState;
             break;
