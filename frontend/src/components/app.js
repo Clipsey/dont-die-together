@@ -93,8 +93,8 @@ class App extends React.Component {
   }
   
   connectSocket(email) {
-    const sessionId = this.getState().users[email]._id;
-    debugger;
+    // debugger;
+    const sessionId = this.getState().users.users[email]._id;
     this.joinSocket(sessionId);
   }
 
@@ -116,19 +116,25 @@ class App extends React.Component {
   }
 
   render() {
+    console.log(this.props.loggedIn);
     return (
       <div className="app">
-        <button onClick={this.createSocket}>Create</button>
-        <br></br>
-        <Link to="/joingame">Connect To User</Link>
-        <br></br>
-        <br></br>
-        <button onClick={this.send}>Click</button>
-        <br></br>
-        <button onClick={this.setHealth(100)}>Health = 100</button>
-        <br></br>
-        <button onClick={this.setHealth(50)}>Health = 50</button>
-        <div>{this.state.gameState.player.health}</div>
+        {/* { this.props.loggedIn &&  */}
+          <div> DEBUGGER
+            <br></br>
+            <button onClick={this.createSocket}>Create</button>
+            <br></br>
+            {/* <Link to="/joingame">Connect To User</Link> */}
+            {/* <br></br> */}
+            <br></br>
+            <button onClick={this.send}>Click</button>
+            <br></br>
+            <button onClick={this.setHealth(100)}>Health = 100</button>
+            <br></br>
+            <button onClick={this.setHealth(50)}>Health = 50</button>
+            <div>{this.state.gameState.player.health}</div>
+          </div>
+        {/* } */}
         <NavBarContainer />
         <Switch>
           <AuthRoute exact path="/" component={MainPage} />
