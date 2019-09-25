@@ -1,42 +1,19 @@
 import React from 'react';
+
 import InputManager from './input_manager';
 import Welcome from './welcome';
 import GameModel from './logic/game_model';
-const playerImg = require('../../style/images/bk_player_assets/player_chaingun.png');
-const zombieImg = require('../../style/images/bk_player_assets/player_9mmhandgun.png');
+import * as DisplayUtil from './display_util';
+import * as DisplayConfig from './display_config';
 
-const initialState = {
-    players: {
-        1: {
-            pos: {
-                x: 100,
-                y: 100
-            },
-            health: 100
-        },
-        2: {
-            pos: {
-                x: 200,
-                y: 100
-            },
-            health: 50
-        }
-    }
-};
 
-const canvasStyle = {
-    display: 'block',
-    backgroundColor: '#A9A9A9',
-    marginLeft: 'auto',
-    marginRight: 'auto'
-};
 const GameMode = {
     StartScreen: 0,
     Playing: 1,
     GameOver: 2
 };
-const screenWidth = 800;
-const screenHeight = 600;
+
+const nullKeys = { left: false, right: false, up: false, down: false, fire: false, enter: false, pointX: 1, pointY: 1};
 
 class Game extends React.Component {
     constructor(props) {
@@ -45,8 +22,8 @@ class Game extends React.Component {
         this.state = {
             input: new InputManager(),
             screen: {
-                width: screenWidth,
-                height: screenHeight,
+                width: DisplayConfig.screenWidth,
+                height: DisplayConfig.screenHeight,
             },
         
             gameMode: GameMode.StartScreen,
@@ -56,18 +33,12 @@ class Game extends React.Component {
         this.GameModel = new GameModel();
         this.frames = 0;
         this.fps = 0;
-        this.lastGameState = initialState;
+        this.gameState = DisplayConfig.initialState;
+        this.displayPlayers = this.displayPlayers.bind(this);
     }
 
-    calcAngle(player) {
-        let mouseX = this.state.input.mousePos.x;
-        let mouseY = this.state.input.mousePos.y;
-        let dX = mouseX - player.pos.x;
-        let dY = mouseY - player.pos.y;
+    calcRelMousePos(player) {
 
-        let radians = Math.atan(dY/dX);
-        let degrees = radians * 180 / Math.PI;
-        return degrees;
     }
 
     componentDidMount() {
@@ -83,79 +54,24 @@ class Game extends React.Component {
         this.state.input.unbindKeys();
     }
 
-    clearScreen() {
-        const ctx = this.state.context;
-        ctx.save();
-        ctx.fillStyle = canvasStyle.backgroundColor;
-        ctx.fillRect(0, 0, this.state.screen.width, this.state.screen.height);
-    }
-
     display(gameState, dt) {
-        this.clearScreen();
+        DisplayUtil.clearScreen(this.state.context);
         this.displayPlayers(gameState);
         this.displayEnemies(gameState);
-        this.displayFPS(dt, gameState)
-    }
-
-    displayFPS(dt, gameState) {
-        this.frames++;
-        if (this.frames === 60) {
-            this.fps = (1/dt).toFixed(1);
-            this.frames = 0
-        }
-        const ctx = this.state.context;
-        ctx.fillFont = 'bold 10px serif';
-        ctx.strokeText(`FPS: ${this.fps}`, 20, 20);
+        DisplayUtil.displayFPS(dt, this.state.context)
     }
 
     displayEnemies(gameState) {
         let enemies = Object.values(gameState.enemies);
         for (let i = 0; i < enemies.length; i++) {
-            this.displayEnemy(enemies[i]);
+            DisplayUtil.displayEnemy(enemies[i], this.state.context);
         }
-    }
-
-    displayEnemy(enemy) {
-        const ctx = this.state.context;
-        let img = new Image();
-        img.src = zombieImg;
-
-        ctx.save();
-
-        // ctx.drawImage(img, enemy.pos.x, enemy.pos.y);
-
-        ctx.translate(enemy.pos.x, enemy.pos.y);
-        ctx.strokeStyle = '#ccccfc';
-        ctx.fillStyle = '#ffffff';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(0, 0, 12, 0, 2 * Math.PI);
-        ctx.stroke();
-        ctx.restore();
-    }
-
-    displayPlayer(player) {
-        const ctx = this.state.context;
-        let img = new Image();
-        img.src = playerImg;
-
-        ctx.save();
-        // ctx.drawImage(img, player.pos.x, player.pos.y);
-        // ctx.save();
-        // ctx.translate(player.pos.x, player.pos.y);
-        ctx.strokeStyle = '#ffffff';
-        ctx.fillStyle = '#ffffff';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(player.pos.x, player.pos.y, 12, 0, 2 * Math.PI);
-        ctx.stroke();
-        ctx.restore();
     }
 
     displayPlayers(gameState) {
         let players = Object.values(gameState.players);
         for (let i = 0; i < players.length; i++) {
-            this.displayPlayer(players[i]);
+            DisplayUtil.displayPlayer(players[i], this.state.context);
         }
     }
 
@@ -169,30 +85,23 @@ class Game extends React.Component {
         let now = Date.now();
         let dt = (now - this.lastTime) / 1000;
 
-        const myKeyPresses = this.state.input.pressedKeys;
-        if (myKeyPresses.fire === true) {
-            console.log('bang');
-        }
-        let mousePos = this.state.input.getMousePos;
-        let x = mousePos.x;
-        let y = mousePos.y;
-        myKeyPresses.pointX = x - this.lastGameState.players[1].pos.x;
-        myKeyPresses.pointY = y - this.lastGameState.players[1].pos.y;
-        
+        const hostKeys = this.state.input.pressedKeys;
+        hostKeys.pointX = this.state.input.mousePos.x - this.gameState.players[1].pos.x;
+        hostKeys.pointY = this.state.input.mousePos.y - this.gameState.players[1].pos.y;
+        console.table(hostKeys);
 
-        let _nullKeyPresses = { left: false, right: false, up: false, down: false, fire: false, enter: false, pointX: 1, pointY: 1};
-        let inputs = {
-            1: myKeyPresses,
-            2: _nullKeyPresses,
+        const inputCollection = {
+            1: hostKeys,
+            2: nullKeys,
         };
-        if (this.state.gameMode === GameMode.StartScreen && myKeyPresses.enter) {
+
+        if (this.state.gameMode === GameMode.StartScreen && hostKeys.enter) {
             this.startGame();
         }
 
         if (this.state.gameMode === GameMode.Playing) {
-            let nextState = this.GameModel.update(inputs, dt);
-            this.display(nextState, dt);
-            this.lastGameState = nextState;
+            this.gameState = this.GameModel.update(inputCollection, dt);
+            this.display(this.gameState, dt);
         }
         this.lastTime = now;
         requestAnimationFrame(() => this.mainLoop());
@@ -206,7 +115,7 @@ class Game extends React.Component {
                     id="canvas"
                     width={this.state.screen.width}
                     height={this.state.screen.height}
-                    style={canvasStyle}
+                    style={DisplayConfig.canvasStyle}
                 />
             </div>
         );

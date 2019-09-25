@@ -13,7 +13,10 @@ class InputManager extends React.Component {
     constructor() {
         super();
         this.pressedKeys = { left: false, right: false, up: false, down: false, fire: false, enter: false };
-        this.mousePos = 0;
+        this.mousePos = {
+            x: -1,
+            y: -1
+        };
     }
 
     bindKeys() {
