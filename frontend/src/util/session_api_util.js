@@ -17,6 +17,6 @@ export const login = (userData) => {
   return axios.post('/api/users/login', userData);
 };
 
-export const userindex = (usersData) => {
+export const userindex = () => {
   return axios.get('/api/users');
 }

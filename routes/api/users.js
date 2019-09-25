@@ -103,11 +103,7 @@ router.get('/current',
 
 router.get('/', (req, res) => {
   User.find({}, (err, users) => {
-    userMap = []
-    users.forEach((user) => {
-      userMap[user._id] = user;
-    })
-    res.send(usersMap);
+    res.json(users);
   })
 })
 

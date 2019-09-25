@@ -8,9 +8,9 @@ export const receiveAllUsers = users => ({
     users
 })
 
-export const receiveUsers = users => dispatch => (
-    APIUtil.userindex(users).then(() => (
-        dispatch(receiveAllUsers())), err => (
-            dispatch(receiveErrors(err.response.data))
-    ))
-)
+export const receiveUsers = () => dispatch => {
+    APIUtil.userindex()
+        .then( users => dispatch(receiveAllUsers(users)))
+}
+
+window.receiveUsers = receiveUsers;
