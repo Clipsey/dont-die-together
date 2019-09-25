@@ -39,14 +39,16 @@ class GameSession extends React.Component {
                 <form onSubmit={this.handleSubmit}>
                     <label>
                         <br />
-                        Join by session number:
+                        Join a session
+                        <br />
+                        Enter the email of the session you want to join:
                         <br />
                         <input type="text" value={this.state.value} onChange={this.handleChange} />
                         <br />
                     </label>
-                    <input type="submit" value="Enter Lobby" />
+                    <input type="submit" value="Enter" />
                     <br />
-                    Host a lobby instead
+                    Host your own lobby instead
                 </form>
             </div>
         )
