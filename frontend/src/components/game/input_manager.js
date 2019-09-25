@@ -5,14 +5,14 @@ const KEY = {
     DOWN: 40,
     LEFT:  37,
     RIGHT: 39,
-    SPACE: 32,
+    FIRE: 32, //space
     ENTER: 13
 };
 
 class InputManager extends React.Component {
     constructor() {
         super();
-        this.pressedKeys = { left: 0, right: 0, up: 0, down: 0, space: 0, enter: 0 };
+        this.pressedKeys = { left: false, right: false, up: false, down: false, fire: false, enter: false };
     }
 
     bindKeys() {
@@ -40,8 +40,8 @@ class InputManager extends React.Component {
             case KEY.RIGHT:
                 keys.right  = value;
                 break;
-            case KEY.SPACE:
-                keys.space  = value;
+            case KEY.FIRE:
+                keys.fire  = value;
                 break;
             case KEY.ENTER:
                 keys.enter = value;
@@ -50,6 +50,7 @@ class InputManager extends React.Component {
                 break;
         }
         this.pressedKeys = keys;
+        console.log(keys);
     }
 }
 

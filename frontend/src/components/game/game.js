@@ -1,7 +1,7 @@
 import React from 'react';
 import InputManager from './input_manager';
 import Welcome from './welcome';
-import GameLogic from './game_logic';
+import GameModel from './logic/game_model';
 
 const canvasStyle = {
     display: 'block',
@@ -34,7 +34,7 @@ class Game extends React.Component {
             context: null
         };
         this.lastTime = Date.now();
-        this.GameLogic = new GameLogic();
+        this.GameModel = new GameModel();
     }
 
     componentDidMount() {
@@ -59,20 +59,48 @@ class Game extends React.Component {
 
     display(gameState) {
         this.clearScreen();
-        this.displayPlayer(gameState);
+        this.displayPlayers(gameState);
+        this.displayEnemies(gameState);
     }
 
-    displayPlayer(gameState) {
+    displayEnemies(gameState) {
+        let enemies = Object.values(gameState.enemies);
+        for (let i = 0; i < enemies.length; i++) {
+            this.displayEnemy(enemies[i]);
+        }
+    }
+
+    displayEnemy(enemy) {
         const ctx = this.state.context;
         ctx.save();
-        ctx.translate(gameState.player.x, gameState.player.y);
+        ctx.translate(enemy.pos.x, enemy.pos.y);
+        ctx.strokeStyle = '#ccccfc';
+        ctx.fillStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(100, 75, 12, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    displayPlayer(player) {
+        const ctx = this.state.context;
+        ctx.save();
+        ctx.translate(player.pos.x, player.pos.y);
         ctx.strokeStyle = '#ffffff';
         ctx.fillStyle = '#ffffff';
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.arc(100, 75, 50, 0, 2 * Math.PI);
+        ctx.arc(100, 75, 12, 0, 2 * Math.PI);
         ctx.stroke();
         ctx.restore();
+    }
+
+    displayPlayers(gameState) {
+        let players = Object.values(gameState.players);
+        for (let i = 0; i < players.length; i++) {
+            this.displayPlayer(players[i]);
+        }
     }
 
     startGame() {
@@ -83,13 +111,18 @@ class Game extends React.Component {
 
     mainLoop() {
         let now = Date.now();
-        let dt = (now - this.lastTime) / 1000.0;
+        let dt = (now - this.lastTime) / 1000;
         const keys = this.state.input.pressedKeys;
+        let inputs = {
+            1: keys,
+            2: { left: false, right: false, up: false, down: false, fire: false, enter: false },
+        };
         if (this.state.gameMode === GameMode.StartScreen && keys.enter) {
             this.startGame();
         }
+
         if (this.state.gameMode === GameMode.Playing) {
-            let nextState = this.GameLogic.update(keys, dt);
+            let nextState = this.GameModel.update(inputs, dt);
             this.display(nextState);
         }
         this.lastTime = now;
