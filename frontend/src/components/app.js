@@ -1,5 +1,4 @@
 import React from 'react';
-// import { socketInit } from '../util/sockets_util';
 import { AuthRoute, ProtectedRoute } from '../util/route_util';
 import { Switch } from 'react-router-dom';
 import NavBarContainer from './nav/navbar_container';
@@ -14,6 +13,9 @@ import Modal from './modal/modal';
 import JoinGameSessionContainer from './game/join_game_session_container'
 import CreateGameSessionContainer from './game/create_game_session.js'
 
+import socketIOClient from 'socket.io-client';
+import { emitSetup, onSetup } from '../util/sockets_util';
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -26,16 +28,93 @@ class App extends React.Component {
         },
         bullets: [],
         enemies: [],
-      }
+      },
+      sockets: {}
     }
     this.send = this.send.bind(this);
     this.setColor = this.setColor.bind(this);
     this.setHealth = this.setHealth.bind(this);
-  } 
+    this.getState = props.getState;
+
+    this.socket = null;
+    this.room = null;
+
+    this.createSocket = this.createSocket.bind(this);
+  }
+  
+  createSocket() {
+    
+    // this.socket.removeAllListeners();
+    if (this.socket !== null) this.socket.disconnect();
+
+    this.room = this.getState().session.user.id;
+
+    if (process.env.NODE_ENV === 'development') {
+      this.socket = socketIOClient('localhost:5000', { query: {room: this.room } });
+    } else {
+      this.socket = socketIOClient(window.location, { query: {room: this.room } });
+    }
+    
+    // this.emit('join room', String(this.getState().session.user.id));
+
+    // this.on('room change', room => {
+    //   console.log('room cahnge');
+    // })
+  
+    this.socket.on('change color', (col) => {
+      document.body.style.backgroundColor = col;
+    });
+    this.socket.on('receive gameState', (receivedState) => {
+      console.log('receive');
+      this.setState({ gameState: receivedState })
+    });
+
+    if (process.env.NODE_ENV === 'development') {
+      this.socket = socketIOClient('localhost:5000', { query: { room: this.room } });
+    } else {
+      this.socket = socketIOClient(window.location, { query: { room: this.room } });
+    }
+    this.emit = emitSetup(this.socket);
+    this.on = onSetup(this.socket);
+ 
+  }  
+
+  connectSocket(username) {
+
+    if (this.socket !== null) this.socket.disconnect();
+
+    const host = this.getState().users;
+    // this.room = this.getState().users;
+
+    if (process.env.NODE_ENV === 'development') {
+      this.socket = socketIOClient('localhost:5000', { query: { room: this.room } });
+    } else {
+      this.socket = socketIOClient(window.location, { query: { room: this.room } });
+    }
+     
+    // let socket;
+    // if (process.env.NODE_ENV === 'development') {
+    //   socket = socketIOClient('localhost:5000');
+    // } else {
+    //   socket = socketIOClient();
+    // }
+
+    // this.emit = emitSetup(socket);
+    // this.on = onSetup(socket);
+
+    // this.on('change color', (col) => {
+    //   document.body.style.backgroundColor = col;
+    // })
+    // this.on('receive gameState', (receivedState) => {
+    //   this.setState({ gameState: receivedState })
+    // })
+
+    // setInterval(this.send, 1000);`
+  }
 
   send() {
-    this.props.emit('change color', this.state.color);
-    this.props.emit('set gameState', this.state.gameState);
+    // this.emit('change color', this.state.color);
+    this.socket.emit('set gameState', this.state.gameState);
   }
 
   setColor(color) {
@@ -50,20 +129,12 @@ class App extends React.Component {
     }
   }
 
-  componentDidMount() {
-    // setInterval(this.send, 1000);
-    this.props.subscribe('change color', (col) => {
-      document.body.style.backgroundColor = col;
-    })
-    this.props.subscribe('receive gameState', (receivedState) => {
-      debugger;
-      this.setState({ gameState: receivedState })
-    })
-  }
-
   render() {
     return (
       <div className="app">
+        <button onClick={this.createSocket}>Create</button>
+        <br></br>
+        <br></br>
         <button onClick={this.send}>Click</button>
         <br></br>
         <button onClick={this.setHealth(100)}>Health = 100</button>

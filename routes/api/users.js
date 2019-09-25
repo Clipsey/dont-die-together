@@ -101,6 +101,12 @@ router.get('/current',
   }
 );
 
+router.get('/', (req, res) => {
+  User.find({}, (err, users) => {
+    res.json(users);
+  })
+})
+
 router.use("/", (req, res) => {
   res.json({ msh: "This is the default users route"})
 });
