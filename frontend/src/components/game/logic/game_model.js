@@ -1,4 +1,5 @@
 import gameConfig from './config';
+import { willCollideWithEnemy } from './model_helper';
 
 const sampleState = {
     players: {
@@ -90,16 +91,21 @@ export default class GameModel {
                 }
             });
             
-            let moveVector = [targetPos.x - enemyPos.x, targetPos.y - enemyPos.y];
+            let dirVector = [targetPos.x - enemyPos.x, targetPos.y - enemyPos.y];
             let unitVector = [
-                moveVector[0]/closestDistance, 
-                moveVector[1]/closestDistance
+                dirVector[0]/closestDistance, 
+                dirVector[1]/closestDistance
             ];
-            let dist = dt*this.speeds[enemy.type];
+            let dist = dt * this.speeds[enemy.type];
+            let moveVector = [
+                unitVector[0]*dist,
+                unitVector[1]*dist
+            ];
             let enemySize = this.sizes[enemy.type];
-            if (closestDistance > enemySize + this.sizes.player){
-                enemy.pos.x = enemy.pos.x + unitVector[0]*dist;
-                enemy.pos.y = enemy.pos.y + unitVector[1]*dist;
+            if (closestDistance > enemySize + this.sizes.player && 
+                !willCollideWithEnemy(enemy, moveVector, this.gameState, this.sizes)){
+                enemy.pos.x = enemy.pos.x + moveVector[0];
+                enemy.pos.y = enemy.pos.y + moveVector[1];
             }
         });
     }
