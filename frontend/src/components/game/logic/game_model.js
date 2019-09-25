@@ -1,66 +1,7 @@
 import gameConfig from './config';
+import { sampleState } from './config';
 import { willCollideWithEnemy } from './model_helper';
-
-const sampleState = {
-    players: {
-        1: {
-            pos: {
-                x: 100,
-                y: 100
-            },
-            health: 100
-        },
-        2: {
-            pos: {
-                x: 200,
-                y: 100
-            },
-            health: 50
-        }
-    },
-    enemies: {
-        1: {
-            type: 'zombie',
-            pos: {
-                x: 150,
-                y: 300
-            },
-            health: 100
-        },
-        2: {
-            type: 'zombie',
-            pos: {
-                x: 20,
-                y: 30
-            },
-            health: 100
-        },
-        3: {
-            type: 'zombie',
-            pos: {
-                x: 50,
-                y: 80
-            },
-            health: 100
-        },
-        4: {
-            type: 'zombie',
-            pos: {
-                x: 10,
-                y: 130
-            },
-            health: 100
-        },
-        5: {
-            type: 'zombie',
-            pos: {
-                x: 60,
-                y: 10
-            },
-            health: 100
-        }
-    }
-};
+import { vectorMag } from './vector_util';
 
 export default class GameModel {
     constructor(initialState = sampleState) {
@@ -72,7 +13,32 @@ export default class GameModel {
     update(inputs, dt) { 
         this.movePlayers(inputs, dt);
         this.moveEnemies(dt);
+        this.fireBullets(inputs, dt);
         return this.gameState;
+    }
+
+    fireBullets(inputs, dt) {
+        Object.keys(this.gameState.players).forEach((playerId) => {
+            //let player = 
+            let playerInputs = inputs[parseInt(playerId)];
+            if (this.playerCanFire(player) && playerInputs.fire) {
+                let fireVector = [playerInputs.pointX, playerInputs.pointY];
+                let unitVector = [
+                    fireVector[0]/vectorMag(fireVector),
+                    fireVector[1]/vectorMag(fireVector)
+                ]
+                let newBullet = {
+                    type: 'pistol',
+                    // pos: {
+                    //     x: 
+                    // }
+                }
+            } 
+        });
+    }
+
+    playerCanFire(player) {
+        return true;
     }
 
     moveEnemies(dt) {
@@ -90,11 +56,14 @@ export default class GameModel {
                     targetPos = playerPos;
                 }
             });
-            
             let dirVector = [targetPos.x - enemyPos.x, targetPos.y - enemyPos.y];
+            if (Math.random() < 0.2) {
+                dirVector = [Math.random() - 0.5, Math.random() - 0.5];
+                enemy.randomDir = dirVector;
+            }
             let unitVector = [
-                dirVector[0]/closestDistance, 
-                dirVector[1]/closestDistance
+                dirVector[0]/vectorMag(dirVector), 
+                dirVector[1]/vectorMag(dirVector)
             ];
             let dist = dt * this.speeds[enemy.type];
             let moveVector = [

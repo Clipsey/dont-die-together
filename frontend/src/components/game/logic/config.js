@@ -13,7 +13,7 @@ const gameConfig = {
 
 export default gameConfig;
 
-const sampleState = {
+export const sampleState = {
     players: {
         1: {
             pos: {
@@ -47,5 +47,18 @@ const sampleState = {
             },
             health: 100
         }
+    },
+    bullets: {
+        
     }
 };
+
+const inputs = {
+    up: false,
+    down: false,
+    right: true,
+    left: true,
+    fire: false,
+    pointX: 24,
+    pointY: -10
+}
