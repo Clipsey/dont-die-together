@@ -22,11 +22,13 @@ class GameSession extends React.Component {
         // you can make ajax calls and axios calls here
         // debugger
         event.preventDefault();
-        let users = {
-            value: this.state.value,
-        };
-        console.log(users)
-        this.props.index(users);
+        // this makes it so you fetch the index of all users before you call connectsocket
+        this.props.index().then(() => {
+            let username = this.state.value;
+            // console.log(username)
+            this.props.connectSocket(username);
+            // give the name, connectsocket gets the sessionid using the name
+        })
     }
 
     render() {

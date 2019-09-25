@@ -11,7 +11,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        index: users => dispatch(receiveUsers(users))
+        index: () => dispatch(receiveUsers())
     }
 }
 
