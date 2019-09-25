@@ -40,7 +40,7 @@ export default class GameModel {
                 if (dist < gameConfig.sizes[enemy.type]){
                     enemy.health -= gameConfig.damages[bullet.type];
                     if (enemy.health < 0){
-                        enemy.
+                        enemy.status = 'dying';
                     }
                 }
             });
