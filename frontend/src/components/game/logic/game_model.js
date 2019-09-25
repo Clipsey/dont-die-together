@@ -13,26 +13,54 @@ export default class GameModel {
     update(inputs, dt) { 
         this.movePlayers(inputs, dt);
         this.moveEnemies(dt);
+        this.moveBullets(dt);
         this.fireBullets(inputs, dt);
         return this.gameState;
     }
 
+    moveBullets(dt) {
+        Object.values(this.gameState.enemies).forEach( (bullet) => {
+        //Object.values(this.gameState.bullets).forEach( (bullet) => {
+            let xDist = bullet.vel.x*dt;
+            let yDist = bullet.vel.y*dt;
+            bullet.pos.x += xDist;
+            bullet.pos.y += yDist;
+        });
+        //CHANGE BELOW WHEN BULLETS RENDERED
+        Object.keys(this.gameState.enemies).forEach( (bulletId) => {
+            let bullet = this.gameState.enemies[bulletId];
+            if (bullet.pos.x > gameConfig.gameBounds.x ||
+                bullet.pos.x < 0 ||
+                bullet.pos.y > gameConfig.gameBounds.y ||
+                bullet.pos.y < 0) {
+                delete this.gameState.enemies[bulletId];
+            }
+        });
+    }
+
     fireBullets(inputs, dt) {
         Object.keys(this.gameState.players).forEach((playerId) => {
-            //let player = 
+            let player = this.gameState.players[parseInt(playerId)];
             let playerInputs = inputs[parseInt(playerId)];
             if (this.playerCanFire(player) && playerInputs.fire) {
-                let fireVector = [playerInputs.pointX, playerInputs.pointY];
+                let fireVector = [1, 1];
+                //let fireVector = [playerInputs.pointX, playerInputs.pointY];  ******CHANGE BACK AFTER INPUTS FIXED
                 let unitVector = [
                     fireVector[0]/vectorMag(fireVector),
                     fireVector[1]/vectorMag(fireVector)
                 ]
+                let speed = this.speeds.bullet;
                 let newBullet = {
                     type: 'pistol',
-                    // pos: {
-                    //     x: 
-                    // }
-                }
+                    pos: {},
+                    vel: {}
+                };
+                newBullet.pos.x = player.pos.x;
+                newBullet.pos.y = player.pos.y;
+                newBullet.vel.x = unitVector[0]*speed;
+                newBullet.vel.y = unitVector[1]*speed;
+                //this.gameState.bullets[Math.random()] = newBullet;  ***CHANGE BACK AFTER BULLET DISPLAY
+                this.gameState.enemies[Math.random()] = newBullet;
             } 
         });
     }
