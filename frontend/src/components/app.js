@@ -36,7 +36,6 @@ class App extends React.Component {
     }
     this.send = this.send.bind(this);
     this.setHealth = this.setHealth.bind(this);
-    this.getState = props.getState;
 
     this.sockets = [];
     this.host = null;
@@ -70,10 +69,12 @@ class App extends React.Component {
 
     if (this.isHost) {
       socket.on('From Client Input', (receivedInput) => {
+        console.log('From Client Input');
         this.setState({ gameState: receivedInput })
       });
     } else {
       socket.on('From Host GameState', (receivedGameState) => {
+        console.log('From Host GameState');
         this.setState({ gameState: receivedGameState })
       });
     }
@@ -93,18 +94,19 @@ class App extends React.Component {
   
   createSocket() {
     this.isHost = true;
-    this.joinSocket(this.getState().session.user.id);
+    this.joinSocket(this.props.currentUser.id)
+    this.forceUpdate();
   }
   
   connectSocket(name) {
     this.isHost = false;
-    const sessionId = this.getState().users.users[name]._id;
+    const sessionId = this.props.users[name]._id
     this.joinSocket(sessionId);
+    this.forceUpdate();
   }
 
   send() {
     this.child.testMethod();
-    // this.child.testMethod();
     if (this.isHost) {
       this.emit('From Host GameState', this.state.gameState);
     } else {
@@ -121,7 +123,6 @@ class App extends React.Component {
   }
 
   render() {
-    const loggedIn = this.getState().session.isAuthenticated;
     return (
       <div className="app">
         {/* { this.props.loggedIn &&  */}
@@ -149,12 +150,12 @@ class App extends React.Component {
           <ProtectedRoute exact path="/joingame" createSocket={this.createSocket} connectSocket={this.connectSocket} component={JoinGameSessionContainer} />
           <ProtectedRoute exact path="/creategame" createSocket={this.createSocket} connectSocket={this.connectSocket} component={CreateGameSessionContainer} />
 
-          <ProtectedRoute path="/game" component={GameSessionContainer}>
-            {this.isHost && loggedIn && <Route path='/game' render={(props) => <Game ref={Ref => this.child = Ref} />} /> } 
-            {/* <ProtectedRoute exact path="/game"  on={this.on} emit={this.emit} component={Game} /> } */}
-            {!this.isHost && loggedIn && <Route path='/game' render={(props) => <Game ref={Ref => this.child = Ref} />} /> }
-            {/* <ProtectedRoute exact path="/game" ref={Ref => this.child=Ref} on={this.on} emit={this.emit} component={Game} /> } */}
-          </ProtectedRoute>
+        <ProtectedRoute path="/game" component={GameSessionContainer}>
+          {this.isHost && this.props.loggedIn && <Route path='/game' render={() => <Game ref={Ref => this.child = Ref} isHost={this.isHost} />} /> } 
+          {/* <ProtectedRoute exact path="/game"  on={this.on} emit={this.emit} component={Game} /> } */}
+          {!this.isHost && this.props.loggedIn && <Route path='/game' render={() => <Game ref={Ref => this.child = Ref} isHost={this.isHost} />} /> }
+          {/* <ProtectedRoute exact path="/game" ref={Ref => this.child=Ref} on={this.on} emit={this.emit} component={Game} /> } */}
+        </ProtectedRoute>
 
           {/* <ProtectedRoute exact path="/tweets" component={TweetsContainer} /> */}
           {/* <ProtectedRoute exact path="/profile" component={ProfileContainer} /> */}
