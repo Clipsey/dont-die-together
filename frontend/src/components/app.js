@@ -13,6 +13,7 @@ import GameClient from './game/game_client';
 import Modal from './modal/modal';
 import JoinGameSessionContainer from './game/join_game_session_container'
 import CreateGameSessionContainer from './game/create_game_session_container.js'
+import GameSessionContainer from './game/game_session_container.js'
 import '../style/stylesheets/snowy.css'
 
 import socketIOClient from 'socket.io-client';
@@ -145,13 +146,15 @@ class App extends React.Component {
           <AuthRoute exact path="/login" component={LoginFormContainer} />
           <AuthRoute exact path="/signup" component={SignupFormContainer} />
 
-          <ProtectedRoute exact path="/joingame" createSocket={this.createSocket} connectSocket={this.connectSocket} component={JoinGameSessionContainer} />} />
+          <ProtectedRoute exact path="/joingame" createSocket={this.createSocket} connectSocket={this.connectSocket} component={JoinGameSessionContainer} />
           <ProtectedRoute exact path="/creategame" createSocket={this.createSocket} connectSocket={this.connectSocket} component={CreateGameSessionContainer} />
 
-          {this.isHost && loggedIn && <Route path='/game' render={(props) => <Game ref={Ref => this.child = Ref} />} /> } 
-          {/* <ProtectedRoute exact path="/game"  on={this.on} emit={this.emit} component={Game} /> } */}
-          {!this.isHost && loggedIn && <Route path='/game' render={(props) => <Game ref={Ref => this.child = Ref} />} /> }
-          {/* <ProtectedRoute exact path="/game" ref={Ref => this.child=Ref} on={this.on} emit={this.emit} component={Game} /> } */}
+          <ProtectedRoute path="/game" component={GameSessionContainer}>
+            {this.isHost && loggedIn && <Route path='/game' render={(props) => <Game ref={Ref => this.child = Ref} />} /> } 
+            {/* <ProtectedRoute exact path="/game"  on={this.on} emit={this.emit} component={Game} /> } */}
+            {!this.isHost && loggedIn && <Route path='/game' render={(props) => <Game ref={Ref => this.child = Ref} />} /> }
+            {/* <ProtectedRoute exact path="/game" ref={Ref => this.child=Ref} on={this.on} emit={this.emit} component={Game} /> } */}
+          </ProtectedRoute>
 
           {/* <ProtectedRoute exact path="/tweets" component={TweetsContainer} /> */}
           {/* <ProtectedRoute exact path="/profile" component={ProfileContainer} /> */}

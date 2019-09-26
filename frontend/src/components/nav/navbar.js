@@ -24,7 +24,7 @@ class NavBar extends React.Component {
           {/* <Link to={'/tweets'}>All Tweets</Link>
           <Link to={'/profile'}>Profile</Link>
           <Link to={'/new_tweet'}>Write a Tweet</Link> */}
-          <button onClick={this.logoutUser}>Logout</button>
+          <button className="navbar-thingy" onClick={this.logoutUser}>Logout</button>
         </div>
       );
     } else {
