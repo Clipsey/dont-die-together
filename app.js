@@ -58,6 +58,7 @@ io.on('connection', socket => {
   })
 
   socket.on('From Client Input', (Input) => {
+    console.log(GameState);
     socket.to(socket.room).emit('From Client Input', Input);
   })
   socket.on('From Host GameState', (GameState) => {
