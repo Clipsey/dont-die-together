@@ -38,7 +38,7 @@ class App extends React.Component {
     this.setHealth = this.setHealth.bind(this);
 
     this.sockets = [];
-    this.host = null;
+    this.isHost = null;
 
     this.createSocket = this.createSocket.bind(this);
     this.connectSocket = this.connectSocket.bind(this);
@@ -140,7 +140,7 @@ class App extends React.Component {
             <div>{this.state.gameState.player.health}</div>
           </div>
         {/* } */}
-        <NavBarContainer />
+        <NavBarContainer sockets={this.sockets}/>
         <Switch>
           <AuthRoute exact path="/" component={MainPage} />
           <AuthRoute exact path="/login" component={LoginFormContainer} />
