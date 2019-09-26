@@ -34,11 +34,6 @@ class Game extends React.Component {
         this.frames = 0;
         this.fps = 0;
         this.gameState = DisplayConfig.initialState;
-        this.displayPlayers = this.displayPlayers.bind(this);
-    }
-
-    calcRelMousePos(player) {
-
     }
 
     componentDidMount() {
