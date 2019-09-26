@@ -31,10 +31,12 @@ class GameSession extends React.Component {
             // console.log(username)
             this.props.connectSocket(username);
             // give the name, connectsocket gets the sessionid using the name
+            this.props.history.push('/game');
         })
     }
 
     render() {
+        // debugger
         return(
             <div className="game-session-main">
                 <form onSubmit={this.handleSubmit}>
@@ -48,8 +50,9 @@ class GameSession extends React.Component {
                         <br />
                     </label>
                     <input className="game-text-submit" type="submit" value="Enter" />
+                    {/* <Link className="game-text-submit" to="/game">Enter</Link> */}
                     <br />
-                    <Link className="game-text-submit" to="/creategame">Host your own lobby instead</Link>
+                    <Link className="game-text-submit2" to="/creategame">Host your own lobby instead</Link>
                 </form>
             </div>
         )

@@ -54,3 +54,11 @@
 .login-form-form {
     color: #ff0000;
 }
+
+.login-form-submit2:hover {
+    color: #0d9e61;
+}
+
+.login-form-submit2 {
+    padding-bottom: 2vw;
+}
