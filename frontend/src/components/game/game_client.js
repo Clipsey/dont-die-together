@@ -3,7 +3,7 @@ import * as DisplayConfig from './display_config';
 import * as DisplayUtil from './display_util';
 import InputManager from './input_manager';
 
-class GameClient {
+class GameClient extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -35,24 +35,7 @@ class GameClient {
     display(gameState) {
         DisplayUtil.clearScreen(this.state.context);
         this.displayPlayers(gameState);
-        // this.displayEnemies(gameState);
-        // this.displayBullets(gameState);
-        // DisplayUtil.displayFPS(dt, this.state.context)
     }
-
-    // displayBullets(gameState) {
-    //     let bullets = Object.values(gameState.bullets);
-    //     for (let i = 0; i < bullets.length; i++) {
-    //         DisplayUtil.displayBullet(bullets[i], this.state.context);
-    //     }
-    // }
-
-    // displayEnemies(gameState) {
-    //     let enemies = Object.values(gameState.enemies);
-    //     for (let i = 0; i < enemies.length; i++) {
-    //         DisplayUtil.displayEnemy(enemies[i], this.state.context);
-    //     }
-    // }
 
     displayPlayers(gameState) {
         let players = Object.values(gameState.players);
@@ -74,3 +57,5 @@ class GameClient {
         )
     }
 }
+
+export default GameClient;
