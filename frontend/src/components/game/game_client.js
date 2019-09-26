@@ -26,6 +26,7 @@ class GameClient extends React.Component {
     }
 
     SOCKET_ReceiveGameState(gameState) {
+        console.log('yay new state')
         this.gameState = gameState;
     }
 
@@ -46,7 +47,6 @@ class GameClient extends React.Component {
 
     mainLoop() {
         this.state.display.draw(this.gameState);
-        console.log('loop')
         requestAnimationFrame(() => this.mainLoop());
     }
 

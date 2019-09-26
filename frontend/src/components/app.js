@@ -72,14 +72,12 @@ class App extends React.Component {
         this.setState({ gameState: receivedInput })
       });
     } else {
+      console.log('attached to from host game state')
       socket.on('From Host GameState', (receivedGameState) => {
         console.log('From Host GameState');
         console.log(receivedGameState);
-        // if (this.props.location.pathname === '/game') {
-          console.log('receivingState');
-          this.child.SOCKET_ReceiveGameState(receivedGameState);
-        // }
-        // this.setState({ gameState: receivedGameState })
+        console.log('receivingState');
+        this.child.SOCKET_ReceiveGameState(receivedGameState);
       });
     }
 
@@ -103,8 +101,10 @@ class App extends React.Component {
   }
   
   connectSocket(name) {
+    console.log('connecting socket');
     this.isHost = false;
-    const sessionId = this.props.users[name]._id
+    const sessionId = this.props.users[name]._id;
+    console.log(`Session ID: ${sessionId}`);
     this.joinSocket(sessionId);
     // this.forceUpdate();
   }
