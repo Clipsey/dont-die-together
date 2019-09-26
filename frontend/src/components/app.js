@@ -44,6 +44,7 @@ class App extends React.Component {
   }
 
   joinSocket(room) {
+
     this.room = room;
 
     if (this.sockets.length > 0) {
@@ -64,43 +65,79 @@ class App extends React.Component {
     }
     this.sockets.push(socket);
 
-    socket.on('change color', (col) => {
-      document.body.style.backgroundColor = col;
-    });
-    socket.on('receive gameState', (receivedState) => {
-      console.log(this.room);
-      this.setState({ gameState: receivedState })
-    });
-    socket.on('room change', (newRoom) => {
-      console.log(newRoom);
-    });
-    // socket.on('connect', () => {
-    //   console.log(socket);
-    // })
+    // if (isHost) {
+    //   socket.on('From Client Input', (receivedInput) => {
+    //     // 
+    //   });
+    // } else {
+    //   socket.on('From Host GameState', (receivedGameState) => {
+    //     console.log(receivedGameState);
+    //   });
+    //   // socket.on('change color', (col) => {
+    //   //   document.body.style.backgroundColor = col;
+    //   // });
+    //   // socket.on('receive gameState', (receivedState) => {
+    //   //   console.log(this.room);
+    //   //   this.setState({ gameState: receivedState })
+    //   // });
+    //   // socket.on('room change', (newRoom) => {
+    //   //   console.log(newRoom);
+    //   // });
+    // }
+
+    if (this.isHost) {
+      // socket.on('From Client Input', (receivedInput) => {
+      //   // 
+      // });
+      socket.on('receive gameState', (receivedState) => {
+        console.log(this.room);
+        this.setState({ gameState: receivedState })
+      });
+    } else {
+      // socket.on('From Host GameState', (receivedGameState) => {
+      //   console.log(receivedGameState);
+      // });
+      // socket.on('change color', (col) => {
+      //   document.body.style.backgroundColor = col;
+      // });
+      socket.on('receive gameState', (receivedState) => {
+        console.log(this.room);
+        this.setState({ gameState: receivedState })
+      });
+      // socket.on('room change', (newRoom) => {
+      //   console.log(newRoom);
+      // });
+    }
 
     if (process.env.NODE_ENV === 'development') {
       socket = socketIOClient('localhost:5000', { query: { room: this.room } });
     } else {
       socket = socketIOClient(window.location, { query: { room: this.room } });
     }
+
     this.sockets.push(socket);
     this.emit = emitSetup(socket);
     this.on = onSetup(socket);
   }
   
   createSocket() {
-    this.joinSocket(this.getState().session.user.id);
+    this.isHost = true;
+    this.joinSocket(this.getState().session.user.id, true);
   }
   
   connectSocket(name) {
-    // debugger;
+    this.isHost = false;
     const sessionId = this.getState().users.users[name]._id;
-    this.joinSocket(sessionId);
+    this.joinSocket(sessionId, false);
   }
 
   send() {
     // this.emit('change color', this.state.color);
-    this.emit('set gameState', this.state.gameState);
+    // if (this.isHost) {
+    //   this.emit('From Host GameState', this.state.gameState);
+    // } else {
+    //   this.emit('From Client Input', this.state.gameState);
+    // }
   }
 
   setColor(color) {
@@ -143,7 +180,8 @@ class App extends React.Component {
           <ProtectedRoute exact path="/joingame" createSocket={this.createSocket} connectSocket={this.connectSocket} component={JoinGameSessionContainer} />} />
           <ProtectedRoute exact path="/creategame" createSocket={this.createSocket} connectSocket={this.connectSocket} component={CreateGameSessionContainer} />
 
-          <ProtectedRoute exact path="/game" component={Game} />
+          { this.isHost && <ProtectedRoute exact path="/game" on={this.on} emit={this.emit} component={Game} /> }
+
           {/* <ProtectedRoute exact path="/tweets" component={TweetsContainer} /> */}
           {/* <ProtectedRoute exact path="/profile" component={ProfileContainer} /> */}
           {/* <ProtectedRoute exact path="/new_tweet" component={TweetComposeContainer} /> */}

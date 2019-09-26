@@ -57,20 +57,15 @@ io.on('connection', socket => {
     socket.to(socket.room).emit('room change', socket.room);
   })
 
-  socket.on('change color', (color) => {
-    console.log('Color changed to: ', color);
-    socket.to(socket.room).emit('change color', color);
-  });
+  socket.on('From Client Input', (Input) => {
+    socket.to(socket.room).emit('From Client Input', receivedState);
+  })
+  socket.on('Fron Host GameState', (GameState) => {
+    socket.to(socket.room).emit('From Host GameState', receivedState);
+  })
 
-  socket.on('set gameState', (receivedState) => {
-    console.log('GameState will be changed to: ', receivedState);
-    // const newGameState = new GameState({
-      // GameState: receivedState
-    // });
-    // newGameState.save().then(() => {
-    socket.to(socket.room).emit('receive gameState', receivedState);
-    // })
-  });
+  // socket.to(socket.room).emit('receive gameState', receivedState);
+
 
   socket.on('disconnect', () => {
     console.log('user disconnected');
