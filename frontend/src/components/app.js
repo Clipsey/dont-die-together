@@ -12,6 +12,7 @@ import Game from './game/game';
 import Modal from './modal/modal';
 import JoinGameSessionContainer from './game/join_game_session_container'
 import CreateGameSessionContainer from './game/create_game_session_container.js'
+import '../style/stylesheets/snowy.css'
 
 import socketIOClient from 'socket.io-client';
 import { emitSetup, onSetup } from '../util/sockets_util';
@@ -132,30 +133,32 @@ class App extends React.Component {
 
   render() {
     return (
-      <div className="app">
-        <button onClick={this.createSocket}>Create</button>
-        <br></br>
-        <br></br>
-        <button onClick={this.send}>Click</button>
-        <br></br>
-        <button onClick={this.setHealth(100)}>Health = 100</button>
-        <br></br>
-        <button onClick={this.setHealth(50)}>Health = 50</button>
-        <div>{this.state.gameState.player.health}</div>
-        <NavBarContainer />
-        <Switch>
-          <AuthRoute exact path="/" component={MainPage} />
-          <AuthRoute exact path="/login" component={LoginFormContainer} />
-          <AuthRoute exact path="/signup" component={SignupFormContainer} />
+      <div className="snow">
+        <div className="app">
+          <button onClick={this.createSocket}>Create</button>
+          <br></br>
+          <br></br>
+          <button onClick={this.send}>Click</button>
+          <br></br>
+          <button onClick={this.setHealth(100)}>Health = 100</button>
+          <br></br>
+          <button onClick={this.setHealth(50)}>Health = 50</button>
+          <div>{this.state.gameState.player.health}</div>
+          <NavBarContainer />
+          <Switch>
+            <AuthRoute exact path="/" component={MainPage} />
+            <AuthRoute exact path="/login" component={LoginFormContainer} />
+            <AuthRoute exact path="/signup" component={SignupFormContainer} />
 
-          <AuthRoute exact path="/joingame" createSocket={this.createSocket} connectSocket={this.connectSocket} component={JoinGameSessionContainer} />} />
-          <AuthRoute exact path="/creategame" createSocket={this.createSocket} connectSocket={this.connectSocket} component={CreateGameSessionContainer} />
+            <AuthRoute exact path="/joingame" createSocket={this.createSocket} connectSocket={this.connectSocket} component={JoinGameSessionContainer} />} />
+            <AuthRoute exact path="/creategame" createSocket={this.createSocket} connectSocket={this.connectSocket} component={CreateGameSessionContainer} />
 
-          <AuthRoute exact path="/game" component={Game} />
-          {/* <ProtectedRoute exact path="/tweets" component={TweetsContainer} /> */}
-          {/* <ProtectedRoute exact path="/profile" component={ProfileContainer} /> */}
-          {/* <ProtectedRoute exact path="/new_tweet" component={TweetComposeContainer} /> */}
-        </Switch>
+            <AuthRoute exact path="/game" component={Game} />
+            {/* <ProtectedRoute exact path="/tweets" component={TweetsContainer} /> */}
+            {/* <ProtectedRoute exact path="/profile" component={ProfileContainer} /> */}
+            {/* <ProtectedRoute exact path="/new_tweet" component={TweetComposeContainer} /> */}
+          </Switch>
+        </div>
       </div>
     )
   }

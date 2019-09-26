@@ -3,6 +3,7 @@ import {withRouter, Link} from 'react-router-dom';
 import '../../style/stylesheets/reset.css';
 import '../../style/stylesheets/app.css';
 import '../../style/stylesheets/game_session.css';
+import '../../style/stylesheets/snowy.css'
 
 class GameSession extends React.Component {
     constructor(props) {
