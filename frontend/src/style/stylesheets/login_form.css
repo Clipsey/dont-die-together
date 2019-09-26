@@ -5,7 +5,7 @@
 } */
 
 .login-form-main {
-    font-size: 5vw;
+    font-size: 4vw;
     /* margin-top: 1vh; */
     /* font-family: 'Special Elite', cursive; */
     /* font-family: 'Handlee', cursive; */
@@ -61,4 +61,8 @@
 
 .login-form-submit2 {
     padding-bottom: 2vw;
+}
+
+.login-form-banner {
+    color: #ff0000;
 }
