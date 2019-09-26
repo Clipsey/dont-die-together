@@ -72,7 +72,7 @@ class LoginForm extends React.Component {
     return (
       <div>
         <div className="login-form-main">
-              <br />
+              {/* <br /> */}
           <div className="login-form-banner">Login</div>
           <form onSubmit={this.handleSubmit}>
             <div>
