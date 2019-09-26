@@ -54,6 +54,11 @@
 .login-form-form {
     color: #ff0000;
     color: #8E89C7;
+    border-bottom: 1px solid white;
+}
+
+.login-form-form3 {
+    color: #8E89C7;
 }
 
 .login-form-submit2:hover {
@@ -69,4 +74,8 @@
     font-size: 5vw;
     padding-top: 1vw;
     padding-bottom: 1vw;
+}
+
+.divvy {
+    margin-bottom: 1vh;
 }

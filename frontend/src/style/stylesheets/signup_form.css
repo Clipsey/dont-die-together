@@ -9,6 +9,8 @@
 .signup-form-input {
     color: #ff0000;
     color: #8E89C7;
+    border-bottom: 1px solid white;
+    /* margin-bottom: 1vh; */
 }
 
 .signup-form-banner {
