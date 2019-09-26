@@ -1,17 +1,14 @@
 import React from 'react';
+
 import InputManager from './input_manager';
 import Welcome from './welcome';
 import GameModel from './logic/game_model';
 import '../../style/stylesheets/reset.css';
 import '../../style/stylesheets/app.css';
 import '../../style/stylesheets/game.css';
+import * as DisplayUtil from './display_util';
+import * as DisplayConfig from './display_config';
 
-const canvasStyle = {
-    display: 'block',
-    backgroundColor: '#A9A9A9',
-    marginLeft: 'auto',
-    marginRight: 'auto'
-};
 
 const GameMode = {
     StartScreen: 0,
@@ -19,8 +16,7 @@ const GameMode = {
     GameOver: 2
 };
 
-const width = 640;
-const height = 480;
+const nullKeys = { left: false, right: false, up: false, down: false, fire: false, enter: false, pointX: 1, pointY: 1};
 
 class Game extends React.Component {
     constructor(props) {
@@ -29,8 +25,8 @@ class Game extends React.Component {
         this.state = {
             input: new InputManager(),
             screen: {
-                width: width,
-                height: height,
+                width: DisplayConfig.screenWidth,
+                height: DisplayConfig.screenHeight,
             },
         
             gameMode: GameMode.StartScreen,
@@ -38,6 +34,14 @@ class Game extends React.Component {
         };
         this.lastTime = Date.now();
         this.GameModel = new GameModel();
+        this.frames = 0;
+        this.fps = 0;
+        this.gameState = DisplayConfig.initialState;
+        this.testMethod = this.testMethod.bind(this);
+    }
+
+    testMethod() {
+        console.log('testMethod');
     }
 
     componentDidMount() {
@@ -53,56 +57,32 @@ class Game extends React.Component {
         this.state.input.unbindKeys();
     }
 
-    clearScreen() {
-        const ctx = this.state.context;
-        ctx.save();
-        ctx.fillStyle = canvasStyle.backgroundColor;
-        ctx.fillRect(0, 0, this.state.screen.width, this.state.screen.height);
-    }
-
-    display(gameState) {
-        this.clearScreen();
+    display(gameState, dt) {
+        DisplayUtil.clearScreen(this.state.context);
         this.displayPlayers(gameState);
         this.displayEnemies(gameState);
+        this.displayBullets(gameState);
+        DisplayUtil.displayFPS(dt, this.state.context)
+    }
+
+    displayBullets(gameState) {
+        let bullets = Object.values(gameState.bullets);
+        for (let i = 0; i < bullets.length; i++) {
+            DisplayUtil.displayBullet(bullets[i], this.state.context);
+        }
     }
 
     displayEnemies(gameState) {
         let enemies = Object.values(gameState.enemies);
         for (let i = 0; i < enemies.length; i++) {
-            this.displayEnemy(enemies[i]);
+            DisplayUtil.displayEnemy(enemies[i], this.state.context);
         }
-    }
-
-    displayEnemy(enemy) {
-        const ctx = this.state.context;
-        ctx.save();
-        ctx.translate(enemy.pos.x, enemy.pos.y);
-        ctx.strokeStyle = '#ccccfc';
-        ctx.fillStyle = '#ffffff';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(100, 75, 12, 0, 2 * Math.PI);
-        ctx.stroke();
-        ctx.restore();
-    }
-
-    displayPlayer(player) {
-        const ctx = this.state.context;
-        ctx.save();
-        ctx.translate(player.pos.x, player.pos.y);
-        ctx.strokeStyle = '#ffffff';
-        ctx.fillStyle = '#ffffff';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(100, 75, 12, 0, 2 * Math.PI);
-        ctx.stroke();
-        ctx.restore();
     }
 
     displayPlayers(gameState) {
         let players = Object.values(gameState.players);
         for (let i = 0; i < players.length; i++) {
-            this.displayPlayer(players[i]);
+            DisplayUtil.displayPlayer(players[i], this.state.context);
         }
     }
 
@@ -115,18 +95,23 @@ class Game extends React.Component {
     mainLoop() {
         let now = Date.now();
         let dt = (now - this.lastTime) / 1000;
-        const keys = this.state.input.pressedKeys;
-        let inputs = {
-            1: keys,
-            2: { left: false, right: false, up: false, down: false, fire: false, enter: false },
+
+        const hostKeys = this.state.input.pressedKeys;
+        hostKeys.pointX = this.state.input.mousePos.x - this.gameState.players[1].pos.x;
+        hostKeys.pointY = this.state.input.mousePos.y - this.gameState.players[1].pos.y;
+
+        const inputCollection = {
+            1: hostKeys,
+            2: nullKeys,
         };
-        if (this.state.gameMode === GameMode.StartScreen && keys.enter) {
+
+        if (this.state.gameMode === GameMode.StartScreen && hostKeys.enter) {
             this.startGame();
         }
 
         if (this.state.gameMode === GameMode.Playing) {
-            let nextState = this.GameModel.update(inputs, dt);
-            this.display(nextState);
+            this.gameState = this.GameModel.update(inputCollection, dt);
+            this.display(this.gameState, dt);
         }
         this.lastTime = now;
         requestAnimationFrame(() => this.mainLoop());
@@ -137,9 +122,10 @@ class Game extends React.Component {
             <div>
                 {this.state.gameMode === GameMode.StartScreen && <Welcome />}
                 <canvas ref="canvas"
+                    id="canvas"
                     width={this.state.screen.width}
                     height={this.state.screen.height}
-                    style={canvasStyle}
+                    style={DisplayConfig.canvasStyle}
                 />
             </div>
         );
