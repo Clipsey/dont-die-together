@@ -2,6 +2,9 @@ import React from 'react';
 import InputManager from './input_manager';
 import Welcome from './welcome';
 import GameModel from './logic/game_model';
+import '../../style/stylesheets/reset.css';
+import '../../style/stylesheets/app.css';
+import '../../style/stylesheets/game.css';
 
 const canvasStyle = {
     display: 'block',
