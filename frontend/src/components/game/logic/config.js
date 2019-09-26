@@ -5,17 +5,23 @@ const gameConfig = {
     },
     times: {
         itemGenerate: 6,
-        zombieGenerate: 2,
-        zombieReload: 0.5,      //times in seconds
-        pistolReload: 0.5,      
-        zombieDie: 1
+        zombieGenerate: 10,
+        zombieReload: 0.5,      //times in seconds      
+        zombieDie: 1,
+        reload: {
+            pistol: 0.5,
+            rifle: 1,
+            shotgun: 1
+        }
     },
     distances: {
         stagger: 6
     },
     damages: {
         zombie: 10,
-        pistol: 40
+        pistol: 35,
+        shotgun: 20,
+        rifle: 50
     },
     speeds: {                   //speeds in pixels/second
         player: 50,
@@ -41,30 +47,8 @@ export const sampleState = {
             },
             health: 100,
             timeToFire: 0,   //time until able to fire
-            weapon: 'pistol',
-            ammo: 10,
-            items: {
-                guns: {
-                    pistol: true,
-                    shotgun: false,
-                    rifle: false
-                },
-                gunAmmo: {
-                    pistol: 10,
-                    shotgun: 0,
-                    rifle: 0
-                }
-            }
-        },
-        2: {
-            pos: {
-                x: 200,
-                y: 100
-            },
-            health: 50,
-            timeToFire: 0,
-            weapon: 'pistol',
-            ammo: 10,
+            weapon: 'shotgun',
+            ammo: 50,
             items: {
                 guns: {
                     pistol: true,
@@ -103,13 +87,24 @@ export const sampleState = {
 
     },
     items: {
-        0.456786546:{
+        0.456785546:{
             type: 'ammo',
+            gun: 'shotgun',
             pos: { 
                 x: 50,
                 y: 50
             },
             amount: 10
+        }
+    },
+    items: {
+        0.456786546: {
+            type: 'gun',
+            gun: 'rifle',
+            pos: {
+                x: 50,
+                y: 50
+            }
         }
     }
 };
