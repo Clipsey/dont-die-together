@@ -10,6 +10,14 @@
     color: #0d9e61;
 }
 
+.game-text-submit2:hover {
+    color: #0d9e61;
+}
+
+.game-text-submit2 {
+    padding-bottom: 1vw;
+}
+
 .game-title{
     font-size: 6vw;
     color: #ff0000;

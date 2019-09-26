@@ -35,6 +35,7 @@ class GameSession extends React.Component {
     }
 
     render() {
+        debugger
         return(
             <div className="game-session-main">
                 <form onSubmit={this.handleSubmit}>
@@ -49,7 +50,7 @@ class GameSession extends React.Component {
                     </label>
                     <input className="game-text-submit" type="submit" value="Enter" />
                     <br />
-                    <Link className="game-text-submit" to="/creategame">Host your own lobby instead</Link>
+                    <Link className="game-text-submit2" to="/creategame">Host your own lobby instead</Link>
                 </form>
             </div>
         )
