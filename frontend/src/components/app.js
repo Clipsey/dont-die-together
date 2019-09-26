@@ -50,9 +50,8 @@ class App extends React.Component {
 
     if (this.sockets.length > 0) {
       this.sockets.forEach((socket, idx) => {
-        socket.off('change color');
-        socket.off('receive gameState');
-        socket.off('room change');
+        socket.off('From Client Input');
+        socket.off('From Host GameState');
         socket.disconnect();
       })
       this.sockets = [];
@@ -95,14 +94,14 @@ class App extends React.Component {
   createSocket() {
     this.isHost = true;
     this.joinSocket(this.props.currentUser.id)
-    this.forceUpdate();
+    // this.forceUpdate();
   }
   
   connectSocket(name) {
     this.isHost = false;
     const sessionId = this.props.users[name]._id
     this.joinSocket(sessionId);
-    this.forceUpdate();
+    // this.forceUpdate();
   }
 
   send() {

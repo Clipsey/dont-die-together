@@ -44,7 +44,6 @@ const io = socketIO(server);
 
 io.on('connection', socket => {
   console.log('User connected');
-  // console.log(socket.handshake.query.room);
 
   socket.room = socket.handshake.query.room;
   socket.join(socket.room);
@@ -65,13 +64,6 @@ io.on('connection', socket => {
     console.log(GameState);
     socket.to(socket.room).emit('From Host GameState', GameState);
   })
-
-  socket.on('receive gameState', (GameState) => {
-    socket.to(socket.room).emit('receive gameState', GameState);
-  })
-
-  // socket.to(socket.room).emit('receive gameState', receivedState);
-
 
   socket.on('disconnect', () => {
     console.log('user disconnected');
