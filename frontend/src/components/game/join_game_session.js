@@ -1,5 +1,6 @@
 import React from 'react';
 import {withRouter} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import '../../style/stylesheets/reset.css';
 import '../../style/stylesheets/app.css';
 import '../../style/stylesheets/game_session.css';
@@ -38,17 +39,17 @@ class GameSession extends React.Component {
             <div className="game-session-main">
                 <form onSubmit={this.handleSubmit}>
                     <label>
+                        {/* <br /> */}
+                        <div className="game-title">Join a session</div>
+                        {/* <br /> */}
+                        Enter the username of the session you want to join:
                         <br />
-                        Join a session
-                        <br />
-                        Enter the email of the session you want to join:
-                        <br />
-                        <input type="text" value={this.state.value} onChange={this.handleChange} />
+                        <input className="game-text-input" type="text" value={this.state.value} onChange={this.handleChange} />
                         <br />
                     </label>
-                    <input type="submit" value="Enter" />
+                    <input className="game-text-submit" type="submit" value="Enter" />
                     <br />
-                    Host your own lobby instead
+                    <Link className="game-text-submit" to="/creategame">Host your own lobby instead</Link>
                 </form>
             </div>
         )

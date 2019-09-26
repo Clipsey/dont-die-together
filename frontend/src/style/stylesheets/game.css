@@ -1,6 +1,11 @@
-.game-box {
+/* .game-box {
     width: 800px;
     height: 600px;
     background-color: pink;
     display: inline-block;
+} */
+
+canvas {
+    margin-top: 2vw;
+    margin-bottom: 2vw;
 }

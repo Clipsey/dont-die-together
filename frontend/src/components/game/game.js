@@ -3,6 +3,9 @@ import React from 'react';
 import InputManager from './input_manager';
 import Welcome from './welcome';
 import GameModel from './logic/game_model';
+import '../../style/stylesheets/reset.css';
+import '../../style/stylesheets/app.css';
+import '../../style/stylesheets/game.css';
 import * as DisplayConfig from './display_config';
 import Display from './display';
 
@@ -33,6 +36,10 @@ class Game extends React.Component {
         this.lastTime = Date.now();
         this.gameState = DisplayConfig.initialState;
         this.status = '';
+    }
+
+    SOCKET_GetGameState() {
+        return this.gameState;
     }
 
     componentDidMount() {
@@ -79,6 +86,7 @@ class Game extends React.Component {
         }
         this.lastTime = now;
         requestAnimationFrame(() => this.mainLoop());
+        this.props.send(this.gameState);
     }
 
     render() {
