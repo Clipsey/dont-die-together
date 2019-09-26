@@ -8,6 +8,8 @@ export default class GameModel {
         this.gameState = initialState;
         this.speeds = gameConfig.speeds;
         this.sizes = gameConfig.sizes;
+        this.generateZombieTime = 0;
+        this.generateItemTime = 0;
     }
 
     update(inputs, dt) { 
@@ -19,7 +21,61 @@ export default class GameModel {
         return this.gameState;
     }
 
+    generateItem(dt) {
+        let x = Math.random()*gameConfig.gameBounds.x;
+        let y = Math.random()*gameConfig.gameBounds.y;
+        let newItem = {
+            type: 'ammo',
+            health: 'AMMO',
+            pos: {},
+            amount: 10
+        }
+        newItem.pos.x = x;
+        newItem.pos.y = y;
+        this.gameState.items[Math.random()] = newItem; 
+    }
+
+    generateZombie() {
+        let x = Math.random()*gameConfig.gameBounds.x;
+        let y = Math.random()*gameConfig.gameBounds.y;
+        if(Math.random() < 0.5){
+            x = (Math.random() < 0.5 ? 0 : gameConfig.gameBounds.x);
+        }
+        else {
+            y = (Math.random() < 0.5 ? 0 : gameConfig.gameBounds.y);
+        }
+        let newZombie = {
+            type: 'zombie',
+            pos: {},
+            health: 100,
+            timeToAttack: 0
+        }
+        newZombie.pos.x = x;
+        newZombie.pos.y = y;
+        this.gameState.enemies[Math.random()] = newZombie;
+    }
+
     updateTimes(dt) {
+        if (this.generateItemTime === 0) {
+            this.generateItem();
+            this.generateItemTime = gameConfig.times.itemGenerate;
+        }
+        else {
+            this.generateItemTime -= dt;
+            if (this.generateItemTime < 0) {
+                this.generateItemTime = 0;
+            }
+        }
+        if (this.generateZombieTime === 0){
+            this.generateZombie();
+            this.generateZombieTime = gameConfig.times.zombieGenerate;
+        }
+        else {
+            this.generateZombieTime -= dt;
+            if (this.generateZombieTime < 0){
+                this.generateZombieTime = 0;
+            }
+        }
         Object.values(this.gameState.players).forEach( (player) => {
             player.timeToFire -= dt;
             if (player.timeToFire < 0){
@@ -32,6 +88,12 @@ export default class GameModel {
                 enemy.timeToDie -= dt;
                 if (enemy.timeToDie < 0) {
                     delete this.gameState.enemies[enemyId];
+                }
+            }
+            if (enemy.timeToAttack > 0){
+                enemy.timeToAttack -= dt;
+                if (enemy.timeToAttack < 0){
+                    enemy.timeToAttack = 0;
                 }
             }
         });
@@ -103,12 +165,14 @@ export default class GameModel {
                 newBullet.vel.x = unitVector[0]*speed;
                 newBullet.vel.y = unitVector[1]*speed;
                 this.gameState.bullets[Math.random()] = newBullet; 
+                player.ammo -= 1;
+                console.log('ammo left: ' + player.ammo);
             } 
         });
     }
 
     playerCanFire(player) {
-        return (player.timeToFire === 0);
+        return (player.timeToFire === 0 && player.ammo > 0);
     }
 
     moveEnemies(dt) {
@@ -117,12 +181,14 @@ export default class GameModel {
                 let enemyPos = enemy.pos;
                 let targetPos = null;
                 let closestDistance = null;
+                let victim = null;
                 Object.values(this.gameState.players).forEach( (player) => {
                     let playerPos = player.pos;
                     let dx = playerPos.x - enemyPos.x;
                     let dy = playerPos.y - enemyPos.y;
                     let thisDistance = Math.sqrt(dx*dx + dy*dy);
                     if (closestDistance === null || thisDistance < closestDistance) {
+                        victim = player;
                         closestDistance = thisDistance;
                         targetPos = playerPos;
                     }
@@ -142,10 +208,17 @@ export default class GameModel {
                     unitVector[1]*dist
                 ];
                 let enemySize = this.sizes[enemy.type];
-                if (closestDistance > enemySize + this.sizes.player && 
-                    !willCollideWithEnemy(enemy, moveVector, this.gameState, this.sizes)){
-                    enemy.pos.x = enemy.pos.x + moveVector[0];
-                    enemy.pos.y = enemy.pos.y + moveVector[1];
+                if (closestDistance > enemySize + this.sizes.player) { 
+                    if (!willCollideWithEnemy(enemy, moveVector, this.gameState, this.sizes)){
+                        enemy.pos.x = enemy.pos.x + moveVector[0];
+                        enemy.pos.y = enemy.pos.y + moveVector[1];
+                    }
+                }
+                else {
+                    if (enemy.timeToAttack === 0){
+                        victim.health -= gameConfig.damages[enemy.type];
+                        enemy.timeToAttack = gameConfig.times.zombieReload;
+                    }
                 }
             }
         });
@@ -180,21 +253,36 @@ export default class GameModel {
         //     this.gameState.players[parseInt(player)].pos.y += moveVector[1];
         // });
 
-        Object.keys(this.gameState.players).forEach((player) => {
+        Object.keys(this.gameState.players).forEach((playerId) => {
+            let player = this.gameState.players[playerId];
             let moveVector = [0, 0];
-            let playerInputs = inputs[parseInt(player)];
+            let playerInputs = inputs[parseInt(playerId)];
             if (playerInputs.up) {
-                this.gameState.players[parseInt(player)].pos.y -= dist;
+                player.pos.y -= dist;
             }
             if (playerInputs.down) {
-                this.gameState.players[parseInt(player)].pos.y += dist;
+                player.pos.y += dist;
             }
             if (playerInputs.right) {
-                this.gameState.players[parseInt(player)].pos.x += dist;
+                player.pos.x += dist;
             }
             if (playerInputs.left) {
-                this.gameState.players[parseInt(player)].pos.x -= dist;
+                player.pos.x -= dist;
             }
+            
+            Object.keys(this.gameState.items).forEach( (itemId) => {
+                let item = this.gameState.items[itemId];
+                if (item.type !== 'ammo'){
+                    return;
+                }
+                let itemPos = [item.pos.x, item.pos.y];
+                let playerPos = [player.pos.x, player.pos.y];
+                let dist = findDistance(itemPos, playerPos);
+                if (dist < 20){
+                    player.ammo += item.amount;
+                    delete this.gameState.items[itemId];
+                }
+            });
         });
     }
 }
