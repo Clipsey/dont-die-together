@@ -39,9 +39,9 @@ class GameSession extends React.Component {
             <div className="game-session-main">
                 <form onSubmit={this.handleSubmit}>
                     <label>
-                        <br />
+                        {/* <br /> */}
                         <div className="game-title">Join a session</div>
-                        <br />
+                        {/* <br /> */}
                         Enter the username of the session you want to join:
                         <br />
                         <input className="game-text-input" type="text" value={this.state.value} onChange={this.handleChange} />

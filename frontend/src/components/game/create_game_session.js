@@ -1,5 +1,5 @@
 import React from 'react';
-import {withRouter} from 'react-router-dom';
+import {withRouter, Link} from 'react-router-dom';
 import '../../style/stylesheets/reset.css';
 import '../../style/stylesheets/app.css';
 import '../../style/stylesheets/game_session.css';
@@ -26,16 +26,16 @@ class GameSession extends React.Component {
             <div className="game-session-main">
                 <form onSubmit={this.handleSubmit}>
                     <label>
-                        <br />
-                        Your session ID is:
-                        <br />
-                        23
+                        {/* <br /> */}
+                        <div className="game-text-text">Your username/session name is:</div>
+                        {/* <br /> */}
+                        <div className="game-text-text2">{`this.props.username`}</div>
                         {/* <input type="text" value={this.state.value} onChange={this.handleChange} /> */}
-                        <br />
                     </label>
-                    <input type="submit" value="Enter Lobby" />
                     <br />
-                    Join a different lobby instead
+                    <input className="game-text-submit" type="submit" value="Enter Your Lobby" />
+                    <br />
+                    <Link className="game-text-submit" to="/joingame">Join someone else's lobby instead</Link>
                 </form>
             </div>
         )

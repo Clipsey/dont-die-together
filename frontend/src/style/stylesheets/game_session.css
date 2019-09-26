@@ -11,6 +11,19 @@
 }
 
 .game-title{
-    font-size: 5vw;
+    font-size: 6vw;
     color: #ff0000;
+    padding-top: 1vw;
+    padding-bottom: 1vw;
+}
+
+.game-text-text {
+    color: #ff0000;
+    font-size: 6vw;
+    padding-bottom: 1vw;
+    padding-top: 1vw;
+}
+
+.game-text-spacing {
+    padding-top: 1vw;
 }
