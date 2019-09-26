@@ -4,13 +4,14 @@ const gameConfig = {
         y: 600
     },
     times: {
-        itemGenerate: 6,
+        itemGenerate: 20,
         zombieGenerate: 10,
         zombieReload: 0.5,      //times in seconds      
         zombieDie: 1,
+        switchGuns: 0.25,
         reload: {
             pistol: 0.5,
-            rifle: 1,
+            rifle: 2,
             shotgun: 1
         }
     },
@@ -21,7 +22,7 @@ const gameConfig = {
         zombie: 10,
         pistol: 35,
         shotgun: 20,
-        rifle: 50
+        rifle: 100
     },
     speeds: {                   //speeds in pixels/second
         player: 50,
@@ -47,18 +48,19 @@ export const sampleState = {
             },
             health: 100,
             timeToFire: 0,   //time until able to fire
+            timeToSwitch: 0,
             weapon: 'shotgun',
-            ammo: 50,
+            ammo: 10,
             items: {
                 guns: {
                     pistol: true,
-                    shotgun: false,
-                    rifle: false
+                    shotgun: true,
+                    rifle: true
                 },
                 gunAmmo: {
                     pistol: 10,
-                    shotgun: 0,
-                    rifle: 0
+                    shotgun: 10,
+                    rifle: 10
                 }
             }
         }

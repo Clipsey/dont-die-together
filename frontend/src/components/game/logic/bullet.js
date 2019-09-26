@@ -57,7 +57,7 @@ export const fireBullets = (player, playerInputs, gameState, times, speeds) => {
             gameState.bullets[generateId()] = newBullet;
         }
         player.ammo -= 1;
-        console.log(player.items.guns);
+        player.items.gunAmmo[player.weapon] -= 1;
     }
 };
 

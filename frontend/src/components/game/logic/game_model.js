@@ -10,16 +10,13 @@ import {
 } from './model_helper';
 import {
     movePlayer,
-    pickUpItems
+    pickUpItems,
+    switchGuns
 } from './player';
 import {
     fireBullets,
     moveBullet
 } from './bullet';
-import { 
-    vectorMag, 
-    findDistance 
-} from './vector_util';
 
 export default class GameModel {
     constructor(initialState = sampleState) {
@@ -41,6 +38,7 @@ export default class GameModel {
         this.moveEnemies(dt);
         this.moveBullets(dt);
         this.fireBullets(inputs);
+        this.switchGuns(inputs);
         return this.gameState;
     }
 
@@ -49,6 +47,7 @@ export default class GameModel {
         let y = Math.random()*gameConfig.gameBounds.y;
         let newItem = {
             type: 'ammo',
+            gun: 'shotgun',
             pos: {},
             amount: 10
         }
@@ -77,7 +76,7 @@ export default class GameModel {
         this.gameState.enemies[generateId()] = newZombie;
     }
 
-    updateTimes(dt) {
+    updateTimes(dt) { 
         if (this.generateItemTime === 0) {
             this.generateItem();
             this.generateItemTime = gameConfig.times.itemGenerate;
@@ -103,6 +102,10 @@ export default class GameModel {
             if (player.timeToFire < 0){
                 player.timeToFire = 0;
             }
+            player.timeToSwitch -= dt;
+            if (player.timeToSwitch < 0){
+                player.timeToSwitch = 0;
+            }
         });
         Object.keys(this.gameState.enemies).forEach( (enemyId) => {
             let enemy = this.gameState.enemies[enemyId];
@@ -127,6 +130,14 @@ export default class GameModel {
             moveBullet(bullet, bulletId, dt, this.gameState, 
                 this.sizes, this.times, this.distances, this.damages, 
                 this.maxX, this.maxY);
+        });
+    }
+
+    switchGuns(inputs) {
+        Object.keys(this.gameState.players).forEach((playerId) => {
+            let player = this.gameState.players[parseInt(playerId)];
+            let playerInputs = inputs[parseInt(playerId)];
+            switchGuns(player, playerInputs, this.times);
         });
     }
 

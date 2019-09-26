@@ -25,8 +25,19 @@ export const movePlayer = (player, playerInputs, gameState, sizes, dist) => {
     }
 };
 
-export const switchGuns = (player, playerInputs) => {
-    
+export const switchGuns = (player, playerInputs, times) => {
+    if (playerInputs.up && playerInputs.right) { ////////************CHANGE FOR SWITCH INPUT */
+        if (player.timeToSwitch === 0) {
+            let availableGuns = Object.keys(player.items.guns).filter( (key) => {
+                return player.items.guns[key];
+            });
+            let newGunIdx = (availableGuns.indexOf(player.weapon) + 1) % availableGuns.length;
+            player.weapon = availableGuns[newGunIdx];
+            player.ammo = player.items.gunAmmo[player.weapon];
+            player.timeToSwitch = times.switchGuns;
+            console.log('switching to ' + availableGuns[newGunIdx]);
+        }
+    }
 };
 
 export const receiveItem = (player, item) => {
