@@ -1,7 +1,16 @@
 import gameConfig from './config';
 import { sampleState } from './config';
-import { willCollideWithEnemy } from './model_helper';
-import { vectorMag, findDistance } from './vector_util';
+import { 
+    willCollideWithEnemy,
+    generateId
+} from './model_helper';
+import {
+    movePlayer
+} from './player';
+import { 
+    vectorMag, 
+    findDistance 
+} from './vector_util';
 
 export default class GameModel {
     constructor(initialState = sampleState) {
@@ -26,13 +35,12 @@ export default class GameModel {
         let y = Math.random()*gameConfig.gameBounds.y;
         let newItem = {
             type: 'ammo',
-            health: 'AMMO',
             pos: {},
             amount: 10
         }
         newItem.pos.x = x;
         newItem.pos.y = y;
-        this.gameState.items[Math.random()] = newItem; 
+        this.gameState.items[generateId()] = newItem; 
     }
 
     generateZombie() {
@@ -52,7 +60,7 @@ export default class GameModel {
         }
         newZombie.pos.x = x;
         newZombie.pos.y = y;
-        this.gameState.enemies[Math.random()] = newZombie;
+        this.gameState.enemies[generateId()] = newZombie;
     }
 
     updateTimes(dt) {
@@ -164,7 +172,7 @@ export default class GameModel {
                 newBullet.pos.y = player.pos.y;
                 newBullet.vel.x = unitVector[0]*speed;
                 newBullet.vel.y = unitVector[1]*speed;
-                this.gameState.bullets[Math.random()] = newBullet; 
+                this.gameState.bullets[generateId()] = newBullet; 
                 player.ammo -= 1;
                 console.log('ammo left: ' + player.ammo);
             } 
@@ -226,49 +234,10 @@ export default class GameModel {
 
     movePlayers(inputs, dt) {
         let dist = dt*this.speeds.player;
-        // Object.keys(this.gameState.players).forEach( (player) => {
-        //     let keyVector = [0, 0];
-        //     let playerInputs = inputs[parseInt(player)];
-        //     if (playerInputs.up) {
-        //         keyVector[1] -= 1;
-        //     }
-        //     if (playerInputs.down) {
-        //         keyVector[1] += 1;
-        //     }
-        //     if (playerInputs.right) {
-        //         keyVector[0] += 1;
-        //     }
-        //     if (playerInputs.left) {
-        //         keyVector[0] -= 1;
-        //     }
-        //     let dx = keyVector[0];
-        //     let dy = keyVector[1];
-        //     let mag = Math.sqrt(dx*dx + dy*dy);
-        //     let unitVector = [
-        //         keyVector[0]/mag,
-        //         keyVector[1]/mag
-        //     ];
-        //     let moveVector = [unitVector[0]*dist, unitVector[1]*dist];
-        //     this.gameState.players[parseInt(player)].pos.x += moveVector[0];
-        //     this.gameState.players[parseInt(player)].pos.y += moveVector[1];
-        // });
-
         Object.keys(this.gameState.players).forEach((playerId) => {
             let player = this.gameState.players[playerId];
-            let moveVector = [0, 0];
             let playerInputs = inputs[parseInt(playerId)];
-            if (playerInputs.up) {
-                player.pos.y -= dist;
-            }
-            if (playerInputs.down) {
-                player.pos.y += dist;
-            }
-            if (playerInputs.right) {
-                player.pos.x += dist;
-            }
-            if (playerInputs.left) {
-                player.pos.x -= dist;
-            }
+            movePlayer(player, playerInputs, dist);
             
             Object.keys(this.gameState.items).forEach( (itemId) => {
                 let item = this.gameState.items[itemId];
@@ -278,7 +247,7 @@ export default class GameModel {
                 let itemPos = [item.pos.x, item.pos.y];
                 let playerPos = [player.pos.x, player.pos.y];
                 let dist = findDistance(itemPos, playerPos);
-                if (dist < 20){
+                if (dist < this.sizes.item + this.sizes.player){
                     player.ammo += item.amount;
                     delete this.gameState.items[itemId];
                 }

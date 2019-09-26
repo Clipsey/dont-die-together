@@ -23,6 +23,7 @@ const gameConfig = {
         zombie: 30
     },
     sizes: {
+        item: 5,
         player: 10,
         zombie: 12,
         bullets: 2
@@ -41,7 +42,19 @@ export const sampleState = {
             health: 100,
             timeToFire: 0,   //time until able to fire
             weapon: 'pistol',
-            ammo: 10
+            ammo: 10,
+            items: {
+                guns: {
+                    pistol: true,
+                    shotgun: false,
+                    rifle: false
+                },
+                gunAmmo: {
+                    pistol: 10,
+                    shotgun: 0,
+                    rifle: 0
+                }
+            }
         },
         2: {
             pos: {
@@ -51,7 +64,19 @@ export const sampleState = {
             health: 50,
             timeToFire: 0,
             weapon: 'pistol',
-            ammo: 10
+            ammo: 10,
+            items: {
+                guns: {
+                    pistol: true,
+                    shotgun: false,
+                    rifle: false
+                },
+                gunAmmo: {
+                    pistol: 10,
+                    shotgun: 0,
+                    rifle: 0
+                }
+            }
         }
     },
     enemies: {
@@ -78,7 +103,14 @@ export const sampleState = {
 
     },
     items: {
-
+        0.456786546:{
+            type: 'ammo',
+            pos: { 
+                x: 50,
+                y: 50
+            },
+            amount: 10
+        }
     }
 };
 

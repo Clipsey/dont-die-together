@@ -25,3 +25,7 @@ export const willCollideWithEnemy = (person, moveVector, gameState, sizes) => {
     });
     return answer;
 }
+
+export const generateId = () => {
+    return Math.random();
+}
