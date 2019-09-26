@@ -32,8 +32,7 @@ export default class GameModel {
         }
         newItem.pos.x = x;
         newItem.pos.y = y;
-        this.gameState.enemies[Math.random()] = newItem;        //CHANGE WHEN ITEMS RENDERED
-        //this.gameState.items[Math.random()] = newItem; 
+        this.gameState.items[Math.random()] = newItem; 
     }
 
     generateZombie() {
@@ -270,9 +269,9 @@ export default class GameModel {
             if (playerInputs.left) {
                 player.pos.x -= dist;
             }
-            ///// CHANGE WHEN ITEMS RENDERED!!!!!
-            Object.keys(this.gameState.enemies).forEach( (itemId) => {
-                let item = this.gameState.enemies[itemId];
+            
+            Object.keys(this.gameState.items).forEach( (itemId) => {
+                let item = this.gameState.items[itemId];
                 if (item.type !== 'ammo'){
                     return;
                 }
@@ -281,7 +280,7 @@ export default class GameModel {
                 let dist = findDistance(itemPos, playerPos);
                 if (dist < 20){
                     player.ammo += item.amount;
-                    delete this.gameState.enemies[itemId];
+                    delete this.gameState.items[itemId];
                 }
             });
         });
