@@ -85,7 +85,8 @@ class Display {
         this.ctx.save();
 
         this.ctx.fillFont = 'bold 10px serif';
-        this.ctx.strokeText(`Health: ${player.health}`, player.pos.x - 10, player.pos.y-15);
+        this.ctx.strokeText(`Health: ${player.health}`, player.pos.x - 10, player.pos.y-22);
+        this.ctx.strokeText(`Ammo: ${player.ammo}`, player.pos.x - 10, player.pos.y-12);
 
         this.ctx.strokeStyle = '#234c70';
         this.ctx.fillStyle = '#234c70';

@@ -32,7 +32,7 @@ class Game extends React.Component {
         };
         this.lastTime = Date.now();
         this.gameState = DisplayConfig.initialState;
-        this.status = ''
+        this.status = '';
     }
 
     componentDidMount() {
