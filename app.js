@@ -58,10 +58,15 @@ io.on('connection', socket => {
   })
 
   socket.on('From Client Input', (Input) => {
-    socket.to(socket.room).emit('From Client Input', receivedState);
+    socket.to(socket.room).emit('From Client Input', Input);
   })
-  socket.on('Fron Host GameState', (GameState) => {
-    socket.to(socket.room).emit('From Host GameState', receivedState);
+  socket.on('From Host GameState', (GameState) => {
+    console.log(GameState);
+    socket.to(socket.room).emit('From Host GameState', GameState);
+  })
+
+  socket.on('receive gameState', (GameState) => {
+    socket.to(socket.room).emit('receive gameState', GameState);
   })
 
   // socket.to(socket.room).emit('receive gameState', receivedState);

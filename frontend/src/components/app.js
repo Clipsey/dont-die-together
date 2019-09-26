@@ -1,6 +1,6 @@
 import React from 'react';
 import { AuthRoute, ProtectedRoute } from '../util/route_util';
-import { Switch, Link } from 'react-router-dom';
+import { Switch, Link, Route } from 'react-router-dom';
 import NavBarContainer from './nav/navbar_container';
 import TweetsContainer from './tweets/tweets_container';
 import MainPage from './main/main_page';
@@ -9,6 +9,7 @@ import SignupFormContainer from './session/signup_form_container';
 import ProfileContainer from './profile/profile_container';
 import TweetComposeContainer from './tweets/tweet_compose_container';
 import Game from './game/game';
+import GameClient from './game/game_client';
 import Modal from './modal/modal';
 import JoinGameSessionContainer from './game/join_game_session_container'
 import CreateGameSessionContainer from './game/create_game_session.js'
@@ -32,11 +33,11 @@ class App extends React.Component {
       sockets: {}
     }
     this.send = this.send.bind(this);
-    this.setColor = this.setColor.bind(this);
     this.setHealth = this.setHealth.bind(this);
     this.getState = props.getState;
 
     this.sockets = [];
+    this.host = null;
 
     this.createSocket = this.createSocket.bind(this);
     this.connectSocket = this.connectSocket.bind(this);
@@ -44,7 +45,6 @@ class App extends React.Component {
   }
 
   joinSocket(room) {
-
     this.room = room;
 
     if (this.sockets.length > 0) {
@@ -65,55 +65,24 @@ class App extends React.Component {
     }
     this.sockets.push(socket);
 
-    // if (isHost) {
-    //   socket.on('From Client Input', (receivedInput) => {
-    //     // 
-    //   });
-    // } else {
-    //   socket.on('From Host GameState', (receivedGameState) => {
-    //     console.log(receivedGameState);
-    //   });
-    //   // socket.on('change color', (col) => {
-    //   //   document.body.style.backgroundColor = col;
-    //   // });
-    //   // socket.on('receive gameState', (receivedState) => {
-    //   //   console.log(this.room);
-    //   //   this.setState({ gameState: receivedState })
-    //   // });
-    //   // socket.on('room change', (newRoom) => {
-    //   //   console.log(newRoom);
-    //   // });
-    // }
 
     if (this.isHost) {
-      // socket.on('From Client Input', (receivedInput) => {
-      //   // 
-      // });
-      socket.on('receive gameState', (receivedState) => {
-        console.log(this.room);
-        this.setState({ gameState: receivedState })
+      socket.on('From Client Input', (receivedInput) => {
+        this.setState({ gameState: receivedInput })
       });
     } else {
-      // socket.on('From Host GameState', (receivedGameState) => {
-      //   console.log(receivedGameState);
-      // });
-      // socket.on('change color', (col) => {
-      //   document.body.style.backgroundColor = col;
-      // });
-      socket.on('receive gameState', (receivedState) => {
-        console.log(this.room);
-        this.setState({ gameState: receivedState })
+      socket.on('From Host GameState', (receivedGameState) => {
+        this.setState({ gameState: receivedGameState })
       });
-      // socket.on('room change', (newRoom) => {
-      //   console.log(newRoom);
-      // });
     }
+
 
     if (process.env.NODE_ENV === 'development') {
       socket = socketIOClient('localhost:5000', { query: { room: this.room } });
     } else {
       socket = socketIOClient(window.location, { query: { room: this.room } });
     }
+
 
     this.sockets.push(socket);
     this.emit = emitSetup(socket);
@@ -122,26 +91,23 @@ class App extends React.Component {
   
   createSocket() {
     this.isHost = true;
-    this.joinSocket(this.getState().session.user.id, true);
+    this.joinSocket(this.getState().session.user.id);
   }
   
   connectSocket(name) {
     this.isHost = false;
     const sessionId = this.getState().users.users[name]._id;
-    this.joinSocket(sessionId, false);
+    this.joinSocket(sessionId);
   }
 
   send() {
-    // this.emit('change color', this.state.color);
-    // if (this.isHost) {
-    //   this.emit('From Host GameState', this.state.gameState);
-    // } else {
-    //   this.emit('From Client Input', this.state.gameState);
-    // }
-  }
-
-  setColor(color) {
-    return () => this.setState({ color })
+    this.child.testMethod();
+    // this.child.testMethod();
+    if (this.isHost) {
+      this.emit('From Host GameState', this.state.gameState);
+    } else {
+      this.emit('From Client Input', this.state.gameState);
+    }
   }
 
   setHealth(health) {
@@ -153,6 +119,7 @@ class App extends React.Component {
   }
 
   render() {
+    const loggedIn = this.getState().session.isAuthenticated;
     return (
       <div className="app">
         {/* { this.props.loggedIn &&  */}
@@ -180,7 +147,10 @@ class App extends React.Component {
           <ProtectedRoute exact path="/joingame" createSocket={this.createSocket} connectSocket={this.connectSocket} component={JoinGameSessionContainer} />} />
           <ProtectedRoute exact path="/creategame" createSocket={this.createSocket} connectSocket={this.connectSocket} component={CreateGameSessionContainer} />
 
-          { this.isHost && <ProtectedRoute exact path="/game" on={this.on} emit={this.emit} component={Game} /> }
+          {this.isHost && loggedIn && <Route path='/game' render={(props) => <Game ref={Ref => this.child = Ref} />} /> } 
+          {/* <ProtectedRoute exact path="/game"  on={this.on} emit={this.emit} component={Game} /> } */}
+          {!this.isHost && loggedIn && <Route path='/game' render={(props) => <Game ref={Ref => this.child = Ref} />} /> }
+          {/* <ProtectedRoute exact path="/game" ref={Ref => this.child=Ref} on={this.on} emit={this.emit} component={Game} /> } */}
 
           {/* <ProtectedRoute exact path="/tweets" component={TweetsContainer} /> */}
           {/* <ProtectedRoute exact path="/profile" component={ProfileContainer} /> */}

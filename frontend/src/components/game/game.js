@@ -34,6 +34,11 @@ class Game extends React.Component {
         this.frames = 0;
         this.fps = 0;
         this.gameState = DisplayConfig.initialState;
+        this.testMethod = this.testMethod.bind(this);
+    }
+
+    testMethod() {
+        console.log('testMethod');
     }
 
     componentDidMount() {

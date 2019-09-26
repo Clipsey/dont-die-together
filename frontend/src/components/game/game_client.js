@@ -3,7 +3,7 @@ import * as DisplayConfig from './display_config';
 import * as DisplayUtil from './display_util';
 import InputManager from './input_manager';
 
-class GameClient {
+class GameClient extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -18,6 +18,10 @@ class GameClient {
         this.on = props.on;
         this.emit = props.emit;
         this.gameState = DisplayConfig.initialState;
+    }
+
+    testMethod() {
+        console.log('testMethod');
     }
 
     componentDidMount() {
@@ -74,3 +78,5 @@ class GameClient {
         )
     }
 }
+
+export default GameClient;
