@@ -18,35 +18,9 @@ class Display {
         this.displayPlayers(gameState);
         this.displayEnemies(gameState);
         this.displayBullets(gameState);
+        this.displayItems(gameState);
         if (this.mode === 'development') {
             this.displayFPS(dt);
-        }
-    }
-
-    displayBullets(gameState) {
-        let bullets = Object.values(gameState.bullets);
-        for (let i = 0; i < bullets.length; i++) {
-            this.displayBullet(bullets[i], this.ctx);
-        }
-    }
-
-    displayEnemies(gameState) {
-        let enemies = Object.values(gameState.enemies);
-        for (let i = 0; i < enemies.length; i++) {
-            this.displayEnemy(enemies[i], this.ctx);
-        }
-    }
-
-    displayFPS (dt) {
-        let fps = (1/dt).toFixed(1);   
-        this.ctx.fillFont = 'bold 10px serif';
-        this.ctx.strokeText(`FPS: ${fps}`, 20, 20);
-    }
-
-    displayPlayers(gameState) {
-        let players = Object.values(gameState.players);
-        for (let i = 0; i < players.length; i++) {
-            this.displayPlayer(players[i], this.ctx);
         }
     }
 
@@ -60,6 +34,51 @@ class Display {
         this.ctx.arc(0, 0, gameConfig.sizes.bullets, 0, 2 * Math.PI);
         this.ctx.stroke();
         this.ctx.restore();
+    }
+
+    displayBullets(gameState) {
+        let bullets = Object.values(gameState.bullets);
+        for (let i = 0; i < bullets.length; i++) {
+            this.displayBullet(bullets[i], this.ctx);
+        }
+    }
+
+    displayEnemies(gameState) {
+        let enemies = Object.values(gameState.enemies);
+        for (let i = 0; i < enemies.length; i++) {
+            this.displayEnemy(enemies[i]);
+        }
+    }
+
+    displayFPS(dt) {
+        let fps = (1/dt).toFixed(1);   
+        this.ctx.fillFont = 'bold 10px serif';
+        this.ctx.strokeText(`FPS: ${fps}`, 20, 20);
+    }
+
+    displayItem(item) {
+        this.ctx.save();
+        this.ctx.beginPath();
+        this.ctx.lineWidth = "6";
+        this.ctx.strokeStyle = "red";
+        this.ctx.rect(item.pos.x - 2.5, item.pos.y - 2.5, 5, 5)
+        this.ctx.stroke();
+        this.ctx.restore();
+
+    }
+
+    displayItems(gameState) {
+        const items = Object.values(gameState.items);
+        for (let i = 0; i < items.length; i++) {
+            this.displayItem(items[i]);
+        }
+    }
+
+    displayPlayers(gameState) {
+        let players = Object.values(gameState.players);
+        for (let i = 0; i < players.length; i++) {
+            this.displayPlayer(players[i]);
+        }
     }
     
     displayPlayer (player) {
