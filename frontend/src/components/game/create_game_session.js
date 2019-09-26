@@ -23,6 +23,7 @@ class GameSession extends React.Component {
     }
 
     render() {
+        // debugger
         return(
             <div className="game-session-main">
                 <form onSubmit={this.handleSubmit}>
@@ -30,10 +31,10 @@ class GameSession extends React.Component {
                         {/* <br /> */}
                         <div className="game-text-text">Your username/session name is:</div>
                         {/* <br /> */}
-                        <div className="game-text-text2">{`this.props.username`}</div>
+                        <div className="game-text-text2">{this.props.state.session.user.name}</div>
                         {/* <input type="text" value={this.state.value} onChange={this.handleChange} /> */}
                     </label>
-                    <br />
+                    {/* <br /> */}
                     <input className="game-text-submit" type="submit" value="Enter Your Lobby" />
                     <br />
                     <Link className="game-text-submit" to="/joingame">Join someone else's lobby instead</Link>

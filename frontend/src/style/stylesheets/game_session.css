@@ -27,3 +27,52 @@
 .game-text-spacing {
     padding-top: 1vw;
 }
+
+.game-text-text2 {
+    font-size: 6vw;
+    padding-bottom: 2vw;
+}
+
+.game-text-text2 {
+    -webkit-animation: color-change2 30s infinite;
+    -moz-animation: color-change2 30s infinite;
+    -o-animation: color-change2 30s infinite;
+    -ms-animation: color-change2 30s infinite;
+    animation: color-change2 30s infinite;
+}
+
+@-webkit-keyframes color-change2 {
+    0% { color: #ff0000; }
+    25% { color: #de1645; }
+    50% { color: #ffffff; }
+    75% { color: #de1645; }
+    100% {color: #ff0000; }
+}
+@-moz-keyframes color-change2 {
+    0% { color: #ff0000; }
+    25% { color: #de1645; }
+    50% { color: #ffffff; }
+    75% { color: #de1645; }
+    100% {color: #ff0000; }
+}
+@-ms-keyframes color-change2 {
+    0% { color: #ff0000; }
+    25% { color: #de1645; }
+    50% { color: #ffffff; }
+    75% { color: #de1645; }
+    100% {color: #ff0000; }
+}
+@-o-keyframes color-change2 {
+    0% { color: #ff0000; }
+    25% { color: #de1645; }
+    50% { color: #ffffff; }
+    75% { color: #de1645; }
+    100% {color: #ff0000; }
+}
+@keyframes color-change2 {
+    0% { color: #ff0000; }
+    25% { color: #de1645; }
+    50% { color: #ffffff; }
+    75% { color: #de1645; }
+    100% {color: #ff0000; }    
+}
