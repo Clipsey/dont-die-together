@@ -35,7 +35,8 @@ class GameSession extends React.Component {
                         {/* <input type="text" value={this.state.value} onChange={this.handleChange} /> */}
                     </label>
                     {/* <br /> */}
-                    <input className="game-text-submit" type="submit" value="Enter Your Lobby" />
+                    {/* <input className="game-text-submit" type="submit" to="/game" value="Enter Your Lobby" /> */}
+                    <Link className="game-text-submit" to="/game">Enter Your Lobby</Link>
                     <br />
                     <Link className="game-text-submit" to="/joingame">Join someone else's lobby instead</Link>
                 </form>
