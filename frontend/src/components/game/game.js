@@ -36,10 +36,11 @@ class Game extends React.Component {
         this.lastTime = Date.now();
         this.gameState = DisplayConfig.initialState;
         this.status = '';
+        this.otherInputs = nullKeys;
     }
 
-    SOCKET_GetGameState() {
-        return this.gameState;
+    SOCKET_ReceiveInputs(inputs) {
+        this.otherInputs = inputs;
     }
 
     componentDidMount() {
@@ -73,7 +74,7 @@ class Game extends React.Component {
 
         const inputCollection = {
             1: hostKeys,
-            2: nullKeys,
+            2: this.otherInputs,
         };
 
         if (this.state.gameMode === GameMode.StartScreen && hostKeys.enter) {

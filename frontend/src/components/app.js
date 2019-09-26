@@ -68,15 +68,14 @@ class App extends React.Component {
 
     if (this.isHost) {
       socket.on('From Client Input', (receivedInput) => {
-        console.log('From Client Input');
-        this.setState({ gameState: receivedInput })
+        console.log(`From Client Input`);
+        console.log(receivedInput);
+        this.child.SOCKET_ReceiveInputs(receivedInput);
+        // this.setState({ gameState: receivedInput })
       });
     } else {
       console.log('attached to from host game state')
       socket.on('From Host GameState', (receivedGameState) => {
-        console.log('From Host GameState');
-        console.log(receivedGameState);
-        console.log('receivingState');
         this.child.SOCKET_ReceiveGameState(receivedGameState);
       });
     }
@@ -114,7 +113,7 @@ class App extends React.Component {
     if (this.isHost) {
       this.emit('From Host GameState', data);
     } else {
-      this.emit('From Client Input', this.state.gameState);
+      this.emit('From Client Input', data);
     }
   }
 
