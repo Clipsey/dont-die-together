@@ -146,10 +146,10 @@ class App extends React.Component {
         <Switch>
           <AuthRoute exact path="/" component={MainPage} />
           <AuthRoute exact path="/login" component={LoginFormContainer} />
-          <AuthRoute exact path="/signup" component={SignupFormContainer} />
+          <AuthRoute exact path="/register" component={SignupFormContainer} />
 
-          <ProtectedRoute exact path="/joingame" createSocket={this.createSocket} connectSocket={this.connectSocket} component={JoinGameSessionContainer} />
-          <ProtectedRoute exact path="/creategame" createSocket={this.createSocket} connectSocket={this.connectSocket} component={CreateGameSessionContainer} />
+          <ProtectedRoute exact path="/join" createSocket={this.createSocket} connectSocket={this.connectSocket} component={JoinGameSessionContainer} />
+          <ProtectedRoute exact path="/create" createSocket={this.createSocket} connectSocket={this.connectSocket} component={CreateGameSessionContainer} />
 
           <ProtectedRoute path="/game" component={GameSessionContainer}>
             {this.isHost && this.props.loggedIn && <Route path='/game' render={() => <Game ref={Ref => this.child = Ref} send={this.send} isHost={this.isHost} />} /> } 

@@ -10,6 +10,7 @@ class LoginForm extends React.Component {
     super(props);
 
     this.state = {
+      name: '',
       email: '',
       password: '',
       errors: {}
@@ -63,9 +64,17 @@ class LoginForm extends React.Component {
     );
   }
 
+  // demoLogin(e) {
+  //   e.preventDefault();
+  //   this.props.login({ name: "Guest", password: "dontdietogether" })
+  // }
+  
   demoLogin(e) {
     e.preventDefault();
-    this.props.login({ name: "Guest", password: "password" })
+    let demo = {name: "Guest", password: "dontdietogether"}
+    setTimeout(() => this.setState({ name: demo.name }), 1000);
+    setTimeout(() => this.setState({ password: demo.password }), 2000);
+    setTimeout(() => this.props.login(this.state), 3000)
   }
 
   render() {
