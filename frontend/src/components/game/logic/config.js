@@ -1,7 +1,7 @@
 const gameConfig = {
     gameBounds: {
         x: 800,
-        y: 600s
+        y: 600
     },
     times: {
         itemGenerate: 20,
