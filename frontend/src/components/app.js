@@ -100,7 +100,7 @@ class App extends React.Component {
     // }
 
 
-    this.sockets.push(socket);
+    // this.sockets.push(socket);
     // this.emit = emitSetup(socket);
     // this.on = onSetup(socket);
   }
