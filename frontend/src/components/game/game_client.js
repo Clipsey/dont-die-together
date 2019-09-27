@@ -46,7 +46,11 @@ class GameClient extends React.Component {
 
     mainLoop() {
         this.state.display.draw(this.gameState);
-        this.props.send(this.state.input.pressedKeys);
+        const clientKeys = this.state.input.pressedKeys;
+        clientKeys.pointX = this.state.input.mousePos.x - this.gameState.players[2].pos.x;
+        clientKeys.pointY = this.state.input.mousePos.y - this.gameState.players[2].pos.y;
+
+        this.props.send(clientKeys);
         requestAnimationFrame(() => this.mainLoop());
     }
 
