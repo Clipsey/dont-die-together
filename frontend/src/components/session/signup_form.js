@@ -19,13 +19,13 @@ class SignupForm extends React.Component {
     this.clearedErrors = false;
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.signedIn === true) {
-      this.props.history.push('/login');
-    }
+  // componentWillReceiveProps(nextProps) {
+  //   if (nextProps.signedIn === true) {
+  //     // this.props.history.push('/join');
+  //   }
 
-    this.setState({ errors: nextProps.errors })
-  }
+  //   this.setState({ errors: nextProps.errors })
+  // }
 
   update(field) {
     return e => this.setState({
@@ -42,7 +42,20 @@ class SignupForm extends React.Component {
       password2: this.state.password2
     };
 
-    this.props.signup(user, this.props.history);
+    // this.props.signup(user).then(this.props.login(user))
+    // this.props.login(user, this.props.history)
+
+    // let promise1 = new Promise(user => this.props.signup(user))
+    // promise1.then(this.props.login(user))
+
+    // let signup = this.props.signup;
+    // let login = this.props.login;
+
+    // let run = (ms) => new Promise((signup) => setTimeout(signup, ms))
+
+    // run(1000).then(login);
+
+    this.props.signup(user);
   }
 
   renderErrors() {
