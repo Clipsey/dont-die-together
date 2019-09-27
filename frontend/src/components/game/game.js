@@ -31,7 +31,7 @@ class Game extends React.Component {
             gameMode: GameMode.StartScreen,
             context: null,
             display: null,
-            gameModel: null
+            gameModel: new GameModel()
         };
         this.lastTime = Date.now();
         this.gameState = DisplayConfig.initialState;
@@ -46,11 +46,7 @@ class Game extends React.Component {
     }
 
     SOCKET_ReceiveInitialState(gameState) {
-        if (!gameState) {
-            this.setState({gameMode: new GameModel()});
-        } else {
-            this.setState({gameModel: new GameModel(gameState)});
-        }
+        
     }
 
     componentDidMount() {

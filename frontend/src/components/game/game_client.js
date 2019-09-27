@@ -23,8 +23,7 @@ class GameClient extends React.Component {
         this.lastTime = Date.now();
         this.gameState = DisplayConfig.initialState;
         this.status = '';
-        this.ref1 = null;
-        this.ref2 = null;
+        this.rafId = null;
     }
 
     SOCKET_ReceiveGameState(gameState) {
@@ -38,16 +37,14 @@ class GameClient extends React.Component {
         this.setState({ 
             context: context,
             display: display
-        });
-        this.ref1 = requestAnimationFrame(() => this.mainLoop());
+        }, () => this.mainLoop());
     }
 
     componentWillUnmount() {
         this.state.input.unbindKeys();
-        cancelAnimationFrame(this.ref1);
-        cancelAnimationFrame(this.ref2);
+        cancelAnimationFrame(this.rafId);
     }
-
+    
     mainLoop() {
         const now = Date.now();
         const dt = (now - this.lastTime) / 1000;
@@ -57,7 +54,7 @@ class GameClient extends React.Component {
         clientKeys.pointY = this.state.input.mousePos.y - this.gameState.players[2].pos.y;
         this.props.send(clientKeys);
         this.lastTime = now;
-        this.ref2 = requestAnimationFrame(() => this.mainLoop());
+        this.rafId = requestAnimationFrame(() => this.mainLoop());
     }
 
     render() {
