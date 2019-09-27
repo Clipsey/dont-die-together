@@ -42,9 +42,12 @@ export const movePlayer = (player, playerInputs, gameState, sizes, dt, dist) => 
             player.velocity.x *= gameConfig.speeds.player / playerSpeed;
             player.velocity.y *= gameConfig.speeds.player / playerSpeed;
         }
-
-        player.pos.x += player.velocity.x * dt;
-        player.pos.y += player.velocity.y * dt;
+        let moveVector = [player.velocity.x * dt, player.velocity.y * dt];
+        
+        if (!willCollideWithEnemy(player, moveVector, gameState, sizes)) {
+            player.pos.x += moveVector[0];
+            player.pos.y += moveVector[1];
+        }
     }
     else {
         player.velocity.x = 0;
@@ -59,7 +62,7 @@ export const movePlayer = (player, playerInputs, gameState, sizes, dt, dist) => 
     // }
     // if (playerInputs.down) {
     //     moveVector[1] += dist;
-    // }
+    // }sddw
     // if (playerInputs.right) {
     //     moveVector[0] += dist;
     // }
@@ -67,10 +70,7 @@ export const movePlayer = (player, playerInputs, gameState, sizes, dt, dist) => 
     //     moveVector[0] -= dist;
     // }                            ///END NORMAL
 
-    // if (!willCollideWithEnemy(player, moveVector, gameState, sizes)){
-    //     player.pos.x += moveVector[0];
-    //     player.pos.y += moveVector[1];
-    // }
+    
 };
 
 export const switchGuns = (player, playerInputs, times) => {
