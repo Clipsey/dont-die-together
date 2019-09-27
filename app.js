@@ -26,7 +26,7 @@ mongoose
   .catch(err => console.log(err));
 
 const port = process.env.PORT || 5000;
-// app.listen(port, () => console.log(`Server is running on port ${port}`));
+app.listen(port, () => console.log(`Server is running on port ${port}`));
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('frontend/build'));
@@ -47,8 +47,6 @@ io.on('connection', socket => {
 
   socket.room = socket.handshake.query.room;
   socket.join(socket.room);
-
-
 
   socket.on('join room', (room) => {
     console.log('joined new room')
