@@ -1,5 +1,6 @@
 import gameConfig from './config';
 import { sampleState } from './config';
+import { vectorMag, findDistance } from './vector_util';
 
 import {
     moveEnemy
@@ -11,7 +12,8 @@ import {
 import {
     movePlayer,
     pickUpItems,
-    switchGuns
+    switchGuns,
+    playerCanFire
 } from './player';
 import {
     fireBullets,
@@ -30,35 +32,8 @@ export default class GameModel {
         this.times = gameConfig.times;
         this.generateZombieTime = 0;
         this.generateItemTime = 0;
-
-    //     //EXPERIMENTAL
-    //     this.inputs = {
-    //         1: {
-    //             up: false,
-    //             down: false,
-    //             left: false,
-    //             right: false,
-    //             fire: false,
-    //             cycleGun: false
-    //         }
-    //     };
-    //     window.setInterval( () => {
-    //         this.updateTimes(0.02);
-    //         this.movePlayers(this.inputs, 0.02);
-    //         this.moveEnemies(0.02);
-    //         this.moveBullets(0.02);
-    //         this.fireBullets(this.inputs);
-    //         this.switchGuns(this.inputs);
-    //         return this.gameState;
-    //     }, 20);
     }
-
-    // //EXPERIMENTAL
-    // update(inputs, dt) {
-    //     this.inputs = inputs;
-    //     return this.gameState;
-    // }
-
+    
     update(inputs, dt) { 
         this.updateTimes(dt);
         this.movePlayers(inputs, dt);
@@ -172,16 +147,16 @@ export default class GameModel {
 
     switchGuns(inputs) {
         Object.keys(this.gameState.players).forEach((playerId) => {
-            let player = this.gameState.players[parseInt(playerId)];
-            let playerInputs = inputs[parseInt(playerId)];
+            let player = this.gameState.players[playerId];
+            let playerInputs = inputs[playerId];
             switchGuns(player, playerInputs, this.times);
         });
     }
 
     fireBullets(inputs) {
         Object.keys(this.gameState.players).forEach((playerId) => {
-            let player = this.gameState.players[parseInt(playerId)];
-            let playerInputs = inputs[parseInt(playerId)];
+            let player = this.gameState.players[playerId];
+            let playerInputs = inputs[playerId];
             fireBullets(player, playerInputs, this.gameState, this.times, this.speeds);
         });
     }
@@ -199,7 +174,35 @@ export default class GameModel {
         let dist = dt*this.speeds.player;
         Object.keys(this.gameState.players).forEach((playerId) => {
             let player = this.gameState.players[playerId];
-            let playerInputs = inputs[parseInt(playerId)];
+            let moveVector = [0, 0];
+            let playerInputs = inputs[playerId];
+            if (playerInputs.up) {
+                player.pos.y -= dist;
+            }
+            if (playerInputs.down) {
+                player.pos.y += dist;
+            }
+            if (playerInputs.right) {
+                player.pos.x += dist;
+            }
+            if (playerInputs.left) {
+                player.pos.x -= dist;
+            }
+            
+            Object.keys(this.gameState.items).forEach( (itemId) => {
+                let item = this.gameState.items[itemId];
+                if (item.type !== 'ammo'){
+                    return;
+                }
+                let itemPos = [item.pos.x, item.pos.y];
+                let playerPos = [player.pos.x, player.pos.y];
+                let dist = findDistance(itemPos, playerPos);
+                if (dist < 20){
+                    player.ammo += item.amount;
+                    delete this.gameState.items[itemId];
+                }
+            });
+            
             movePlayer(player, playerInputs, this.gameState, this.sizes, dt, dist);
             pickUpItems(player, this.gameState, this.sizes);
         });

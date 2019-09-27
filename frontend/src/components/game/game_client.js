@@ -6,7 +6,7 @@ import GameModel from './logic/game_model';
 import '../../style/stylesheets/reset.css';
 import '../../style/stylesheets/app.css';
 import '../../style/stylesheets/game.css';
-import * as DisplayConfig from './display_config';
+import * as DisplayConfig from './main_config';
 
 class GameClient extends React.Component {
     constructor(props) {
@@ -20,9 +20,11 @@ class GameClient extends React.Component {
             context: null,
             display: null,
         };
+        this.ownGameModel = new GameModel();
         this.lastTime = Date.now();
-        this.gameState = DisplayConfig.initialState;
+        this.gameState = DisplayConfig.emptyState;
         this.status = '';
+        this.rafId = null;
     }
 
     SOCKET_ReceiveGameState(gameState) {
@@ -36,22 +38,22 @@ class GameClient extends React.Component {
         this.setState({ 
             context: context,
             display: display
-        })
-        requestAnimationFrame(() => this.mainLoop());
+        }, () => this.mainLoop());
     }
 
     componentWillUnmount() {
         this.state.input.unbindKeys();
+        cancelAnimationFrame(this.rafId);
     }
-
+    
     mainLoop() {
-        this.state.display.draw(this.gameState);
+        const now = Date.now();
+        const dt = (now - this.lastTime) / 1000;
+        this.state.display.draw(this.gameState, dt);
         const clientKeys = this.state.input.pressedKeys;
-        clientKeys.pointX = this.state.input.mousePos.x - this.gameState.players[2].pos.x;
-        clientKeys.pointY = this.state.input.mousePos.y - this.gameState.players[2].pos.y;
-
         this.props.send(clientKeys);
-        requestAnimationFrame(() => this.mainLoop());
+        this.lastTime = now;
+        this.rafId = requestAnimationFrame(() => this.mainLoop());
     }
 
     render() {
