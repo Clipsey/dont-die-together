@@ -34,8 +34,10 @@ class App extends React.Component {
       },
       sockets: {}
     }
+
+    this.changeRoute = this.changeRoute.bind(this);
+
     this.send = this.send.bind(this);
-    this.setHealth = this.setHealth.bind(this);
 
     this.sockets = [];
     this.isHost = null;
@@ -135,20 +137,85 @@ class App extends React.Component {
     }
   }
 
-  setHealth(health) {
+  changeRoute(route) {
     return () => {
-      const gameState = this.state.gameState;
-      gameState['player']['health'] = health;
-      return () => this.setState({ gameState });
+      this.props.history.push(`${route}`);
     }
+  }
+
+  dashboard() {
+    // container
+    // leftBar
+      // Icon
+    // middleBar
+      // welcomeContainer
+      // options
+    // rightBar
+      //log
+    const container = {}
+    const leftBar = {}
+    const icon = {}
+    const middleBar = {}
+    const welcomeContainer = {}
+    const optionsStyle = {}
+    const selectedOption = {}
+    const unselectedOption = {}
+    const rightBar = {}
+    const logging = {}
+
+
+    const options = [
+      <div onClick={this.changeRoute('/')} style={unselectedOption}>DASHBOARD</div>,
+      <div onClick={this.changeRoute('/login')} style={unselectedOption}>LOGIN</div>,
+      <div onClick={this.changeRoute('/register')} style={unselectedOption}>REGISTER</div>,
+      <div onClick={this.changeRoute('/join')} style={unselectedOption}>JOIN</div>,
+      <div onClick={this.changeRoute('/create')} style={unselectedOption}>CREATE</div>,
+      <div onClick={this.changeRoute('/game')} style={unselectedOption}>GAME</div>
+    ]
+    
+    if (this.props.location.pathname === '/') {
+      options[0] = <div onClick={this.changeRoute('/')} style={selectedOption}>DASHBOARD</div>
+    } else if (this.props.location.pathname === '/login') {
+      options[1] = <div onClick={this.changeRoute('/login')} style={selectedOption}>LOGIN</div>
+    } else if (this.props.location.pathname === '/register') {
+      options[2] = <div onClick={this.changeRoute('/register')} style={selectedOption}>REGISTER</div>
+    } else if (this.props.location.pathname === '/join') {
+      options[3] = <div onClick={this.changeRoute('/join')} style={selectedOption}>JOIN</div>
+    } else if (this.props.location.pathname === '/create') {
+      options[4] = <div onClick={this.changeRoute('/create')} style={selectedOption}>CREATE</div>
+    } else if (this.props.location.pathname === '/game') {
+      options[5] = <div onClick={this.changeRoute('/game')} style={selectedOption}>GAME</div>
+    }
+
+    const dash = (
+      <div style={container}>
+        <div style={leftBar}>
+          <div style={icon}></div>
+        </div>
+        <div style={middleBar}>
+          <div style={welcomeContainer}></div>
+          <div style={optionsStyle}>
+            {options}
+          </div>
+        </div>
+        <div style={rightBar}>
+          <div style={logging}></div>
+        </div>
+
+      </div>
+    )
+
+    return dash;
   }
 
   render() {
     console.log(`host: ${this.isHost}`);
+    console.log(this.props)
     return (
       <div className="app">
         {/* } */}
         <NavBarContainer closeSockets={this.closeSockets}/>
+        {/* {this.dashboard()} */}
         <Switch>
           <AuthRoute exact path="/" component={MainPage} />
           <AuthRoute exact path="/login" component={LoginFormContainer} />

@@ -48,8 +48,6 @@ io.on('connection', socket => {
   socket.room = socket.handshake.query.room;
   socket.join(socket.room);
 
-
-
   socket.on('join room', (room) => {
     console.log('joined new room')
     socket.leave(socket.room);
@@ -75,7 +73,9 @@ io.on('connection', socket => {
     socket.leave(socket.room);
   });
 
-  // GameState.find()
+  // 
+  // Get GameState by o
+  // GameState.find({})
   // socket.emit('Initial State', )
   
 

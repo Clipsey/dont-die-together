@@ -42,11 +42,16 @@ class NavBar extends React.Component {
   }
 
   render() {
+    // console.log(this.props)
     return (
       <div>
         <div className="navbar-top"></div>
         <div className="navbar-game-title">Don't Die Together</div>
-        <div className="navbar-login-register">{this.getLinks()}</div>
+        <div className="navbar-login-register">
+          {this.props.currentUser && <div>{this.props.currentUser.name}</div> }
+          <div>{this.getLinks()}</div>
+          {/* {!this.props.username && <div></div>} */}
+        </div>
       </div>
     );
   }

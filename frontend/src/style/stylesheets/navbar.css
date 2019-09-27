@@ -43,8 +43,12 @@
 
 .navbar-login-register {
     font-size: 3vw;
-    text-align: center;
+    /* text-align: center; */
     /* padding-bottom: 3vh; */
+    padding-top: 20px;
+    padding-bottom: 3vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .navbar-thingy:hover {
