@@ -62,7 +62,7 @@ class App extends React.Component {
   joinSocket(room) {
     this.room = room;
 
-    this.closeSockets();
+    // this.closeSockets();
 
     console.log(window.location);
 
