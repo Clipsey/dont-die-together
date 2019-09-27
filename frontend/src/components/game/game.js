@@ -6,7 +6,7 @@ import GameModel from './logic/game_model';
 import '../../style/stylesheets/reset.css';
 import '../../style/stylesheets/app.css';
 import '../../style/stylesheets/game.css';
-import * as DisplayConfig from './main_config';
+import * as MainConfig from './config';
 import Display from './display';
 
 const GameMode = {
@@ -24,8 +24,8 @@ class Game extends React.Component {
         this.state = {
             input: new InputManager(),
             screen: {
-                width: DisplayConfig.screenWidth,
-                height: DisplayConfig.screenHeight,
+                width: MainConfig.screenWidth,
+                height: MainConfig.screenHeight,
             },
             gameMode: GameMode.StartScreen,
             context: null,
@@ -35,16 +35,35 @@ class Game extends React.Component {
         this.lastTime = Date.now();
         this.lastGameState = null;
         this.status = '';
-        this.otherInputs = nullKeys;
+        this.otherInputs = [];
         this.rafId = null;
+        this.numPlayers = 0;
+        this.lastUpdate = Date.now();
     }
 
     SOCKET_ReceiveInputs(inputs) {
-        this.otherInputs = inputs;
+        if (!Object.keys(this.lastGameState.players).includes(inputs.name)) {
+            this.addPlayer(inputs);
+        }
+        this.otherInputs.push(inputs);
     }
 
     SOCKET_ReceiveInitialState(gameState) {
         
+    }
+
+    addPlayer(inputs) {        
+        let newPlayer = JSON.parse(JSON.stringify(MainConfig.newPlayer));
+        this.lastGameState.players[inputs.name] = newPlayer;
+        this.state.gameModel.replaceGameState(this.lastGameState);
+    }
+
+    collectInputs() {
+        let collected = {};
+        this.otherInputs.forEach(input => {
+            collected[input.name] = input.inputs;
+        });
+        return collected;
     }
 
     componentDidMount() {
@@ -63,8 +82,9 @@ class Game extends React.Component {
         cancelAnimationFrame(this.rafId);
     }
 
-    startGame(initialState = DisplayConfig.emptyState) {
-        initialState.players[this.props.name] = DisplayConfig.newPlayer;
+    startGame(initialState = MainConfig.emptyState) {
+        initialState.players[this.props.name] = JSON.parse(JSON.stringify(MainConfig.newPlayer));
+        this.numPlayers++;
         this.lastGameState = initialState;
         const model = new GameModel(initialState);
         this.setState({
@@ -78,21 +98,25 @@ class Game extends React.Component {
         const dt = (now - this.lastTime) / 1000;
 
         const hostKeys = this.state.input.pressedKeys;
-        if (this.state.gameMode === GameMode.StartScreen && hostKeys.enter) {
-            this.startGame();
-        }
-        const inputCollection = {};
+        if (this.state.gameMode === GameMode.StartScreen && hostKeys.enter) this.startGame();
 
         if (this.state.gameMode === GameMode.Playing) {            
-            inputCollection[this.props.name] = hostKeys;
             hostKeys.pointX = this.state.input.mousePos.x - this.lastGameState.players[this.props.name].pos.x;
             hostKeys.pointY = this.state.input.mousePos.y - this.lastGameState.players[this.props.name].pos.y;
-            this.lastGameState = this.state.gameModel.update(inputCollection, dt);
+
+            let collectedInputs = this.collectInputs();
+            collectedInputs[this.props.name] = hostKeys;
+
+            if ((now - this.lastUpdate) / 1000 > 20) {
+                this.lastUpdate = now;
+            }
+
+            this.lastGameState = this.state.gameModel.update(collectedInputs, dt);
             this.state.display.draw(this.lastGameState, dt);
         }
         this.lastTime = now;
         this.rafId = requestAnimationFrame(() => this.mainLoop());
-        this.props.send(this.gameState);
+        this.props.send(this.lastGameState);
     }
 
     render() {
@@ -103,7 +127,7 @@ class Game extends React.Component {
                     id="canvas"
                     width={this.state.screen.width}
                     height={this.state.screen.height}
-                    style={DisplayConfig.canvasStyle}
+                    style={MainConfig.canvasStyle}
                 />
             </div>
         );

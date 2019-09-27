@@ -1,4 +1,4 @@
-import * as MainConfig from './main_config';
+import * as MainConfig from './config';
 import gameConfig from './logic/config';
 
 class Display {

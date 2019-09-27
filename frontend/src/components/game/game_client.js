@@ -6,7 +6,7 @@ import GameModel from './logic/game_model';
 import '../../style/stylesheets/reset.css';
 import '../../style/stylesheets/app.css';
 import '../../style/stylesheets/game.css';
-import * as DisplayConfig from './main_config';
+import * as DisplayConfig from './config';
 
 class GameClient extends React.Component {
     constructor(props) {
@@ -50,7 +50,14 @@ class GameClient extends React.Component {
         const now = Date.now();
         const dt = (now - this.lastTime) / 1000;
         this.state.display.draw(this.gameState, dt);
-        const clientKeys = this.state.input.pressedKeys;
+        let clientKeys = {};
+        clientKeys.name = this.props.name
+        clientKeys.inputs = this.state.input.pressedKeys;
+        if(Object.keys(this.gameState.players).includes(this.props.name)) {
+            clientKeys.inputs.pointX = this.state.input.mousePos.x - this.gameState.players[this.props.name].pos.x;
+            clientKeys.inputs.pointY = this.state.input.mousePos.y - this.gameState.players[this.props.name].pos.y;
+        }
+        
         this.props.send(clientKeys);
         this.lastTime = now;
         this.rafId = requestAnimationFrame(() => this.mainLoop());
