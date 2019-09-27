@@ -29,10 +29,9 @@ class GameSession extends React.Component {
         this.props.index().then((users) => {
             let username = this.state.value;
             // console.log(username)
-            console.log(users);
-            this.props.connectSocket(username);
+            const result = this.props.connectSocket(username);
             // give the name, connectsocket gets the sessionid using the name
-            this.props.history.push('/game');
+            if (result) this.props.history.push('/game');
         })
     }
 
