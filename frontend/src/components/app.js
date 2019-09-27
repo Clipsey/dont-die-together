@@ -78,16 +78,16 @@ class App extends React.Component {
     socket.emit('join room', this.room);
 
 
-    if (this.isHost) {
-      socket.on('From Client Input', (receivedInput) => {
-        this.child.SOCKET_ReceiveInputs(receivedInput);
-      });
-    } else {
-      console.log('attached to from host game state')
-      socket.on('From Host GameState', (receivedGameState) => {
-        this.child.SOCKET_ReceiveGameState(receivedGameState);
-      });
-    }
+    // if (this.isHost) {
+    //   socket.on('From Client Input', (receivedInput) => {
+    //     this.child.SOCKET_ReceiveInputs(receivedInput);
+    //   });
+    // } else {
+    //   console.log('attached to from host game state')
+    //   socket.on('From Host GameState', (receivedGameState) => {
+    //     this.child.SOCKET_ReceiveGameState(receivedGameState);
+    //   });
+    // }
 
 
     // if (process.env.NODE_ENV === 'development') {
