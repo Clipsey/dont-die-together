@@ -50,3 +50,40 @@
 .navbar-thingy:hover {
     color: #0d9e61;
 }
+
+/* .navbar-game-title {
+    background-color: #6b92b9;
+    background-image: url('http://i.imgur.com/BiSmXaq.png'), url('http://i.imgur.com/XHuy0NJ.png'), url('http://i.imgur.com/okpRxJU.png');
+    -webkit-animation: snow 20s linear infinite;
+    -moz-animation: snow 20s linear infinite;
+    -ms-animation: snow 20s linear infinite;
+    animation: snow 20s linear infinite;
+}
+
+@-webkit-keyframes snow {
+    0% { background-position: 0px 0px, 0px 0px, 0px 0px }
+    50% { background-color: #b4cfe0 }
+    100% { background-position: 500px 1000px, 400px 400px, 300px 300px;
+    background-color: #6b92b9; }
+}
+
+@-moz-keyframes snow {
+    0% { background-position: 0px 0px, 0px 0px, 0px 0px }
+    50% { background-color: #b4cfe0 }
+    100% { background-position: 500px 1000px, 400px 400px, 300px 300px;
+    background-color: #6b92b9; }
+}
+
+@-ms-keyframes snow {
+    0% { background-position: 0px 0px, 0px 0px, 0px 0px }
+    50% { background-color: #b4cfe0 }
+    100% { background-position: 500px 1000px, 400px 400px, 300px 300px;
+    background-color: #6b92b9; }
+}
+
+@keyframes snow {
+    0% { background-position: 0px 0px, 0px 0px, 0px 0px }
+    50% { background-color: #b4cfe0 }
+    100% { background-position: 500px 1000px, 400px 400px, 300px 300px;
+    background-color: #6b92b9; }
+} */

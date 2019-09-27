@@ -6,9 +6,8 @@ import GameModel from './logic/game_model';
 import '../../style/stylesheets/reset.css';
 import '../../style/stylesheets/app.css';
 import '../../style/stylesheets/game.css';
-import * as DisplayUtil from './display_util';
 import * as DisplayConfig from './display_config';
-
+import Display from './display';
 
 const GameMode = {
     StartScreen: 0,
@@ -30,60 +29,33 @@ class Game extends React.Component {
             },
         
             gameMode: GameMode.StartScreen,
-            context: null
+            context: null,
+            display: null,
+            gameModel: new GameModel()
         };
         this.lastTime = Date.now();
-        this.GameModel = new GameModel();
-        this.frames = 0;
-        this.fps = 0;
         this.gameState = DisplayConfig.initialState;
-        this.testMethod = this.testMethod.bind(this);
+        this.status = '';
+        this.otherInputs = nullKeys;
     }
 
-    testMethod() {
-        console.log('testMethod');
+    SOCKET_ReceiveInputs(inputs) {
+        this.otherInputs = inputs;
     }
 
     componentDidMount() {
         this.state.input.bindKeys();
         const context = this.refs.canvas.getContext('2d');
+        const display = new Display(context);
         this.setState({ 
-            context: context 
+            context: context,
+            display: display
         })
         requestAnimationFrame(() => this.mainLoop());
     }
 
     componentWillUnmount() {
         this.state.input.unbindKeys();
-    }
-
-    display(gameState, dt) {
-        DisplayUtil.clearScreen(this.state.context);
-        this.displayPlayers(gameState);
-        this.displayEnemies(gameState);
-        this.displayBullets(gameState);
-        DisplayUtil.displayFPS(dt, this.state.context)
-    }
-
-    displayBullets(gameState) {
-        let bullets = Object.values(gameState.bullets);
-        for (let i = 0; i < bullets.length; i++) {
-            DisplayUtil.displayBullet(bullets[i], this.state.context);
-        }
-    }
-
-    displayEnemies(gameState) {
-        let enemies = Object.values(gameState.enemies);
-        for (let i = 0; i < enemies.length; i++) {
-            DisplayUtil.displayEnemy(enemies[i], this.state.context);
-        }
-    }
-
-    displayPlayers(gameState) {
-        let players = Object.values(gameState.players);
-        for (let i = 0; i < players.length; i++) {
-            DisplayUtil.displayPlayer(players[i], this.state.context);
-        }
     }
 
     startGame() {
@@ -102,7 +74,7 @@ class Game extends React.Component {
 
         const inputCollection = {
             1: hostKeys,
-            2: nullKeys,
+            2: this.otherInputs,
         };
 
         if (this.state.gameMode === GameMode.StartScreen && hostKeys.enter) {
@@ -110,11 +82,12 @@ class Game extends React.Component {
         }
 
         if (this.state.gameMode === GameMode.Playing) {
-            this.gameState = this.GameModel.update(inputCollection, dt);
-            this.display(this.gameState, dt);
+            this.gameState = this.state.gameModel.update(inputCollection, dt);
+            this.state.display.draw(this.gameState, dt);
         }
         this.lastTime = now;
         requestAnimationFrame(() => this.mainLoop());
+        this.props.send(this.gameState);
     }
 
     render() {

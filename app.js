@@ -43,7 +43,7 @@ app.use('/api/tweets', tweets);
 const io = socketIO(server);
 
 io.on('connection', socket => {
-  console.log('User connected');
+  // console.log('User connected');
 
   socket.room = socket.handshake.query.room;
   socket.join(socket.room);
@@ -59,11 +59,11 @@ io.on('connection', socket => {
   });
 
   socket.on('From Client Input', (Input) => {
-    console.log(GameState);
+    // console.log(GameState);
     socket.to(socket.room).emit('From Client Input', Input);
   });
   socket.on('From Host GameState', (GameState) => {
-    console.log(GameState);
+    // console.log(GameState);
     socket.to(socket.room).emit('From Host GameState', GameState);
     //GameState.save().then(() => {
     //   socket.to(socket.room).emit('receive gameState', receivedState);
@@ -71,7 +71,7 @@ io.on('connection', socket => {
   });
 
   socket.on('disconnect', () => {
-    console.log('user disconnected');
+    // console.log('user disconnected');
     socket.leave(socket.room);
   });
 

@@ -4,6 +4,7 @@ import { HashRouter } from 'react-router-dom';
 // We'll create this soon
 // import App from './app';
 import AppContainer from './app_container';
+import './root.css';
 
 
 const Root = ({ store }) => (

@@ -135,6 +135,7 @@ class App extends React.Component {
   }
 
   render() {
+    console.log(`host: ${this.isHost}`);
     return (
       <div className="app">
         {/* } */}
