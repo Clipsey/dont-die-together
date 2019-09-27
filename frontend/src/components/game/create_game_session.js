@@ -20,7 +20,7 @@ class GameSession extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        this.props.createSocket();
+        // this.props.createSocket();
         // this.props.history.push('/game');
     }
 
