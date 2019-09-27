@@ -62,16 +62,24 @@ class LoginForm extends React.Component {
     );
   }
 
+  // demoLogin(e) {
+  //   e.preventDefault();
+  //   this.props.login({ name: "Guest", password: "dontdietogether" })
+  // }
+  
   demoLogin(e) {
     e.preventDefault();
-    this.props.login({ name: "Guest", password: "password" })
+    let demo = {name: "Guest", password: "dontdietogether"}
+    setTimeout(() => this.setState({ name: demo.name }), 1000);
+    setTimeout(() => this.setState({ password: demo.password }), 2000);
+    setTimeout(() => this.props.login(this.state), 3000)
   }
 
   render() {
     return (
       <div>
         <div className="login-form-main">
-              <br />
+              {/* <br /> */}
           <div className="login-form-banner">Login</div>
           <form onSubmit={this.handleSubmit}>
             <div>
@@ -88,11 +96,12 @@ class LoginForm extends React.Component {
                 onChange={this.update('password')}
                 placeholder="Password"
               />
+              {/* <div className="divvy"></div> */}
               <br />
-              <input className="login-form-submit" type="submit" value="Submit" />
+              <input className="login-form-submit" type="submit" value="❆ Submit ❆" />
               <br />
-              <button className="login-form-submit2" onClick={this.demoLogin}>Demo Login</button>
-              <div className="login-form-form">{this.renderErrors()}</div>
+              <button className="login-form-submit2" onClick={this.demoLogin}>❆ Demo Login ❆</button>
+              <div className="login-form-form3">{this.renderErrors()}</div>
             </div>
           </form>
         </div>
