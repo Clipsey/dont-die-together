@@ -26,9 +26,10 @@ class GameSession extends React.Component {
         // console.log(this.props)
         // debugger
         // this makes it so you fetch the index of all users before you call connectsocket
-        this.props.index().then(() => {
+        this.props.index().then((users) => {
             let username = this.state.value;
             // console.log(username)
+            console.log(users);
             this.props.connectSocket(username);
             // give the name, connectsocket gets the sessionid using the name
         })

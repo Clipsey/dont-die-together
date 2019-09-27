@@ -9,8 +9,8 @@ class LoginForm extends React.Component {
     super(props);
 
     this.state = {
-      email: '',
       password: '',
+      name: '',
       errors: {}
     };
 
@@ -41,7 +41,6 @@ class LoginForm extends React.Component {
 
     let user = {
       name: this.state.name,
-      email: this.state.email,
       password: this.state.password
     };
 

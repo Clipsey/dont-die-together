@@ -48,34 +48,37 @@ io.on('connection', socket => {
   socket.room = socket.handshake.query.room;
   socket.join(socket.room);
 
+
+
   socket.on('join room', (room) => {
     console.log('joined new room')
     socket.leave(socket.room);
     socket.room = room;
     socket.join(socket.room);
     socket.to(socket.room).emit('room change', socket.room);
-  })
+  });
 
   socket.on('From Client Input', (Input) => {
     console.log(GameState);
     socket.to(socket.room).emit('From Client Input', Input);
-  })
+  });
   socket.on('From Host GameState', (GameState) => {
     console.log(GameState);
     socket.to(socket.room).emit('From Host GameState', GameState);
-  })
+    //GameState.save().then(() => {
+    //   socket.to(socket.room).emit('receive gameState', receivedState);
+    // })
+  });
 
   socket.on('disconnect', () => {
     console.log('user disconnected');
     socket.leave(socket.room);
   });
 
+  // GameState.find()
+  // socket.emit('Initial State', )
+  
+
 })
 
-
 server.listen(port);
-
-// app.get("/", (req, res) => {
-//   res.send("Hello World")
-// });
-
