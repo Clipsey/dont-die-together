@@ -111,18 +111,27 @@ class App extends React.Component {
   connectSocket(name) {
     console.log('connecting socket');
     this.isHost = false;
-    const sessionId = this.props.users[name]._id;
-    console.log(`Session ID: ${sessionId}`);
-    this.joinSocket(sessionId);
+    const user = this.props.users[name];
+    console.log(`Connecting to user: ${user}`);
+    if (user) {
+      const sessionId = this.props.users[name]._id;
+      console.log(`Session ID: ${sessionId}`);
+      this.joinSocket(sessionId);
+      return true;
+    } else {
+      return false;
+    }
     // this.forceUpdate();
   }
 
   send(data) {
     // this.child.testMethod();
-    if (this.isHost) {
-      this.emit('From Host GameState', data);
-    } else {
-      this.emit('From Client Input', data);
+    if (this.emit) {
+      if (this.isHost) {
+        this.emit('From Host GameState', data);
+      } else {
+        this.emit('From Client Input', data);
+      }
     }
   }
 
