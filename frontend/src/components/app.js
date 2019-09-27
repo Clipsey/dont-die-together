@@ -43,19 +43,25 @@ class App extends React.Component {
     this.createSocket = this.createSocket.bind(this);
     this.connectSocket = this.connectSocket.bind(this);
     this.joinSocket = this.joinSocket.bind(this);
+    this.closeSockets = this.closeSockets.bind(this);
+  }
+
+  closeSockets() {
+    if (this.sockets.length > 0) {
+      this.sockets.forEach((socket, idx) => {
+        socket.off('From Client Input');
+        socket.off('From Host GameState');
+        socket.off('Initial State');
+        socket.disconnect();
+      })
+      this.sockets = [];
+    }
   }
 
   joinSocket(room) {
     this.room = room;
 
-    if (this.sockets.length > 0) {
-      this.sockets.forEach((socket, idx) => {
-        socket.off('From Client Input');
-        socket.off('From Host GameState');
-        socket.disconnect();
-      })
-      this.sockets = [];
-    }
+    this.closeSockets();
 
     let socket;
     if (process.env.NODE_ENV === 'development') {
@@ -68,10 +74,7 @@ class App extends React.Component {
 
     if (this.isHost) {
       socket.on('From Client Input', (receivedInput) => {
-        console.log(`From Client Input`);
-        console.log(receivedInput);
         this.child.SOCKET_ReceiveInputs(receivedInput);
-        // this.setState({ gameState: receivedInput })
       });
     } else {
       console.log('attached to from host game state')
@@ -87,6 +90,12 @@ class App extends React.Component {
       socket = socketIOClient(window.location, { query: { room: this.room } });
     }
 
+    if (this.isHost) {
+      socket.on('Initial State', (initialState) => {
+        this.child.SOCKET_ReceiveInitialState(initialState);
+      })
+    }
+
 
     this.sockets.push(socket);
     this.emit = emitSetup(socket);
@@ -95,25 +104,34 @@ class App extends React.Component {
   
   createSocket() {
     this.isHost = true;
-    this.joinSocket(this.props.currentUser.id)
+    this.joinSocket(this.props.currentUser.id);
     // this.forceUpdate();
   }
   
   connectSocket(name) {
     console.log('connecting socket');
     this.isHost = false;
-    const sessionId = this.props.users[name]._id;
-    console.log(`Session ID: ${sessionId}`);
-    this.joinSocket(sessionId);
+    const user = this.props.users[name];
+    console.log(`Connecting to user: ${user}`);
+    if (user) {
+      const sessionId = this.props.users[name]._id;
+      console.log(`Session ID: ${sessionId}`);
+      this.joinSocket(sessionId);
+      return true;
+    } else {
+      return false;
+    }
     // this.forceUpdate();
   }
 
   send(data) {
     // this.child.testMethod();
-    if (this.isHost) {
-      this.emit('From Host GameState', data);
-    } else {
-      this.emit('From Client Input', data);
+    if (this.emit) {
+      if (this.isHost) {
+        this.emit('From Host GameState', data);
+      } else {
+        this.emit('From Client Input', data);
+      }
     }
   }
 
@@ -129,20 +147,8 @@ class App extends React.Component {
     console.log(`host: ${this.isHost}`);
     return (
       <div className="app">
-          <div> DEBUGGER
-            <br></br>
-            <button onClick={this.createSocket}>Create</button>
-            <br></br>
-            <br></br>
-            <button onClick={this.send}>Click</button>
-            <br></br>
-            <button onClick={this.setHealth(100)}>Health = 100</button>
-            <br></br>
-            <button onClick={this.setHealth(50)}>Health = 50</button>
-            <div>{this.state.gameState.player.health}</div>
-          </div>
         {/* } */}
-        <NavBarContainer sockets={this.sockets}/>
+        <NavBarContainer closeSockets={this.closeSockets}/>
         <Switch>
           <AuthRoute exact path="/" component={MainPage} />
           <AuthRoute exact path="/login" component={LoginFormContainer} />
@@ -152,9 +158,15 @@ class App extends React.Component {
           <ProtectedRoute exact path="/create" createSocket={this.createSocket} connectSocket={this.connectSocket} component={CreateGameSessionContainer} />
 
           <ProtectedRoute path="/game" component={GameSessionContainer}>
-            {this.isHost && this.props.loggedIn && <Route path='/game' render={() => <Game ref={Ref => this.child = Ref} send={this.send} isHost={this.isHost} />} /> } 
+            {this.isHost && this.props.loggedIn && 
+              <Route path='/game' render={() => 
+                <Game ref={Ref => this.child = Ref} send={this.send} isHost={this.isHost} name={this.props.currentUser.name}/>
+              } /> }
             
-            {!this.isHost && this.props.loggedIn && <Route path='/game' render={() => <GameClient ref={Ref => this.child = Ref} send={this.send} isHost={this.isHost} />} /> }
+            {!this.isHost && this.props.loggedIn && 
+              <Route path='/game' render={() => 
+                <GameClient ref={Ref => this.child = Ref} send={this.send} isHost={this.isHost} name={this.props.currentUser.name}/>
+              } /> }
           </ProtectedRoute>
         </Switch>
       </div>
