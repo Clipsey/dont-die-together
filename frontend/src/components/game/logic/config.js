@@ -4,8 +4,8 @@ const gameConfig = {
         y: 600
     },
     times: {
-        itemGenerate: 20,
-        zombieGenerate: 3,
+        itemGenerate: 40,
+        zombieGenerate: 10,
         zombieReload: 0.5,      //times in seconds      
         zombieDie: 1,
         switchGuns: 0.25,
@@ -25,7 +25,7 @@ const gameConfig = {
         rifle: 100
     },
     speeds: {                   //speeds in pixels/second
-        player: 100,
+        player: 150,
         bullet: 3000,
         zombie: 30
     },
@@ -125,7 +125,7 @@ export const sampleState = {
             },
             bottomRight: {
                 x: 50,
-                y: 100,
+                y: 150,
             }
         }
     }
