@@ -42,6 +42,10 @@ export default class GameModel {
         return this.gameState;
     }
 
+    replaceGameState(newState) {
+        this.gameState = newState;
+    }
+
     generateItem(dt) {
         let x = Math.random()*gameConfig.gameBounds.x;
         let y = Math.random()*gameConfig.gameBounds.y;

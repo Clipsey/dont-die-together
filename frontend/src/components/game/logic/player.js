@@ -37,6 +37,7 @@ export const switchGuns = (player, playerInputs, times) => {
             player.ammo = player.items.gunAmmo[player.weapon];
             player.timeToSwitch = times.switchGuns;
         }
+        console.log('switched to ' + player.weapon);
     }
 };
 
