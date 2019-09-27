@@ -31,16 +31,26 @@ class Game extends React.Component {
             gameMode: GameMode.StartScreen,
             context: null,
             display: null,
-            gameModel: new GameModel()
+            gameModel: null
         };
         this.lastTime = Date.now();
         this.gameState = DisplayConfig.initialState;
         this.status = '';
         this.otherInputs = nullKeys;
+        this.ref1 = null;
+        this.ref2 = null;
     }
 
     SOCKET_ReceiveInputs(inputs) {
         this.otherInputs = inputs;
+    }
+
+    SOCKET_ReceiveInitialState(gameState) {
+        if (!gameState) {
+            this.setState({gameMode: new GameModel()});
+        } else {
+            this.setState({gameModel: new GameModel(gameState)});
+        }
     }
 
     componentDidMount() {
@@ -51,11 +61,13 @@ class Game extends React.Component {
             context: context,
             display: display
         })
-        requestAnimationFrame(() => this.mainLoop());
+        this.ref1 = this.requestAnimationFrame(() => this.mainLoop());
     }
 
     componentWillUnmount() {
         this.state.input.unbindKeys();
+        cancelAnimationFrame(this.ref1);
+        cancelAnimationFrame(this.ref2);
     }
 
     startGame() {
@@ -65,8 +77,8 @@ class Game extends React.Component {
     }
 
     mainLoop() {
-        let now = Date.now();
-        let dt = (now - this.lastTime) / 1000;
+        const now = Date.now();
+        const dt = (now - this.lastTime) / 1000;
 
         const hostKeys = this.state.input.pressedKeys;
         hostKeys.pointX = this.state.input.mousePos.x - this.gameState.players[1].pos.x;
@@ -86,7 +98,7 @@ class Game extends React.Component {
             this.state.display.draw(this.gameState, dt);
         }
         this.lastTime = now;
-        requestAnimationFrame(() => this.mainLoop());
+        this.ref2 = requestAnimationFrame(() => this.mainLoop());
         this.props.send(this.gameState);
     }
 
