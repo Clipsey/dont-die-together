@@ -152,25 +152,50 @@ class App extends React.Component {
       // options
     // rightBar
       //log
-    const container = {}
-    const leftBar = {}
+    const container = {
+      display: 'flex',
+      justifyContent: 'space-around',
+      width: '100vw',
+      height: '70px',
+      borderBottom: 'solid 2px'
+    }
+    const leftBar = {
+      borderRight: 'solid 1px'
+    }
     const icon = {}
-    const middleBar = {}
-    const welcomeContainer = {}
-    const optionsStyle = {}
-    const selectedOption = {}
-    const unselectedOption = {}
+    const middleBar = {
+      borderRight: 'solid 1px',
+      display: 'flex',
+      flexDirection: 'column',
+      alignContent: 'space-between'
+    }
+    const welcomeContainer = {
+      display: 'flex'
+    }
+    const optionsStyle = {
+      display: 'flex',
+      justifyContent: 'flex-start',
+    }
+    const selectedOption = {
+      marginRight: '10px',
+      borderBottom: 'solid 5px',
+      paddingBottom: '2px'
+    }
+    const unselectedOption = {
+      marginRight: '10px',
+      paddingBottom: '2px'
+    }
     const rightBar = {}
     const logging = {}
 
 
     const options = [
-      <div onClick={this.changeRoute('/')} style={unselectedOption}>DASHBOARD</div>,
-      <div onClick={this.changeRoute('/login')} style={unselectedOption}>LOGIN</div>,
-      <div onClick={this.changeRoute('/register')} style={unselectedOption}>REGISTER</div>,
-      <div onClick={this.changeRoute('/join')} style={unselectedOption}>JOIN</div>,
-      <div onClick={this.changeRoute('/create')} style={unselectedOption}>CREATE</div>,
-      <div onClick={this.changeRoute('/game')} style={unselectedOption}>GAME</div>
+      <div onClick={this.changeRoute('/')}          style={unselectedOption}>DASHBOARD</div>,
+      <div onClick={this.changeRoute('/login')}     style={unselectedOption}>LOGIN</div>,
+      <div onClick={this.changeRoute('/register')}  style={unselectedOption}>REGISTER</div>,
+      <div onClick={this.changeRoute('/join')}      style={unselectedOption}>JOIN</div>,
+      <div onClick={this.changeRoute('/create')}    style={unselectedOption}>CREATE</div>,
+      <div onClick={this.changeRoute('/game')}      style={unselectedOption}>GAME</div>
     ]
     
     if (this.props.location.pathname === '/') {
@@ -187,13 +212,18 @@ class App extends React.Component {
       options[5] = <div onClick={this.changeRoute('/game')} style={selectedOption}>GAME</div>
     }
 
+    let userShowText = "YOU ARE NOT SIGNED IN";
+    if (this.props.currentUser) {
+      userShowText = `WELCOME BACK ${this.props.currentUser.name}`
+    }
+
     const dash = (
       <div style={container}>
         <div style={leftBar}>
           <div style={icon}></div>
         </div>
         <div style={middleBar}>
-          <div style={welcomeContainer}></div>
+          <div style={welcomeContainer}>{userShowText}</div>
           <div style={optionsStyle}>
             {options}
           </div>
