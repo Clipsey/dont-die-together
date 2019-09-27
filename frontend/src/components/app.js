@@ -38,7 +38,7 @@ class App extends React.Component {
     this.setHealth = this.setHealth.bind(this);
 
     this.sockets = [];
-    this.host = null;
+    this.isHost = null;
 
     this.createSocket = this.createSocket.bind(this);
     this.connectSocket = this.connectSocket.bind(this);
@@ -141,15 +141,15 @@ class App extends React.Component {
             <button onClick={this.setHealth(50)}>Health = 50</button>
             <div>{this.state.gameState.player.health}</div>
           </div>
-  
-        <NavBarContainer />
+        {/* } */}
+        <NavBarContainer sockets={this.sockets}/>
         <Switch>
           <AuthRoute exact path="/" component={MainPage} />
           <AuthRoute exact path="/login" component={LoginFormContainer} />
-          <AuthRoute exact path="/signup" component={SignupFormContainer} />
+          <AuthRoute exact path="/register" component={SignupFormContainer} />
 
-          <ProtectedRoute exact path="/joingame" createSocket={this.createSocket} connectSocket={this.connectSocket} component={JoinGameSessionContainer} />
-          <ProtectedRoute exact path="/creategame" createSocket={this.createSocket} connectSocket={this.connectSocket} component={CreateGameSessionContainer} />
+          <ProtectedRoute exact path="/join" createSocket={this.createSocket} connectSocket={this.connectSocket} component={JoinGameSessionContainer} />
+          <ProtectedRoute exact path="/create" createSocket={this.createSocket} connectSocket={this.connectSocket} component={CreateGameSessionContainer} />
 
           <ProtectedRoute path="/game" component={GameSessionContainer}>
             {this.isHost && this.props.loggedIn && <Route path='/game' render={() => <Game ref={Ref => this.child = Ref} send={this.send} isHost={this.isHost} />} /> } 
