@@ -6,13 +6,14 @@ const KEY = {
     LEFT:  65,
     RIGHT: 68,
     FIRE: 32,
-    ENTER: 13
+    ENTER: 13,
+    CYCLEGUN: 81
 };
 
 class InputManager extends React.Component {
     constructor() {
         super();
-        this.pressedKeys = { left: false, right: false, up: false, down: false, fire: false, enter: false };
+        this.pressedKeys = { left: false, right: false, up: false, down: false, fire: false, enter: false, cycleGun: false };
         this.mousePos = {
             x: -1,
             y: -1
@@ -63,6 +64,9 @@ class InputManager extends React.Component {
                 break;
             case KEY.ENTER:
                 keys.enter = value;
+                break;
+            case KEY.CYCLEGUN:
+                keys.cycleGun = value;
                 break;
             default:
                 break;

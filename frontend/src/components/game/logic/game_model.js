@@ -1,24 +1,148 @@
 import gameConfig from './config';
 import { sampleState } from './config';
-import { willCollideWithEnemy } from './model_helper';
 import { vectorMag, findDistance } from './vector_util';
+
+import {
+    moveEnemy
+} from './enemy';
+import { 
+    willCollideWithEnemy,
+    generateId
+} from './model_helper';
+import {
+    movePlayer,
+    pickUpItems,
+    switchGuns,
+    playerCanFire
+} from './player';
+import {
+    fireBullets,
+    moveBullet
+} from './bullet';
 
 export default class GameModel {
     constructor(initialState = sampleState) {
         this.gameState = initialState;
+        this.gameState.obstacles = {};          // DELETE LATER
+        // this.gameState.obstacles[1] = {
+        //     type: 'rocks',
+        //     topLeft: {
+        //         x: 200,
+        //         y: 200,
+        //     },
+        //     bottomRight: {
+        //         x: 300,
+        //         y: 300,
+        //     }
+        // }
+        // this.gameState.obstacles[2] = {
+        //     type: 'rocks',
+        //     topLeft: {
+        //         x: 400,
+        //         y: 400,
+        //     },
+        //     bottomRight: {
+        //         x: 500,
+        //         y: 500,
+        //     }
+        // }
+        // this.gameState.items = {
+        //     1: {
+        //         type: 'ammo',
+        //         gun: 'shotgun',
+        //         pos: {
+        //             x: 205,
+        //             y: 205
+        //         },
+        //         amount: 10
+        //     },
+        //     2: {
+        //         type: 'ammo',
+        //         gun: 'shotgun',
+        //         pos: {
+        //             x: 295,
+        //             y: 205
+        //         },
+        //         amount: 10
+        //     },
+        //     3: {
+        //         type: 'ammo',
+        //         gun: 'shotgun',
+        //         pos: {
+        //             x: 295,
+        //             y: 295
+        //         },
+        //         amount: 10
+        //     },
+        //     4: {
+        //         type: 'ammo',
+        //         gun: 'shotgun',
+        //         pos: {
+        //             x: 205,
+        //             y: 295
+        //         },
+        //         amount: 10
+        //     },
+        //     5: {
+        //         type: 'ammo',
+        //         gun: 'shotgun',
+        //         pos: {
+        //             x: 405,
+        //             y: 405
+        //         },
+        //         amount: 10
+        //     },
+        //     6: {
+        //         type: 'ammo',
+        //         gun: 'shotgun',
+        //         pos: {
+        //             x: 495,
+        //             y: 405
+        //         },
+        //         amount: 10
+        //     },
+        //     7: {
+        //         type: 'ammo',
+        //         gun: 'shotgun',
+        //         pos: {
+        //             x: 495,
+        //             y: 495
+        //         },
+        //         amount: 10
+        //     },
+        //     8: {
+        //         type: 'ammo',
+        //         gun: 'shotgun',
+        //         pos: {
+        //             x: 405,
+        //             y: 495
+        //         },
+        //         amount: 10
+        //     },
+        // }                                       // DELETE LATER
+        this.maxX = gameConfig.gameBounds.x;
+        this.maxY = gameConfig.gameBounds.y;
         this.speeds = gameConfig.speeds;
         this.sizes = gameConfig.sizes;
+        this.damages = gameConfig.damages;
+        this.distances = gameConfig.distances;
+        this.times = gameConfig.times;
         this.generateZombieTime = 0;
         this.generateItemTime = 0;
     }
-
+    
     update(inputs, dt) { 
         this.updateTimes(dt);
         this.movePlayers(inputs, dt);
         this.moveEnemies(dt);
         this.moveBullets(dt);
         this.fireBullets(inputs);
+        this.switchGuns(inputs);
         return this.gameState;
+    }
+
+    replaceGameState(newState) {
+        this.gameState = newState;
     }
 
     generateItem(dt) {
@@ -26,13 +150,19 @@ export default class GameModel {
         let y = Math.random()*gameConfig.gameBounds.y;
         let newItem = {
             type: 'ammo',
-            health: 'AMMO',
+            gun: [
+                'pistol', 
+                'pistol', 
+                'pistol', 
+                'rifle', 
+                'shotgun'
+            ][Math.floor(Math.random()*5)],
             pos: {},
             amount: 10
         }
         newItem.pos.x = x;
         newItem.pos.y = y;
-        this.gameState.items[Math.random()] = newItem; 
+        this.gameState.items[generateId()] = newItem; 
     }
 
     generateZombie() {
@@ -52,10 +182,10 @@ export default class GameModel {
         }
         newZombie.pos.x = x;
         newZombie.pos.y = y;
-        this.gameState.enemies[Math.random()] = newZombie;
+        this.gameState.enemies[generateId()] = newZombie;
     }
 
-    updateTimes(dt) {
+    updateTimes(dt) { 
         if (this.generateItemTime === 0) {
             this.generateItem();
             this.generateItemTime = gameConfig.times.itemGenerate;
@@ -81,6 +211,10 @@ export default class GameModel {
             if (player.timeToFire < 0){
                 player.timeToFire = 0;
             }
+            player.timeToSwitch -= dt;
+            if (!player.timeToSwitch || player.timeToSwitch < 0){
+                player.timeToSwitch = 0;
+            }
         });
         Object.keys(this.gameState.enemies).forEach( (enemyId) => {
             let enemy = this.gameState.enemies[enemyId];
@@ -102,187 +236,44 @@ export default class GameModel {
     moveBullets(dt) {
         Object.keys(this.gameState.bullets).forEach( (bulletId) => {
             let bullet = this.gameState.bullets[bulletId];
-            let xDist = bullet.vel.x*dt;
-            let yDist = bullet.vel.y*dt;
-            bullet.pos.x += xDist;
-            bullet.pos.y += yDist;
-            Object.keys(this.gameState.enemies).forEach( (enemyId) => {
-                let enemy = this.gameState.enemies[enemyId];
-                let dist = findDistance([enemy.pos.x, enemy.pos.y], [bullet.pos.x, bullet.pos.y]);
-                if (dist < gameConfig.sizes[enemy.type] && enemy.status !== 'dying'){
-                    enemy.health -= gameConfig.damages[bullet.type];
-                    let staggerDir = [bullet.vel.x, bullet.vel.y];
-                    let unitVector = [
-                        staggerDir[0]/vectorMag(staggerDir),
-                        staggerDir[1]/vectorMag(staggerDir)
-                    ];
-                    let staggerVector = [
-                        unitVector[0]*gameConfig.distances.stagger,
-                        unitVector[1]*gameConfig.distances.stagger
-                    ];
-                    enemy.pos.x += staggerVector[0];
-                    enemy.pos.y += staggerVector[1];
-                    if (enemy.health < 0){
-                        enemy.status = 'dying';
-                        enemy.timeToDie = gameConfig.times.zombieDie;
-                    }
-                    if (bullet.type !== 'rifle'){
-                        delete this.gameState.bullets[bulletId];
-                    }
-                }
-            });
+            moveBullet(bullet, bulletId, dt, this.gameState, 
+                this.sizes, this.times, this.distances, this.damages, 
+                this.maxX, this.maxY);
         });
-        Object.keys(this.gameState.bullets).forEach( (bulletId) => {
-            let bullet = this.gameState.bullets[bulletId];
-            if (bullet.pos.x > gameConfig.gameBounds.x ||
-                bullet.pos.x < 0 ||
-                bullet.pos.y > gameConfig.gameBounds.y ||
-                bullet.pos.y < 0) {
-                delete this.gameState.bullets[bulletId];
-            }
+    }
+
+    switchGuns(inputs) {
+        Object.keys(this.gameState.players).forEach((playerId) => {
+            let player = this.gameState.players[playerId];
+            let playerInputs = inputs[playerId];
+            switchGuns(player, playerInputs, this.times);
         });
     }
 
     fireBullets(inputs) {
         Object.keys(this.gameState.players).forEach((playerId) => {
-            let player = this.gameState.players[parseInt(playerId)];
-            let playerInputs = inputs[parseInt(playerId)];
-            if (this.playerCanFire(player) && playerInputs.fire) {
-                player.timeToFire = gameConfig.times.pistolReload;
-                let fireVector = [playerInputs.pointX, playerInputs.pointY];
-                let unitVector = [
-                    fireVector[0]/vectorMag(fireVector),
-                    fireVector[1]/vectorMag(fireVector)
-                ]
-                let speed = this.speeds.bullet;
-                let newBullet = {
-                    type: 'pistol',
-                    pos: {},
-                    vel: {}
-                };
-                newBullet.pos.x = player.pos.x;
-                newBullet.pos.y = player.pos.y;
-                newBullet.vel.x = unitVector[0]*speed;
-                newBullet.vel.y = unitVector[1]*speed;
-                this.gameState.bullets[Math.random()] = newBullet; 
-                player.ammo -= 1;
-                console.log('ammo left: ' + player.ammo);
-            } 
+            let player = this.gameState.players[playerId];
+            let playerInputs = inputs[playerId];
+            fireBullets(player, playerInputs, this.gameState, this.times, this.speeds);
         });
-    }
-
-    playerCanFire(player) {
-        return (player.timeToFire === 0 && player.ammo > 0);
     }
 
     moveEnemies(dt) {
         Object.values(this.gameState.enemies).forEach( (enemy) => {
             if (enemy.status !== 'dying'){
-                let enemyPos = enemy.pos;
-                let targetPos = null;
-                let closestDistance = null;
-                let victim = null;
-                Object.values(this.gameState.players).forEach( (player) => {
-                    let playerPos = player.pos;
-                    let dx = playerPos.x - enemyPos.x;
-                    let dy = playerPos.y - enemyPos.y;
-                    let thisDistance = Math.sqrt(dx*dx + dy*dy);
-                    if (closestDistance === null || thisDistance < closestDistance) {
-                        victim = player;
-                        closestDistance = thisDistance;
-                        targetPos = playerPos;
-                    }
-                });
-                let dirVector = [targetPos.x - enemyPos.x, targetPos.y - enemyPos.y];
-                if (Math.random() < 0.2) {
-                    dirVector = [Math.random() - 0.5, Math.random() - 0.5];
-                    enemy.randomDir = dirVector;
-                }
-                let unitVector = [
-                    dirVector[0]/vectorMag(dirVector), 
-                    dirVector[1]/vectorMag(dirVector)
-                ];
                 let dist = dt * this.speeds[enemy.type];
-                let moveVector = [
-                    unitVector[0]*dist,
-                    unitVector[1]*dist
-                ];
-                let enemySize = this.sizes[enemy.type];
-                if (closestDistance > enemySize + this.sizes.player) { 
-                    if (!willCollideWithEnemy(enemy, moveVector, this.gameState, this.sizes)){
-                        enemy.pos.x = enemy.pos.x + moveVector[0];
-                        enemy.pos.y = enemy.pos.y + moveVector[1];
-                    }
-                }
-                else {
-                    if (enemy.timeToAttack === 0){
-                        victim.health -= gameConfig.damages[enemy.type];
-                        enemy.timeToAttack = gameConfig.times.zombieReload;
-                    }
-                }
+                moveEnemy(enemy, this.gameState, dist, this.sizes, this.damages, this.times);
             }
         });
     }
 
     movePlayers(inputs, dt) {
         let dist = dt*this.speeds.player;
-        // Object.keys(this.gameState.players).forEach( (player) => {
-        //     let keyVector = [0, 0];
-        //     let playerInputs = inputs[parseInt(player)];
-        //     if (playerInputs.up) {
-        //         keyVector[1] -= 1;
-        //     }
-        //     if (playerInputs.down) {
-        //         keyVector[1] += 1;
-        //     }
-        //     if (playerInputs.right) {
-        //         keyVector[0] += 1;
-        //     }
-        //     if (playerInputs.left) {
-        //         keyVector[0] -= 1;
-        //     }
-        //     let dx = keyVector[0];
-        //     let dy = keyVector[1];
-        //     let mag = Math.sqrt(dx*dx + dy*dy);
-        //     let unitVector = [
-        //         keyVector[0]/mag,
-        //         keyVector[1]/mag
-        //     ];
-        //     let moveVector = [unitVector[0]*dist, unitVector[1]*dist];
-        //     this.gameState.players[parseInt(player)].pos.x += moveVector[0];
-        //     this.gameState.players[parseInt(player)].pos.y += moveVector[1];
-        // });
-
         Object.keys(this.gameState.players).forEach((playerId) => {
             let player = this.gameState.players[playerId];
-            let moveVector = [0, 0];
-            let playerInputs = inputs[parseInt(playerId)];
-            if (playerInputs.up) {
-                player.pos.y -= dist;
-            }
-            if (playerInputs.down) {
-                player.pos.y += dist;
-            }
-            if (playerInputs.right) {
-                player.pos.x += dist;
-            }
-            if (playerInputs.left) {
-                player.pos.x -= dist;
-            }
-            
-            Object.keys(this.gameState.items).forEach( (itemId) => {
-                let item = this.gameState.items[itemId];
-                if (item.type !== 'ammo'){
-                    return;
-                }
-                let itemPos = [item.pos.x, item.pos.y];
-                let playerPos = [player.pos.x, player.pos.y];
-                let dist = findDistance(itemPos, playerPos);
-                if (dist < 20){
-                    player.ammo += item.amount;
-                    delete this.gameState.items[itemId];
-                }
-            });
+            let playerInputs = inputs[playerId];
+            movePlayer(player, playerInputs, this.gameState, this.sizes, dt, dist);
+            pickUpItems(player, this.gameState, this.sizes);
         });
     }
 }

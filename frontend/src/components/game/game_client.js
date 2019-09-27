@@ -6,7 +6,7 @@ import GameModel from './logic/game_model';
 import '../../style/stylesheets/reset.css';
 import '../../style/stylesheets/app.css';
 import '../../style/stylesheets/game.css';
-import * as DisplayConfig from './display_config';
+import * as DisplayConfig from './config';
 
 class GameClient extends React.Component {
     constructor(props) {
@@ -20,9 +20,11 @@ class GameClient extends React.Component {
             context: null,
             display: null,
         };
+        this.ownGameModel = new GameModel();
         this.lastTime = Date.now();
-        this.gameState = DisplayConfig.initialState;
+        this.gameState = DisplayConfig.emptyState;
         this.status = '';
+        this.rafId = null;
     }
 
     SOCKET_ReceiveGameState(gameState) {
@@ -36,18 +38,29 @@ class GameClient extends React.Component {
         this.setState({ 
             context: context,
             display: display
-        })
-        requestAnimationFrame(() => this.mainLoop());
+        }, () => this.mainLoop());
     }
 
     componentWillUnmount() {
         this.state.input.unbindKeys();
+        cancelAnimationFrame(this.rafId);
     }
-
+    
     mainLoop() {
-        this.state.display.draw(this.gameState);
-        this.props.send(this.state.input.pressedKeys);
-        requestAnimationFrame(() => this.mainLoop());
+        const now = Date.now();
+        const dt = (now - this.lastTime) / 1000;
+        this.state.display.draw(this.gameState, dt);
+        let clientKeys = {};
+        clientKeys.name = this.props.name
+        clientKeys.inputs = this.state.input.pressedKeys;
+        if(Object.keys(this.gameState.players).includes(this.props.name)) {
+            clientKeys.inputs.pointX = this.state.input.mousePos.x - this.gameState.players[this.props.name].pos.x;
+            clientKeys.inputs.pointY = this.state.input.mousePos.y - this.gameState.players[this.props.name].pos.y;
+        }
+        
+        this.props.send(clientKeys);
+        this.lastTime = now;
+        this.rafId = requestAnimationFrame(() => this.mainLoop());
     }
 
     render() {
