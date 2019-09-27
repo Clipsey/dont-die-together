@@ -5,7 +5,7 @@
 } */
 
 .login-form-main {
-    font-size: 5vw;
+    font-size: 4vw;
     /* margin-top: 1vh; */
     /* font-family: 'Special Elite', cursive; */
     /* font-family: 'Handlee', cursive; */
@@ -53,6 +53,12 @@
 
 .login-form-form {
     color: #ff0000;
+    color: #8E89C7;
+    border-bottom: 1px solid white;
+}
+
+.login-form-form3 {
+    color: #8E89C7;
 }
 
 .login-form-submit2:hover {
@@ -61,4 +67,15 @@
 
 .login-form-submit2 {
     padding-bottom: 2vw;
+}
+
+.login-form-banner {
+    color: #ff0000;
+    font-size: 5vw;
+    padding-top: 1vw;
+    padding-bottom: 1vw;
+}
+
+.divvy {
+    margin-bottom: 1vh;
 }
