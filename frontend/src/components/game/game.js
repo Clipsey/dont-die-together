@@ -61,7 +61,7 @@ class Game extends React.Component {
             context: context,
             display: display
         })
-        this.ref1 = this.requestAnimationFrame(() => this.mainLoop());
+        this.ref1 = requestAnimationFrame(() => this.mainLoop());
     }
 
     componentWillUnmount() {
