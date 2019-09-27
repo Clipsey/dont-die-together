@@ -60,55 +60,55 @@ class App extends React.Component {
   }
 
   joinSocket(room) {
-    // this.room = room;
+    this.room = room;
 
-    // this.closeSockets();
+    this.closeSockets();
 
-    // console.log(window.location);
+    console.log(window.location);
 
-    // let socket;
-    // if (process.env.NODE_ENV === 'development') {
-    //   socket = socketIOClient('localhost:5000', { query: { room: this.room } });
-    // } else {
-    //   socket = socketIOClient(window.location, { query: { room: this.room } });
-    // }
-    // this.sockets.push(socket);
-
-
-    // if (this.isHost) {
-    //   socket.on('From Client Input', (receivedInput) => {
-    //     this.child.SOCKET_ReceiveInputs(receivedInput);
-    //   });
-    // } else {
-    //   console.log('attached to from host game state')
-    //   socket.on('From Host GameState', (receivedGameState) => {
-    //     this.child.SOCKET_ReceiveGameState(receivedGameState);
-    //   });
-    // }
+    let socket;
+    if (process.env.NODE_ENV === 'development') {
+      socket = socketIOClient('localhost:5000', { query: { room: this.room } });
+    } else {
+      socket = socketIOClient(window.location, { query: { room: this.room } });
+    }
+    this.sockets.push(socket);
 
 
-    // if (process.env.NODE_ENV === 'development') {
-    //   socket = socketIOClient('localhost:5000', { query: { room: this.room } });
-    // } else {
-    //   socket = socketIOClient(window.location, { query: { room: this.room } });
-    // }
+    if (this.isHost) {
+      socket.on('From Client Input', (receivedInput) => {
+        this.child.SOCKET_ReceiveInputs(receivedInput);
+      });
+    } else {
+      console.log('attached to from host game state')
+      socket.on('From Host GameState', (receivedGameState) => {
+        this.child.SOCKET_ReceiveGameState(receivedGameState);
+      });
+    }
 
-    // if (this.isHost) {
-    //   socket.on('Initial State', (initialState) => {
-    //     this.child.SOCKET_ReceiveInitialState(initialState);
-    //   })
-    // }
+
+    if (process.env.NODE_ENV === 'development') {
+      socket = socketIOClient('localhost:5000', { query: { room: this.room } });
+    } else {
+      socket = socketIOClient(window.location, { query: { room: this.room } });
+    }
+
+    if (this.isHost) {
+      socket.on('Initial State', (initialState) => {
+        this.child.SOCKET_ReceiveInitialState(initialState);
+      })
+    }
 
 
-    // this.sockets.push(socket);
-    // this.emit = emitSetup(socket);
-    // this.on = onSetup(socket);
+    this.sockets.push(socket);
+    this.emit = emitSetup(socket);
+    this.on = onSetup(socket);
   }
   
   createSocket() {
-    // this.isHost = true;
-    // this.joinSocket(this.props.currentUser.id);
-    // this.forceUpdate();
+    this.isHost = true;
+    this.joinSocket(this.props.currentUser.id);
+    this.forceUpdate();
   }
   
   connectSocket(name) {
