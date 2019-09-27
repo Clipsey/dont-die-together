@@ -1,4 +1,4 @@
-import * as DisplayConfig from './display_config';
+import * as MainConfig from './config';
 import gameConfig from './logic/config';
 
 class Display {
@@ -9,8 +9,8 @@ class Display {
 
     clearScreen(){
         this.ctx.save();
-        this.ctx.fillStyle = DisplayConfig.canvasStyle.backgroundColor;
-        this.ctx.fillRect(0, 0, DisplayConfig.screenWidth, DisplayConfig.screenHeight);
+        this.ctx.fillStyle = MainConfig.canvasStyle.backgroundColor;
+        this.ctx.fillRect(0, 0, MainConfig.screenWidth, MainConfig.screenHeight);
     };
 
     draw(gameState, dt) {
@@ -64,7 +64,6 @@ class Display {
         this.ctx.rect(item.pos.x - 2.5, item.pos.y - 2.5, 5, 5)
         this.ctx.stroke();
         this.ctx.restore();
-
     }
 
     displayItems(gameState) {
@@ -85,8 +84,9 @@ class Display {
         this.ctx.save();
 
         this.ctx.fillFont = 'bold 10px serif';
-        this.ctx.strokeText(`Health: ${player.health}`, player.pos.x - 10, player.pos.y-22);
-        this.ctx.strokeText(`Ammo: ${player.ammo}`, player.pos.x - 10, player.pos.y-12);
+        this.ctx.strokeText(`Health: ${player.health}`, player.pos.x - 10, player.pos.y - 32);
+        this.ctx.strokeText(`Gun: ${player.weapon}`, player.pos.x - 10, player.pos.y - 22);
+        this.ctx.strokeText(`Ammo: ${player.ammo}`, player.pos.x - 10, player.pos.y - 12);
 
         this.ctx.strokeStyle = '#234c70';
         this.ctx.fillStyle = '#234c70';

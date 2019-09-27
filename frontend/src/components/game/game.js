@@ -6,7 +6,7 @@ import GameModel from './logic/game_model';
 import '../../style/stylesheets/reset.css';
 import '../../style/stylesheets/app.css';
 import '../../style/stylesheets/game.css';
-import * as DisplayConfig from './display_config';
+import * as MainConfig from './config';
 import Display from './display';
 
 const GameMode = {
@@ -24,23 +24,46 @@ class Game extends React.Component {
         this.state = {
             input: new InputManager(),
             screen: {
-                width: DisplayConfig.screenWidth,
-                height: DisplayConfig.screenHeight,
+                width: MainConfig.screenWidth,
+                height: MainConfig.screenHeight,
             },
-        
             gameMode: GameMode.StartScreen,
             context: null,
             display: null,
-            gameModel: new GameModel()
+            gameModel: null,
         };
         this.lastTime = Date.now();
-        this.gameState = DisplayConfig.initialState;
+        this.lastGameState = null;
         this.status = '';
-        this.otherInputs = nullKeys;
+        this.otherInputs = [];
+        this.rafId = null;
+        this.numPlayers = 0;
+        this.lastUpdate = Date.now();
     }
 
     SOCKET_ReceiveInputs(inputs) {
-        this.otherInputs = inputs;
+        if (!Object.keys(this.lastGameState.players).includes(inputs.name)) {
+            this.addPlayer(inputs);
+        }
+        this.otherInputs.push(inputs);
+    }
+
+    SOCKET_ReceiveInitialState(gameState) {
+        
+    }
+
+    addPlayer(inputs) {        
+        let newPlayer = JSON.parse(JSON.stringify(MainConfig.newPlayer));
+        this.lastGameState.players[inputs.name] = newPlayer;
+        this.state.gameModel.replaceGameState(this.lastGameState);
+    }
+
+    collectInputs() {
+        let collected = {};
+        this.otherInputs.forEach(input => {
+            collected[input.name] = input.inputs;
+        });
+        return collected;
     }
 
     componentDidMount() {
@@ -51,43 +74,49 @@ class Game extends React.Component {
             context: context,
             display: display
         })
-        requestAnimationFrame(() => this.mainLoop());
+        this.mainLoop();
     }
 
     componentWillUnmount() {
         this.state.input.unbindKeys();
+        cancelAnimationFrame(this.rafId);
     }
 
-    startGame() {
+    startGame(initialState = MainConfig.emptyState) {
+        initialState.players[this.props.name] = JSON.parse(JSON.stringify(MainConfig.newPlayer));
+        this.numPlayers++;
+        this.lastGameState = initialState;
+        const model = new GameModel(initialState);
         this.setState({
-            gameMode: GameMode.Playing
+            gameMode: GameMode.Playing,
+            gameModel: model
         });
     }
 
     mainLoop() {
-        let now = Date.now();
-        let dt = (now - this.lastTime) / 1000;
+        const now = Date.now();
+        const dt = (now - this.lastTime) / 1000;
 
         const hostKeys = this.state.input.pressedKeys;
-        hostKeys.pointX = this.state.input.mousePos.x - this.gameState.players[1].pos.x;
-        hostKeys.pointY = this.state.input.mousePos.y - this.gameState.players[1].pos.y;
+        if (this.state.gameMode === GameMode.StartScreen && hostKeys.enter) this.startGame();
 
-        const inputCollection = {
-            1: hostKeys,
-            2: this.otherInputs,
-        };
+        if (this.state.gameMode === GameMode.Playing) {            
+            hostKeys.pointX = this.state.input.mousePos.x - this.lastGameState.players[this.props.name].pos.x;
+            hostKeys.pointY = this.state.input.mousePos.y - this.lastGameState.players[this.props.name].pos.y;
 
-        if (this.state.gameMode === GameMode.StartScreen && hostKeys.enter) {
-            this.startGame();
-        }
+            let collectedInputs = this.collectInputs();
+            collectedInputs[this.props.name] = hostKeys;
 
-        if (this.state.gameMode === GameMode.Playing) {
-            this.gameState = this.state.gameModel.update(inputCollection, dt);
-            this.state.display.draw(this.gameState, dt);
+            if ((now - this.lastUpdate) / 1000 > 20) {
+                this.lastUpdate = now;
+            }
+
+            this.lastGameState = this.state.gameModel.update(collectedInputs, dt);
+            this.state.display.draw(this.lastGameState, dt);
         }
         this.lastTime = now;
-        requestAnimationFrame(() => this.mainLoop());
-        this.props.send(this.gameState);
+        this.rafId = requestAnimationFrame(() => this.mainLoop());
+        this.props.send(this.lastGameState);
     }
 
     render() {
@@ -98,7 +127,7 @@ class Game extends React.Component {
                     id="canvas"
                     width={this.state.screen.width}
                     height={this.state.screen.height}
-                    style={DisplayConfig.canvasStyle}
+                    style={MainConfig.canvasStyle}
                 />
             </div>
         );
