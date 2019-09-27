@@ -145,8 +145,8 @@ export default class GameModel {
 
     fireBullets(inputs) {
         Object.keys(this.gameState.players).forEach((playerId) => {
-            let player = this.gameState.players[parseInt(playerId)];
-            let playerInputs = inputs[parseInt(playerId)];
+            let player = this.gameState.players[playerId];
+            let playerInputs = inputs[playerId];
             if (this.playerCanFire(player) && playerInputs.fire) {
                 player.timeToFire = gameConfig.times.pistolReload;
                 let fireVector = [playerInputs.pointX, playerInputs.pointY];
@@ -256,7 +256,7 @@ export default class GameModel {
         Object.keys(this.gameState.players).forEach((playerId) => {
             let player = this.gameState.players[playerId];
             let moveVector = [0, 0];
-            let playerInputs = inputs[parseInt(playerId)];
+            let playerInputs = inputs[playerId];
             if (playerInputs.up) {
                 player.pos.y -= dist;
             }

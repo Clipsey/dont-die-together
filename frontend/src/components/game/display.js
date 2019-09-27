@@ -1,4 +1,4 @@
-import * as DisplayConfig from './display_config';
+import * as MainConfig from './main_config';
 import gameConfig from './logic/config';
 
 class Display {
@@ -9,8 +9,8 @@ class Display {
 
     clearScreen(){
         this.ctx.save();
-        this.ctx.fillStyle = DisplayConfig.canvasStyle.backgroundColor;
-        this.ctx.fillRect(0, 0, DisplayConfig.screenWidth, DisplayConfig.screenHeight);
+        this.ctx.fillStyle = MainConfig.canvasStyle.backgroundColor;
+        this.ctx.fillRect(0, 0, MainConfig.screenWidth, MainConfig.screenHeight);
     };
 
     draw(gameState, dt) {
