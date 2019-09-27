@@ -106,8 +106,8 @@ class App extends React.Component {
   }
   
   createSocket() {
-    this.isHost = true;
-    this.joinSocket(this.props.currentUser.id);
+    // this.isHost = true;
+    // this.joinSocket(this.props.currentUser.id);
     // this.forceUpdate();
   }
   
