@@ -7,6 +7,7 @@ import '../../style/stylesheets/reset.css';
 import '../../style/stylesheets/app.css';
 import '../../style/stylesheets/game.css';
 import * as DisplayConfig from './display_config';
+import GameModel from './logic/game_model';
 
 class GameClient extends React.Component {
     constructor(props) {
@@ -20,6 +21,7 @@ class GameClient extends React.Component {
             context: null,
             display: null,
         };
+        this.ownGameModel = new GameModel();
         this.lastTime = Date.now();
         this.gameState = DisplayConfig.initialState;
         this.status = '';
