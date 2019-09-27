@@ -30,7 +30,7 @@ const gameConfig = {
         zombie: 30
     },
     acceleration: {
-        player: 400             //acc in pixels/second/second
+        player: 1000             //acc in pixels/second/second
     },
     sizes: {
         item: 5,
@@ -113,6 +113,19 @@ export const sampleState = {
             pos: {
                 x: 50,
                 y: 50
+            }
+        }
+    },
+    obstacles: {
+        0.455786546: {
+            type: 'rocks',
+            topLeft: {
+                x: 30,
+                y: 100,
+            },
+            bottomRight: {
+                x: 50,
+                y: 100,
             }
         }
     }

@@ -26,6 +26,29 @@ export const willCollideWithEnemy = (person, moveVector, gameState, sizes) => {
     return answer;
 }
 
+export const willCollideWithObstacle = (entity, moveVector, gameState, size) => {
+    let newPos = {
+        x: entity.pos.x + moveVector[0],
+        y: entity.pos.y + moveVector[1]
+    }
+    let answer = true;
+    Object.values(gameState.obstacles).forEach( (obstacle) => {
+        if (newPos.y < (obstacle.topLeft.y - size)){
+            answer = false; //above
+        }
+        else if (newPos.y > (obstacle.bottomRight.y + size)){
+            answer = false; //below
+        }
+        else if (newPos.x < (obstacle.topLeft.x - size)){
+            answer = false; //left
+        }
+        else if (newPos.x > (obstacle.bottomRight.x + size)){
+            answer = false; //right
+        }
+    });
+    return answer;
+}
+
 export const generateId = () => {
     return Math.random();
 }

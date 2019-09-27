@@ -62,20 +62,31 @@ export const fireBullets = (player, playerInputs, gameState, times, speeds) => {
 };
 
 export const moveBullet = (bullet, id, dt, gameState, sizes, times, distances, damages, xBound, yBound) => {
+    let oldPos = {x: bullet.pos.x, y: bullet.pos.y};
     let xDist = bullet.vel.x * dt;
     let yDist = bullet.vel.y * dt;
     bullet.pos.x += xDist;
     bullet.pos.y += yDist;
-    if (bullet.pos.x > xBound ||
-        bullet.pos.x < 0 ||
-        bullet.pos.y > yBound ||
-        bullet.pos.y < 0) {
-        delete gameState.bullets[id];
-    }
+    let slope = (bullet.pos.y - oldPos.y) / (bullet.pos.x - oldPos.x);
+    let yInt = oldPos.y - (slope * oldPos.x);
+    let perpSlope = (-1)*(1/slope);
+ 
+    let bA = bullet.pos.y - (perpSlope * bullet.pos.x);
+    let bB = oldPos.y - (perpSlope * oldPos.x);
+
     Object.keys(gameState.enemies).forEach((enemyId) => {
         let enemy = gameState.enemies[enemyId];
-        let dist = findDistance([enemy.pos.x, enemy.pos.y], [bullet.pos.x, bullet.pos.y]);
-        if (dist < sizes[enemy.type] && enemy.status !== 'dying') {
+        
+        let bTwo = enemy.pos.y - (perpSlope * enemy.pos.x);
+        let interX = (bTwo - yInt) / (slope - perpSlope);
+        let interY = (slope * interX) + yInt;
+        let maxDist = findDistance([interX, interY], [enemy.pos.x, enemy.pos.y]);
+
+        let enemyBetween = ((bTwo > bB && bTwo < bA) || (bTwo < bB && bTwo > bA));
+
+        if (enemy.status !== 'dying' && 
+            maxDist < sizes[enemy.type] && 
+            enemyBetween) {
             enemy.health -= damages[bullet.type];
             let staggerDir = [bullet.vel.x, bullet.vel.y];
             let unitVector = [
@@ -97,4 +108,10 @@ export const moveBullet = (bullet, id, dt, gameState, sizes, times, distances, d
             }
         }
     });
+    if (bullet.pos.x > xBound ||
+        bullet.pos.x < 0 ||
+        bullet.pos.y > yBound ||
+        bullet.pos.y < 0) {
+        delete gameState.bullets[id];
+    }
 };
