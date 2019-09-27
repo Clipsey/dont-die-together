@@ -21,7 +21,7 @@ class SignupForm extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.signedIn === true) {
-      this.props.history.push('/login');
+      // this.props.history.push('/join');
     }
 
     this.setState({ errors: nextProps.errors })
@@ -42,7 +42,11 @@ class SignupForm extends React.Component {
       password2: this.state.password2
     };
 
-    this.props.signup(user, this.props.history);
+    // this.props.signup(user).then(this.props.login(user))
+    // this.props.login(user, this.props.history)
+
+    let promise1 = new Promise(user => this.props.signup(user))
+    promise1.then(this.props.login(user))
   }
 
   renderErrors() {
