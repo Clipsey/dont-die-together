@@ -6,6 +6,7 @@ import '../../style/stylesheets/login_form.css';
 
 class LoginForm extends React.Component {
   constructor(props) {
+    // debugger
     super(props);
 
     this.state = {
@@ -16,6 +17,7 @@ class LoginForm extends React.Component {
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.renderErrors = this.renderErrors.bind(this);
+    this.demoLogin = this.demoLogin.bind(this);
   }
 
   // Once the user has been authenticated, redirect to the Tweets page
@@ -40,6 +42,7 @@ class LoginForm extends React.Component {
     e.preventDefault();
 
     let user = {
+      name: this.state.name,
       email: this.state.email,
       password: this.state.password
     };
@@ -60,6 +63,11 @@ class LoginForm extends React.Component {
     );
   }
 
+  demoLogin(e) {
+    e.preventDefault();
+    this.props.login({ name: "Guest", password: "password" })
+  }
+
   render() {
     return (
       <div>
@@ -70,9 +78,9 @@ class LoginForm extends React.Component {
             <div>
               <input type="text"
                 className="login-form-form"
-                value={this.state.email}
-                onChange={this.update('email')}
-                placeholder="Email"
+                value={this.state.name}
+                onChange={this.update('name')}
+                placeholder="Name"
               />
               <br />
               <input type="password"
@@ -83,6 +91,8 @@ class LoginForm extends React.Component {
               />
               <br />
               <input className="login-form-submit" type="submit" value="Submit" />
+              <br />
+              <button className="login-form-submit2" onClick={this.demoLogin}>Demo Login</button>
               <div className="login-form-form">{this.renderErrors()}</div>
             </div>
           </form>

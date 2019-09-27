@@ -11,4 +11,56 @@
     padding-left: 1vw;
     padding-right: 1vw;
     overflow: scroll;
+    /* cursor: none; */
+}
+
+.app {
+    /* background-color: #6b92b9; */
+    background-image: url('http://i.imgur.com/BiSmXaq.png'), url('http://i.imgur.com/XHuy0NJ.png'), url('http://i.imgur.com/okpRxJU.png');
+    -webkit-animation: snow 60s linear infinite;
+    -moz-animation: snow 60s linear infinite;
+    -ms-animation: snow 60s linear infinite;
+    animation: snow 60s linear infinite;
+    opacity: 0.9;
+}
+
+@-webkit-keyframes snow {
+    0% { background-position: 0px 0px, 0px 0px, 0px 0px }
+    /* 50% { background-color: #b4cfe0 } */
+    100% { background-position: 500px 1000px, 400px 400px, 300px 300px;
+    /* background-color: #6b92b9; */
+}
+}
+
+@-moz-keyframes snow {
+    0% { background-position: 0px 0px, 0px 0px, 0px 0px }
+    /* 50% { background-color: #b4cfe0 } */
+    100% { background-position: 500px 1000px, 400px 400px, 300px 300px;
+    /* background-color: #6b92b9; */
+}
+}
+
+@-ms-keyframes snow {
+    0% { background-position: 0px 0px, 0px 0px, 0px 0px }
+    /* 50% { background-color: #b4cfe0 } */
+    100% { background-position: 500px 1000px, 400px 400px, 300px 300px;
+    /* background-color: #6b92b9; */
+}
+}
+
+@keyframes snow {
+    0% { background-position: 0px 0px, 0px 0px, 0px 0px }
+    /* 50% { background-color: #b4cfe0 } */
+    100% { background-position: 500px 1000px, 400px 400px, 300px 300px;
+    /* background-color: #6b92b9; */
+}
+}
+
+.app {
+  -webkit-touch-callout: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
 }

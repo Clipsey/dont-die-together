@@ -44,3 +44,21 @@
     background-color: #de1645;
     width: 90vw;
 } */
+
+.login-form-submit:hover {
+    color: #0d9e61;
+    /* color: #8E89C7;
+    color: #ede12f; */
+}
+
+.login-form-form {
+    color: #ff0000;
+}
+
+.login-form-submit2:hover {
+    color: #0d9e61;
+}
+
+.login-form-submit2 {
+    padding-bottom: 2vw;
+}

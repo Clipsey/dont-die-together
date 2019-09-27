@@ -1,6 +1,6 @@
 import React from 'react';
 import { AuthRoute, ProtectedRoute } from '../util/route_util';
-import { Switch } from 'react-router-dom';
+import { Switch, Link, Route } from 'react-router-dom';
 import NavBarContainer from './nav/navbar_container';
 import TweetsContainer from './tweets/tweets_container';
 import MainPage from './main/main_page';
@@ -9,9 +9,12 @@ import SignupFormContainer from './session/signup_form_container';
 import ProfileContainer from './profile/profile_container';
 import TweetComposeContainer from './tweets/tweet_compose_container';
 import Game from './game/game';
+import GameClient from './game/game_client';
 import Modal from './modal/modal';
 import JoinGameSessionContainer from './game/join_game_session_container'
-import CreateGameSessionContainer from './game/create_game_session.js'
+import CreateGameSessionContainer from './game/create_game_session_container.js'
+import GameSessionContainer from './game/game_session_container.js'
+import '../style/stylesheets/snowy.css'
 
 import socketIOClient from 'socket.io-client';
 import { emitSetup, onSetup } from '../util/sockets_util';
@@ -32,94 +35,86 @@ class App extends React.Component {
       sockets: {}
     }
     this.send = this.send.bind(this);
-    this.setColor = this.setColor.bind(this);
     this.setHealth = this.setHealth.bind(this);
-    this.getState = props.getState;
 
-    this.socket = null;
-    this.room = null;
+    this.sockets = [];
+    this.host = null;
 
     this.createSocket = this.createSocket.bind(this);
+    this.connectSocket = this.connectSocket.bind(this);
+    this.joinSocket = this.joinSocket.bind(this);
+  }
+
+  joinSocket(room) {
+    this.room = room;
+
+    if (this.sockets.length > 0) {
+      this.sockets.forEach((socket, idx) => {
+        socket.off('From Client Input');
+        socket.off('From Host GameState');
+        socket.disconnect();
+      })
+      this.sockets = [];
+    }
+
+    let socket;
+    if (process.env.NODE_ENV === 'development') {
+      socket = socketIOClient('localhost:5000', { query: { room: this.room } });
+    } else {
+      socket = socketIOClient(window.location, { query: { room: this.room } });
+    }
+    this.sockets.push(socket);
+
+
+    if (this.isHost) {
+      socket.on('From Client Input', (receivedInput) => {
+        console.log(`From Client Input`);
+        console.log(receivedInput);
+        this.child.SOCKET_ReceiveInputs(receivedInput);
+        // this.setState({ gameState: receivedInput })
+      });
+    } else {
+      console.log('attached to from host game state')
+      socket.on('From Host GameState', (receivedGameState) => {
+        this.child.SOCKET_ReceiveGameState(receivedGameState);
+      });
+    }
+
+
+    if (process.env.NODE_ENV === 'development') {
+      socket = socketIOClient('localhost:5000', { query: { room: this.room } });
+    } else {
+      socket = socketIOClient(window.location, { query: { room: this.room } });
+    }
+
+
+    this.sockets.push(socket);
+    this.emit = emitSetup(socket);
+    this.on = onSetup(socket);
   }
   
   createSocket() {
-    
-    // this.socket.removeAllListeners();
-    if (this.socket !== null) this.socket.disconnect();
-
-    this.room = this.getState().session.user.id;
-
-    if (process.env.NODE_ENV === 'development') {
-      this.socket = socketIOClient('localhost:5000', { query: {room: this.room } });
-    } else {
-      this.socket = socketIOClient(window.location, { query: {room: this.room } });
-    }
-    
-    // this.emit('join room', String(this.getState().session.user.id));
-
-    // this.on('room change', room => {
-    //   console.log('room cahnge');
-    // })
-  
-    this.socket.on('change color', (col) => {
-      document.body.style.backgroundColor = col;
-    });
-    this.socket.on('receive gameState', (receivedState) => {
-      console.log('receive');
-      this.setState({ gameState: receivedState })
-    });
-
-    if (process.env.NODE_ENV === 'development') {
-      this.socket = socketIOClient('localhost:5000', { query: { room: this.room } });
-    } else {
-      this.socket = socketIOClient(window.location, { query: { room: this.room } });
-    }
-    this.emit = emitSetup(this.socket);
-    this.on = onSetup(this.socket);
- 
+    this.isHost = true;
+    this.joinSocket(this.props.currentUser.id)
+    // this.forceUpdate();
   }
   
-  connectSocket(username) {
-
-    if (this.socket !== null) this.socket.disconnect();
-
-    // Get host user's session id, connect to that room
-    const host = this.getState().users;
-    // this.room = this.getState().users;
-
-    // if (process.env.NODE_ENV === 'development') {
-    //   this.socket = socketIOClient('localhost:5000', { query: { room: this.room } });
-    // } else {
-    //   this.socket = socketIOClient(window.location, { query: { room: this.room } });
-    // }
-     
-    // let socket;
-    // if (process.env.NODE_ENV === 'development') {
-    //   socket = socketIOClient('localhost:5000');
-    // } else {
-    //   socket = socketIOClient();
-    // }
-
-    // this.emit = emitSetup(socket);
-    // this.on = onSetup(socket);
-
-    // this.on('change color', (col) => {
-    //   document.body.style.backgroundColor = col;
-    // })
-    // this.on('receive gameState', (receivedState) => {
-    //   this.setState({ gameState: receivedState })
-    // })
-
-    // setInterval(this.send, 1000);`
+  connectSocket(name) {
+    console.log('connecting socket');
+    this.isHost = false;
+    const sessionId = this.props.users[name]._id;
+    console.log(`Session ID: ${sessionId}`);
+    this.joinSocket(sessionId);
+    // this.forceUpdate();
   }
 
-  send() {
-    // this.emit('change color', this.state.color);
-    this.socket.emit('set gameState', this.state.gameState);
-  }
-
-  setColor(color) {
-    return () => this.setState({ color })
+  send(data) {
+    // this.child.testMethod();
+    if (this.isHost) {
+      this.emit('From Host GameState', data);
+    } else {
+      this.emit('From Client Input', data);
+    }
   }
 
   setHealth(health) {
@@ -131,30 +126,36 @@ class App extends React.Component {
   }
 
   render() {
+    console.log(`host: ${this.isHost}`);
     return (
       <div className="app">
-        <button onClick={this.createSocket}>Create</button>
-        <br></br>
-        <br></br>
-        <button onClick={this.send}>Click</button>
-        <br></br>
-        <button onClick={this.setHealth(100)}>Health = 100</button>
-        <br></br>
-        <button onClick={this.setHealth(50)}>Health = 50</button>
-        <div>{this.state.gameState.player.health}</div>
+          <div> DEBUGGER
+            <br></br>
+            <button onClick={this.createSocket}>Create</button>
+            <br></br>
+            <br></br>
+            <button onClick={this.send}>Click</button>
+            <br></br>
+            <button onClick={this.setHealth(100)}>Health = 100</button>
+            <br></br>
+            <button onClick={this.setHealth(50)}>Health = 50</button>
+            <div>{this.state.gameState.player.health}</div>
+          </div>
+  
         <NavBarContainer />
         <Switch>
           <AuthRoute exact path="/" component={MainPage} />
           <AuthRoute exact path="/login" component={LoginFormContainer} />
           <AuthRoute exact path="/signup" component={SignupFormContainer} />
 
-          <ProtectedRoute exact path="/joingame" createSocket={this.createSocket} connectSocket={this.connectSocket} component={JoinGameSessionContainer} />} />
+          <ProtectedRoute exact path="/joingame" createSocket={this.createSocket} connectSocket={this.connectSocket} component={JoinGameSessionContainer} />
           <ProtectedRoute exact path="/creategame" createSocket={this.createSocket} connectSocket={this.connectSocket} component={CreateGameSessionContainer} />
 
-          <ProtectedRoute exact path="/game" component={Game} />
-          {/* <ProtectedRoute exact path="/tweets" component={TweetsContainer} /> */}
-          {/* <ProtectedRoute exact path="/profile" component={ProfileContainer} /> */}
-          {/* <ProtectedRoute exact path="/new_tweet" component={TweetComposeContainer} /> */}
+          <ProtectedRoute path="/game" component={GameSessionContainer}>
+            {this.isHost && this.props.loggedIn && <Route path='/game' render={() => <Game ref={Ref => this.child = Ref} send={this.send} isHost={this.isHost} />} /> } 
+            
+            {!this.isHost && this.props.loggedIn && <Route path='/game' render={() => <GameClient ref={Ref => this.child = Ref} send={this.send} isHost={this.isHost} />} /> }
+          </ProtectedRoute>
         </Switch>
       </div>
     )

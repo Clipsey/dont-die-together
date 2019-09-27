@@ -7,8 +7,83 @@
     color: #ff0000;
 }
 
+.navbar-game-title {
+    -webkit-animation: color-change 30s infinite;
+    -moz-animation: color-change 30s infinite;
+    -o-animation: color-change 30s infinite;
+    -ms-animation: color-change 30s infinite;
+    animation: color-change 30s infinite;
+}
+
+@-webkit-keyframes color-change {
+    0% { color: #ff0000; }
+    50% { color: #de1645; }
+    100% { color: #ff0000; }
+}
+@-moz-keyframes color-change {
+    0% { color: #ff0000; }
+    50% { color: #de1645; }
+    100% { color: #ff0000; }
+}
+@-ms-keyframes color-change {
+    0% { color: #ff0000; }
+    50% { color: #de1645; }
+    100% { color: #ff0000; }
+}
+@-o-keyframes color-change {
+    0% { color: #ff0000; }
+    50% { color: #de1645; }
+    100% { color: #ff0000; }
+}
+@keyframes color-change {
+    0% { color: #ff0000; }
+    50% { color: #de1645; }
+    100% { color: #ff0000; }
+}
+
 .navbar-login-register {
     font-size: 3vw;
     text-align: center;
     /* padding-bottom: 3vh; */
 }
+
+.navbar-thingy:hover {
+    color: #0d9e61;
+}
+
+/* .navbar-game-title {
+    background-color: #6b92b9;
+    background-image: url('http://i.imgur.com/BiSmXaq.png'), url('http://i.imgur.com/XHuy0NJ.png'), url('http://i.imgur.com/okpRxJU.png');
+    -webkit-animation: snow 20s linear infinite;
+    -moz-animation: snow 20s linear infinite;
+    -ms-animation: snow 20s linear infinite;
+    animation: snow 20s linear infinite;
+}
+
+@-webkit-keyframes snow {
+    0% { background-position: 0px 0px, 0px 0px, 0px 0px }
+    50% { background-color: #b4cfe0 }
+    100% { background-position: 500px 1000px, 400px 400px, 300px 300px;
+    background-color: #6b92b9; }
+}
+
+@-moz-keyframes snow {
+    0% { background-position: 0px 0px, 0px 0px, 0px 0px }
+    50% { background-color: #b4cfe0 }
+    100% { background-position: 500px 1000px, 400px 400px, 300px 300px;
+    background-color: #6b92b9; }
+}
+
+@-ms-keyframes snow {
+    0% { background-position: 0px 0px, 0px 0px, 0px 0px }
+    50% { background-color: #b4cfe0 }
+    100% { background-position: 500px 1000px, 400px 400px, 300px 300px;
+    background-color: #6b92b9; }
+}
+
+@keyframes snow {
+    0% { background-position: 0px 0px, 0px 0px, 0px 0px }
+    50% { background-color: #b4cfe0 }
+    100% { background-position: 500px 1000px, 400px 400px, 300px 300px;
+    background-color: #6b92b9; }
+} */

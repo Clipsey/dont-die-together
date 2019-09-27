@@ -1,7 +1,12 @@
 import React from 'react';
-import * as DisplayConfig from './display_config';
-import * as DisplayUtil from './display_util';
 import InputManager from './input_manager';
+import Display from './display';
+import Welcome from './welcome';
+import GameModel from './logic/game_model';
+import '../../style/stylesheets/reset.css';
+import '../../style/stylesheets/app.css';
+import '../../style/stylesheets/game.css';
+import * as DisplayConfig from './display_config';
 
 class GameClient extends React.Component {
     constructor(props) {
@@ -12,36 +17,41 @@ class GameClient extends React.Component {
                 width: DisplayConfig.screenWidth,
                 height: DisplayConfig.screenHeight,
             },
-            context: null
+            context: null,
+            display: null,
         };
-
-        this.on = props.on;
-        this.emit = props.emit;
+        this.lastTime = Date.now();
         this.gameState = DisplayConfig.initialState;
+        this.status = '';
+    }
+
+    SOCKET_ReceiveGameState(gameState) {
+        this.gameState = gameState;
     }
 
     componentDidMount() {
         this.state.input.bindKeys();
         const context = this.refs.canvas.getContext('2d');
+        const display = new Display(context);
         this.setState({ 
-            context: context 
+            context: context,
+            display: display
         })
+        requestAnimationFrame(() => this.mainLoop());
     }
 
     componentWillUnmount() {
         this.state.input.unbindKeys();
     }
 
-    display(gameState) {
-        DisplayUtil.clearScreen(this.state.context);
-        this.displayPlayers(gameState);
-    }
+    mainLoop() {
+        this.state.display.draw(this.gameState);
+        const clientKeys = this.state.input.pressedKeys;
+        clientKeys.pointX = this.state.input.mousePos.x - this.gameState.players[2].pos.x;
+        clientKeys.pointY = this.state.input.mousePos.y - this.gameState.players[2].pos.y;
 
-    displayPlayers(gameState) {
-        let players = Object.values(gameState.players);
-        for (let i = 0; i < players.length; i++) {
-            DisplayUtil.displayPlayer(players[i], this.state.context);
-        }
+        this.props.send(clientKeys);
+        requestAnimationFrame(() => this.mainLoop());
     }
 
     render() {
