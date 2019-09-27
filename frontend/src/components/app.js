@@ -60,11 +60,11 @@ class App extends React.Component {
   }
 
   joinSocket(room) {
-    this.room = room;
+    // this.room = room;
 
     // this.closeSockets();
 
-    console.log(window.location);
+    // console.log(window.location);
 
     // let socket;
     // if (process.env.NODE_ENV === 'development') {
