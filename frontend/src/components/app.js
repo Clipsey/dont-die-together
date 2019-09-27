@@ -86,22 +86,22 @@ class App extends React.Component {
     }
 
 
-    if (process.env.NODE_ENV === 'development') {
-      socket = socketIOClient('localhost:5000', { query: { room: this.room } });
-    } else {
-      socket = socketIOClient(window.location, { query: { room: this.room } });
-    }
+    // if (process.env.NODE_ENV === 'development') {
+    //   socket = socketIOClient('localhost:5000', { query: { room: this.room } });
+    // } else {
+    //   socket = socketIOClient(window.location, { query: { room: this.room } });
+    // }
 
-    if (this.isHost) {
-      socket.on('Initial State', (initialState) => {
-        this.child.SOCKET_ReceiveInitialState(initialState);
-      })
-    }
+    // if (this.isHost) {
+    //   socket.on('Initial State', (initialState) => {
+    //     this.child.SOCKET_ReceiveInitialState(initialState);
+    //   })
+    // }
 
 
     this.sockets.push(socket);
-    this.emit = emitSetup(socket);
-    this.on = onSetup(socket);
+    // this.emit = emitSetup(socket);
+    // this.on = onSetup(socket);
   }
   
   createSocket() {
