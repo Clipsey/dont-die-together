@@ -13,7 +13,7 @@ class MainPage extends React.Component {
         Big Pharma has released a new drug called Ambrosia, marketed to promote health and increase longevity.
         <br />
         <br />
-        You, the player character, believe that the drug has been distributed without sufficient testing... With SAA in hand, the new dawn arrives.
+        You believe that the drug has been distributed without sufficient testing... With SAA (your pistol) in hand, the new dawn arrives.
       </div>
     );
   }
