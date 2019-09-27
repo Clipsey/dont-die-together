@@ -1,29 +1,76 @@
+import gameConfig from './config';
 import {
     willCollideWithEnemy
 } from './model_helper';
 import {
-    findDistance
+    findDistance,
+    vectorMag
 } from './vector_util';
 
-export const movePlayer = (player, playerInputs, gameState, sizes, dist) => {
-    let moveVector = [0, 0];
+export const movePlayer = (player, playerInputs, gameState, sizes, dt, dist) => {
+    //// BEGIN ACC
+    let inputVector = [0, 0];
     if (playerInputs.up) {
-        moveVector[1] -= dist;
+        inputVector[1] -= 1;
     }
     if (playerInputs.down) {
-        moveVector[1] += dist;
+        inputVector[1] += 1;
     }
     if (playerInputs.right) {
-        moveVector[0] += dist;
+        inputVector[0] += 1;
     }
     if (playerInputs.left) {
-        moveVector[0] -= dist;
+        inputVector[0] -= 1;
+    }
+    if (inputVector[0] !== 0 || inputVector[1] !== 0) {
+        let unitDir = [
+            inputVector[0] / vectorMag(inputVector),
+            inputVector[1] / vectorMag(inputVector)
+        ];
+        let accVector = [
+            unitDir[0] * gameConfig.acceleration.player,
+            unitDir[1] * gameConfig.acceleration.player
+        ];
+        let accAmt = [
+            accVector[0] * dt,
+            accVector[1] * dt
+        ];
+        player.velocity.x += accAmt[0];
+        player.velocity.y += accAmt[1];
+        let playerSpeed = vectorMag([player.velocity.x, player.velocity.y]);
+        if (playerSpeed > gameConfig.speeds.player){
+            player.velocity.x *= gameConfig.speeds.player / playerSpeed;
+            player.velocity.y *= gameConfig.speeds.player / playerSpeed;
+        }
+
+        player.pos.x += player.velocity.x * dt;
+        player.pos.y += player.velocity.y * dt;
+    }
+    else {
+        player.velocity.x = 0;
+        player.velocity.y = 0;
     }
 
-    if (!willCollideWithEnemy(player, moveVector, gameState, sizes)){
-        player.pos.x += moveVector[0];
-        player.pos.y += moveVector[1];
-    }
+    //// END ACC
+
+    // let moveVector = [0, 0];     ///BEGIN NORMAL
+    // if (playerInputs.up) {
+    //     moveVector[1] -= dist;
+    // }
+    // if (playerInputs.down) {
+    //     moveVector[1] += dist;
+    // }
+    // if (playerInputs.right) {
+    //     moveVector[0] += dist;
+    // }
+    // if (playerInputs.left) {
+    //     moveVector[0] -= dist;
+    // }                            ///END NORMAL
+
+    // if (!willCollideWithEnemy(player, moveVector, gameState, sizes)){
+    //     player.pos.x += moveVector[0];
+    //     player.pos.y += moveVector[1];
+    // }
 };
 
 export const switchGuns = (player, playerInputs, times) => {

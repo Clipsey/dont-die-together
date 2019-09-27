@@ -30,7 +30,34 @@ export default class GameModel {
         this.times = gameConfig.times;
         this.generateZombieTime = 0;
         this.generateItemTime = 0;
+
+    //     //EXPERIMENTAL
+    //     this.inputs = {
+    //         1: {
+    //             up: false,
+    //             down: false,
+    //             left: false,
+    //             right: false,
+    //             fire: false,
+    //             cycleGun: false
+    //         }
+    //     };
+    //     window.setInterval( () => {
+    //         this.updateTimes(0.02);
+    //         this.movePlayers(this.inputs, 0.02);
+    //         this.moveEnemies(0.02);
+    //         this.moveBullets(0.02);
+    //         this.fireBullets(this.inputs);
+    //         this.switchGuns(this.inputs);
+    //         return this.gameState;
+    //     }, 20);
     }
+
+    // //EXPERIMENTAL
+    // update(inputs, dt) {
+    //     this.inputs = inputs;
+    //     return this.gameState;
+    // }
 
     update(inputs, dt) { 
         this.updateTimes(dt);
@@ -51,7 +78,13 @@ export default class GameModel {
         let y = Math.random()*gameConfig.gameBounds.y;
         let newItem = {
             type: 'ammo',
-            gun: 'shotgun',
+            gun: [
+                'pistol', 
+                'pistol', 
+                'pistol', 
+                'rifle', 
+                'shotgun'
+            ][Math.floor(Math.random()*5)],
             pos: {},
             amount: 10
         }
@@ -167,7 +200,7 @@ export default class GameModel {
         Object.keys(this.gameState.players).forEach((playerId) => {
             let player = this.gameState.players[playerId];
             let playerInputs = inputs[parseInt(playerId)];
-            movePlayer(player, playerInputs, this.gameState, this.sizes, dist);
+            movePlayer(player, playerInputs, this.gameState, this.sizes, dt, dist);
             pickUpItems(player, this.gameState, this.sizes);
         });
     }
