@@ -10,6 +10,10 @@ export const newPlayer = {
         x: 100,
         y: 100
     },
+    velocity: {
+        x: 0,
+        y: 0
+    },
     health: 100,
     timeToFire: 0,   //time until able to fire
     weapon: 'pistol',

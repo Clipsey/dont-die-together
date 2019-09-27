@@ -1,5 +1,6 @@
 import gameConfig from './config';
 import { sampleState } from './config';
+import { vectorMag, findDistance } from './vector_util';
 
 import {
     moveEnemy
@@ -11,7 +12,8 @@ import {
 import {
     movePlayer,
     pickUpItems,
-    switchGuns
+    switchGuns,
+    playerCanFire
 } from './player';
 import {
     fireBullets,
@@ -30,35 +32,8 @@ export default class GameModel {
         this.times = gameConfig.times;
         this.generateZombieTime = 0;
         this.generateItemTime = 0;
-
-    //     //EXPERIMENTAL
-    //     this.inputs = {
-    //         1: {
-    //             up: false,
-    //             down: false,
-    //             left: false,
-    //             right: false,
-    //             fire: false,
-    //             cycleGun: false
-    //         }
-    //     };
-    //     window.setInterval( () => {
-    //         this.updateTimes(0.02);
-    //         this.movePlayers(this.inputs, 0.02);
-    //         this.moveEnemies(0.02);
-    //         this.moveBullets(0.02);
-    //         this.fireBullets(this.inputs);
-    //         this.switchGuns(this.inputs);
-    //         return this.gameState;
-    //     }, 20);
     }
-
-    // //EXPERIMENTAL
-    // update(inputs, dt) {
-    //     this.inputs = inputs;
-    //     return this.gameState;
-    // }
-
+    
     update(inputs, dt) { 
         this.updateTimes(dt);
         this.movePlayers(inputs, dt);
@@ -174,29 +149,6 @@ export default class GameModel {
         Object.keys(this.gameState.players).forEach((playerId) => {
             let player = this.gameState.players[playerId];
             let playerInputs = inputs[playerId];
-            if (this.playerCanFire(player) && playerInputs.fire) {
-                player.timeToFire = gameConfig.times.pistolReload;
-                let fireVector = [playerInputs.pointX, playerInputs.pointY];
-                let unitVector = [
-                    fireVector[0]/vectorMag(fireVector),
-                    fireVector[1]/vectorMag(fireVector)
-                ]
-                let speed = this.speeds.bullet;
-                let newBullet = {
-                    type: 'pistol',
-                    pos: {},
-                    vel: {}
-                };
-                newBullet.pos.x = player.pos.x;
-                newBullet.pos.y = player.pos.y;
-                newBullet.vel.x = unitVector[0]*speed;
-                newBullet.vel.y = unitVector[1]*speed;
-                this.gameState.bullets[Math.random()] = newBullet; 
-                player.ammo -= 1;
-                console.log('ammo left: ' + player.ammo);
-            } 
-            let player = this.gameState.players[playerId];
-            let playerInputs = inputs[playerId];
             switchGuns(player, playerInputs, this.times);
         });
     }
@@ -250,7 +202,7 @@ export default class GameModel {
                     delete this.gameState.items[itemId];
                 }
             });
-            let playerInputs = inputs[playerId];
+            
             movePlayer(player, playerInputs, this.gameState, this.sizes, dt, dist);
             pickUpItems(player, this.gameState, this.sizes);
         });
