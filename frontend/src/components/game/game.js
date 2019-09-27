@@ -27,18 +27,16 @@ class Game extends React.Component {
                 width: DisplayConfig.screenWidth,
                 height: DisplayConfig.screenHeight,
             },
-        
             gameMode: GameMode.StartScreen,
             context: null,
             display: null,
-            gameModel: new GameModel()
+            gameModel: null,
         };
         this.lastTime = Date.now();
         this.gameState = DisplayConfig.initialState;
         this.status = '';
         this.otherInputs = nullKeys;
-        this.ref1 = null;
-        this.ref2 = null;
+        this.rafId = null;
     }
 
     SOCKET_ReceiveInputs(inputs) {
@@ -57,18 +55,18 @@ class Game extends React.Component {
             context: context,
             display: display
         })
-        this.ref1 = requestAnimationFrame(() => this.mainLoop());
+        this.mainLoop();
     }
 
     componentWillUnmount() {
         this.state.input.unbindKeys();
-        cancelAnimationFrame(this.ref1);
-        cancelAnimationFrame(this.ref2);
+        cancelAnimationFrame(this.rafId);
     }
 
     startGame() {
         this.setState({
-            gameMode: GameMode.Playing
+            gameMode: GameMode.Playing,
+            gameModel: new GameModel()
         });
     }
 
@@ -77,24 +75,22 @@ class Game extends React.Component {
         const dt = (now - this.lastTime) / 1000;
 
         const hostKeys = this.state.input.pressedKeys;
-        hostKeys.pointX = this.state.input.mousePos.x - this.gameState.players[1].pos.x;
-        hostKeys.pointY = this.state.input.mousePos.y - this.gameState.players[1].pos.y;
-
-        const inputCollection = {
-            1: hostKeys,
-            2: this.otherInputs,
-        };
-
         if (this.state.gameMode === GameMode.StartScreen && hostKeys.enter) {
             this.startGame();
         }
 
         if (this.state.gameMode === GameMode.Playing) {
+            const inputCollection = {
+                1: hostKeys,
+                2: this.otherInputs,
+            };
+            hostKeys.pointX = this.state.input.mousePos.x - this.gameState.players[1].pos.x;
+            hostKeys.pointY = this.state.input.mousePos.y - this.gameState.players[1].pos.y;
             this.gameState = this.state.gameModel.update(inputCollection, dt);
             this.state.display.draw(this.gameState, dt);
         }
         this.lastTime = now;
-        this.ref2 = requestAnimationFrame(() => this.mainLoop());
+        this.rafId = requestAnimationFrame(() => this.mainLoop());
         this.props.send(this.gameState);
     }
 
