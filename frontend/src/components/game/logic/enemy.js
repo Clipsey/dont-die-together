@@ -2,7 +2,8 @@ import {
     vectorMag
 } from './vector_util';
 import {
-    willCollideWithEnemy
+    willCollideWithEnemy,
+    willCollideWithObstacle
 } from './model_helper';
 
 export const moveEnemy = (enemy, gameState, dist, sizes, damages, times) => {
@@ -36,7 +37,8 @@ export const moveEnemy = (enemy, gameState, dist, sizes, damages, times) => {
     ];
     let enemySize = sizes[enemy.type];
     if (closestDistance > enemySize + sizes.player) {
-        if (!willCollideWithEnemy(enemy, moveVector, gameState, sizes)) {
+        if (!willCollideWithEnemy(enemy, moveVector, gameState, sizes) &&
+            !willCollideWithObstacle(enemy, moveVector, gameState, sizes.zombie)) {
             enemy.pos.x = enemy.pos.x + moveVector[0];
             enemy.pos.y = enemy.pos.y + moveVector[1];
         }

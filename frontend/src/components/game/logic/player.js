@@ -1,6 +1,7 @@
 import gameConfig from './config';
 import {
-    willCollideWithEnemy
+    willCollideWithEnemy,
+    willCollideWithObstacle
 } from './model_helper';
 import {
     findDistance,
@@ -44,7 +45,8 @@ export const movePlayer = (player, playerInputs, gameState, sizes, dt, dist) => 
         }
         let moveVector = [player.velocity.x * dt, player.velocity.y * dt];
         
-        if (!willCollideWithEnemy(player, moveVector, gameState, sizes)) {
+        if (!willCollideWithEnemy(player, moveVector, gameState, sizes) &&
+            !willCollideWithObstacle(player, moveVector, gameState, sizes.player)) {
             player.pos.x += moveVector[0];
             player.pos.y += moveVector[1];
         }
@@ -53,22 +55,6 @@ export const movePlayer = (player, playerInputs, gameState, sizes, dt, dist) => 
         player.velocity.x = 0;
         player.velocity.y = 0;
     }
-
-    //// END ACC
-
-    // let moveVector = [0, 0];     ///BEGIN NORMAL
-    // if (playerInputs.up) {
-    //     moveVector[1] -= dist;
-    // }
-    // if (playerInputs.down) {
-    //     moveVector[1] += dist;
-    // }sddw
-    // if (playerInputs.right) {
-    //     moveVector[0] += dist;
-    // }
-    // if (playerInputs.left) {
-    //     moveVector[0] -= dist;
-    // }                            ///END NORMAL
 
     
 };
@@ -84,7 +70,6 @@ export const switchGuns = (player, playerInputs, times) => {
             player.ammo = player.items.gunAmmo[player.weapon];
             player.timeToSwitch = times.switchGuns;
         }
-        console.log('switched to ' + player.weapon);
     }
 };
 

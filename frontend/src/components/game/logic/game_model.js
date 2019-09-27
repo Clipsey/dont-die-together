@@ -23,6 +23,103 @@ import {
 export default class GameModel {
     constructor(initialState = sampleState) {
         this.gameState = initialState;
+        this.gameState.obstacles = {};          // DELETE LATER
+        // this.gameState.obstacles[1] = {
+        //     type: 'rocks',
+        //     topLeft: {
+        //         x: 200,
+        //         y: 200,
+        //     },
+        //     bottomRight: {
+        //         x: 300,
+        //         y: 300,
+        //     }
+        // }
+        // this.gameState.obstacles[2] = {
+        //     type: 'rocks',
+        //     topLeft: {
+        //         x: 400,
+        //         y: 400,
+        //     },
+        //     bottomRight: {
+        //         x: 500,
+        //         y: 500,
+        //     }
+        // }
+        // this.gameState.items = {
+        //     1: {
+        //         type: 'ammo',
+        //         gun: 'shotgun',
+        //         pos: {
+        //             x: 205,
+        //             y: 205
+        //         },
+        //         amount: 10
+        //     },
+        //     2: {
+        //         type: 'ammo',
+        //         gun: 'shotgun',
+        //         pos: {
+        //             x: 295,
+        //             y: 205
+        //         },
+        //         amount: 10
+        //     },
+        //     3: {
+        //         type: 'ammo',
+        //         gun: 'shotgun',
+        //         pos: {
+        //             x: 295,
+        //             y: 295
+        //         },
+        //         amount: 10
+        //     },
+        //     4: {
+        //         type: 'ammo',
+        //         gun: 'shotgun',
+        //         pos: {
+        //             x: 205,
+        //             y: 295
+        //         },
+        //         amount: 10
+        //     },
+        //     5: {
+        //         type: 'ammo',
+        //         gun: 'shotgun',
+        //         pos: {
+        //             x: 405,
+        //             y: 405
+        //         },
+        //         amount: 10
+        //     },
+        //     6: {
+        //         type: 'ammo',
+        //         gun: 'shotgun',
+        //         pos: {
+        //             x: 495,
+        //             y: 405
+        //         },
+        //         amount: 10
+        //     },
+        //     7: {
+        //         type: 'ammo',
+        //         gun: 'shotgun',
+        //         pos: {
+        //             x: 495,
+        //             y: 495
+        //         },
+        //         amount: 10
+        //     },
+        //     8: {
+        //         type: 'ammo',
+        //         gun: 'shotgun',
+        //         pos: {
+        //             x: 405,
+        //             y: 495
+        //         },
+        //         amount: 10
+        //     },
+        // }                                       // DELETE LATER
         this.maxX = gameConfig.gameBounds.x;
         this.maxY = gameConfig.gameBounds.y;
         this.speeds = gameConfig.speeds;
@@ -115,7 +212,7 @@ export default class GameModel {
                 player.timeToFire = 0;
             }
             player.timeToSwitch -= dt;
-            if (player.timeToSwitch < 0){
+            if (!player.timeToSwitch || player.timeToSwitch < 0){
                 player.timeToSwitch = 0;
             }
         });
@@ -174,35 +271,7 @@ export default class GameModel {
         let dist = dt*this.speeds.player;
         Object.keys(this.gameState.players).forEach((playerId) => {
             let player = this.gameState.players[playerId];
-            let moveVector = [0, 0];
             let playerInputs = inputs[playerId];
-            if (playerInputs.up) {
-                player.pos.y -= dist;
-            }
-            if (playerInputs.down) {
-                player.pos.y += dist;
-            }
-            if (playerInputs.right) {
-                player.pos.x += dist;
-            }
-            if (playerInputs.left) {
-                player.pos.x -= dist;
-            }
-            
-            Object.keys(this.gameState.items).forEach( (itemId) => {
-                let item = this.gameState.items[itemId];
-                if (item.type !== 'ammo'){
-                    return;
-                }
-                let itemPos = [item.pos.x, item.pos.y];
-                let playerPos = [player.pos.x, player.pos.y];
-                let dist = findDistance(itemPos, playerPos);
-                if (dist < 20){
-                    player.ammo += item.amount;
-                    delete this.gameState.items[itemId];
-                }
-            });
-            
             movePlayer(player, playerInputs, this.gameState, this.sizes, dt, dist);
             pickUpItems(player, this.gameState, this.sizes);
         });
