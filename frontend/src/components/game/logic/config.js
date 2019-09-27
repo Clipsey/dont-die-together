@@ -25,9 +25,12 @@ const gameConfig = {
         rifle: 100
     },
     speeds: {                   //speeds in pixels/second
-        player: 50,
+        player: 100,
         bullet: 1000,
         zombie: 30
+    },
+    acceleration: {
+        player: 200             //acc in pixels/second/second
     },
     sizes: {
         item: 5,
@@ -45,6 +48,10 @@ export const sampleState = {
             pos: {
                 x: 100,
                 y: 100
+            },
+            velocity: {
+                x: 0,
+                y: 0
             },
             health: 100,
             timeToFire: 0,   //time until able to fire

@@ -19,6 +19,7 @@ export const movePlayer = (player, playerInputs, gameState, sizes, dist) => {
     if (playerInputs.left) {
         moveVector[0] -= dist;
     }
+
     if (!willCollideWithEnemy(player, moveVector, gameState, sizes)){
         player.pos.x += moveVector[0];
         player.pos.y += moveVector[1];
@@ -26,7 +27,7 @@ export const movePlayer = (player, playerInputs, gameState, sizes, dist) => {
 };
 
 export const switchGuns = (player, playerInputs, times) => {
-    if (playerInputs.up && playerInputs.right) { ////////************CHANGE FOR SWITCH INPUT */
+    if (playerInputs.cycleGun) {
         if (player.timeToSwitch === 0) {
             let availableGuns = Object.keys(player.items.guns).filter( (key) => {
                 return player.items.guns[key];
@@ -35,7 +36,6 @@ export const switchGuns = (player, playerInputs, times) => {
             player.weapon = availableGuns[newGunIdx];
             player.ammo = player.items.gunAmmo[player.weapon];
             player.timeToSwitch = times.switchGuns;
-            console.log('switching to ' + availableGuns[newGunIdx]);
         }
     }
 };
