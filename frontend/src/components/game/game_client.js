@@ -20,15 +20,21 @@ class GameClient extends React.Component {
             context: null,
             display: null,
         };
-        this.ownGameModel = new GameModel();
+        this.ownGameModel = null;
         this.lastTime = Date.now();
         this.gameState = DisplayConfig.emptyState;
         this.status = '';
         this.rafId = null;
+        this.inputs = null;
     }
 
-    SOCKET_ReceiveGameState(gameState) {
-        this.gameState = gameState;
+    SOCKET_ReceiveGameState(data) {
+        if (!this.ownGameModel) {
+            this.ownGameModel = new GameModel(data.gameState);
+        }
+        this.gameState = data.gameState;
+        this.ownGameModel.replaceGameState(this.gameState);
+        this.inputs = data.inputs;
     }
 
     componentDidMount() {
@@ -56,10 +62,10 @@ class GameClient extends React.Component {
         if(Object.keys(this.gameState.players).includes(this.props.name)) {
             clientKeys.inputs.pointX = this.state.input.mousePos.x - this.gameState.players[this.props.name].pos.x;
             clientKeys.inputs.pointY = this.state.input.mousePos.y - this.gameState.players[this.props.name].pos.y;
-        }
-        
+        }       
         this.props.send(clientKeys);
         this.lastTime = now;
+        if (this.ownGameModel) this.gameState = this.ownGameModel.update(this.inputs, dt);
         this.rafId = requestAnimationFrame(() => this.mainLoop());
     }
 

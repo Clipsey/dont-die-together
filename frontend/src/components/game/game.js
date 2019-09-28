@@ -113,10 +113,14 @@ class Game extends React.Component {
 
             this.lastGameState = this.state.gameModel.update(collectedInputs, dt);
             this.state.display.draw(this.lastGameState, dt);
+            const data = {};
+            data.gameState = this.lastGameState;
+            data.inputs = collectedInputs;
+            this.props.send(data);
         }
         this.lastTime = now;
         this.rafId = requestAnimationFrame(() => this.mainLoop());
-        this.props.send(this.lastGameState);
+        
     }
 
     render() {
