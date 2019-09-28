@@ -96,23 +96,19 @@ class Game extends React.Component {
     mainLoop() {
         const now = Date.now();
         const dt = (now - this.lastTime) / 1000;
-
         const hostKeys = this.state.input.pressedKeys;
+
         if (this.state.gameMode === GameMode.StartScreen && hostKeys.enter) this.startGame();
 
         if (this.state.gameMode === GameMode.Playing) {            
             hostKeys.pointX = this.state.input.mousePos.x - this.lastGameState.players[this.props.name].pos.x;
             hostKeys.pointY = this.state.input.mousePos.y - this.lastGameState.players[this.props.name].pos.y;
-
             let collectedInputs = this.collectInputs();
             collectedInputs[this.props.name] = hostKeys;
-
-            if ((now - this.lastUpdate) / 1000 > 20) {
-                this.lastUpdate = now;
-            }
-
             this.lastGameState = this.state.gameModel.update(collectedInputs, dt);
-            this.state.display.draw(this.lastGameState, dt);
+
+            this.state.display.draw(this.lastGameState, dt, this.props.name, collectedInputs);
+
             const data = {};
             data.gameState = this.lastGameState;
             data.inputs = collectedInputs;
@@ -120,7 +116,6 @@ class Game extends React.Component {
         }
         this.lastTime = now;
         this.rafId = requestAnimationFrame(() => this.mainLoop());
-        
     }
 
     render() {
