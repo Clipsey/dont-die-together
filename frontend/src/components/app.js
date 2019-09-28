@@ -75,37 +75,37 @@ class App extends React.Component {
     }
     this.sockets.push(socket);
 
-    // socket.emit('join room', this.room);
+    socket.emit('join room', this.room);
 
 
-    // if (this.isHost) {
-    //   socket.on('From Client Input', (receivedInput) => {
-    //     this.child.SOCKET_ReceiveInputs(receivedInput);
-    //   });
-    // } else {
-    //   console.log('attached to from host game state')
-    //   socket.on('From Host GameState', (receivedGameState) => {
-    //     this.child.SOCKET_ReceiveGameState(receivedGameState);
-    //   });
-    // }
+    if (this.isHost) {
+      socket.on('From Client Input', (receivedInput) => {
+        this.child.SOCKET_ReceiveInputs(receivedInput);
+      });
+    } else {
+      console.log('attached to from host game state')
+      socket.on('From Host GameState', (receivedGameState) => {
+        this.child.SOCKET_ReceiveGameState(receivedGameState);
+      });
+    }
 
 
-    // if (process.env.NODE_ENV === 'development') {
-    //   socket = socketIOClient('localhost:5000', { query: { room: this.room } });
-    // } else {
-    //   socket = socketIOClient(window.location, { query: { room: this.room } });
-    // }
+    if (process.env.NODE_ENV === 'development') {
+      socket = socketIOClient('localhost:5000', { query: { room: this.room } });
+    } else {
+      socket = socketIOClient(window.location, { query: { room: this.room } });
+    }
 
-    // if (this.isHost) {
-    //   socket.on('Initial State', (initialState) => {
-    //     this.child.SOCKET_ReceiveInitialState(initialState);
-    //   })
-    // }
+    if (this.isHost) {
+      socket.on('Initial State', (initialState) => {
+        this.child.SOCKET_ReceiveInitialState(initialState);
+      })
+    }
 
 
-    // this.sockets.push(socket);
-    // this.emit = emitSetup(socket);
-    // this.on = onSetup(socket);
+    this.sockets.push(socket);
+    this.emit = emitSetup(socket);
+    this.on = onSetup(socket);
   }
   
   createSocket() {
