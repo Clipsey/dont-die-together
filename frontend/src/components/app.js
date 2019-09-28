@@ -75,8 +75,6 @@ class App extends React.Component {
     }
     this.sockets.push(socket);
 
-    // socket.emit('join room', this.room);
-
     if (this.isHost) {
       socket.on('From Client Input', (receivedInput) => {
         this.child.SOCKET_ReceiveInputs(receivedInput);
