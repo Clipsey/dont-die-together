@@ -50,6 +50,7 @@ class App extends React.Component {
 
   closeSockets() {
     if (this.sockets.length > 0) {
+      console.log(this.sockets);
       this.sockets.forEach((socket, idx) => {
         socket.off('From Client Input');
         socket.off('From Host GameState');
@@ -65,14 +66,16 @@ class App extends React.Component {
 
     this.closeSockets();
 
-    let socket;
+    console.log(window.location);
+    console.log(this.room);
+
+    let socket = null;
     if (process.env.NODE_ENV === 'development') {
       socket = socketIOClient('localhost:5000', { query: { room: this.room } });
     } else {
-      socket = socketIOClient(window.location, { query: { room: this.room } });
+      socket = socketIOClient(undefined, { query: { room: this.room } });
     }
     this.sockets.push(socket);
-
 
     if (this.isHost) {
       socket.on('From Client Input', (receivedInput) => {
@@ -89,7 +92,7 @@ class App extends React.Component {
     if (process.env.NODE_ENV === 'development') {
       socket = socketIOClient('localhost:5000', { query: { room: this.room } });
     } else {
-      socket = socketIOClient(window.location, { query: { room: this.room } });
+      socket = socketIOClient(undefined, { query: { room: this.room } });
     }
 
     if (this.isHost) {
