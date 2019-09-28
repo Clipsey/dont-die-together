@@ -71,7 +71,7 @@ class App extends React.Component {
     if (process.env.NODE_ENV === 'development') {
       socket = socketIOClient('localhost:5000', { query: { room: this.room } });
     } else {
-      //socket = socketIOClient(window.location, { query: { room: this.room } });
+      socket = socketIOClient(undefined, { query: { room: this.room } });
     }
     this.sockets.push(socket);
 
