@@ -1,11 +1,11 @@
 const gameConfig = {
     gameBounds: {
-        x: 800,
-        y: 600
+        x: 1200,
+        y: 800
     },
     times: {
         itemGenerate: 40,
-        zombieGenerate: 10,
+        zombieGenerate: 30,
         zombieReload: 0.5,      //times in seconds      
         zombieDie: 1,
         switchGuns: 0.25,
@@ -26,11 +26,11 @@ const gameConfig = {
     },
     speeds: {                   //speeds in pixels/second
         player: 150,
-        bullet: 3000,
+        bullet: 1500,
         zombie: 30
     },
     acceleration: {
-        player: 1000             //acc in pixels/second/second
+        player: 100000             //acc in pixels/second/second
     },
     sizes: {
         item: 5,
