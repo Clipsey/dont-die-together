@@ -8,7 +8,7 @@ class SignupForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: '',
+      // email: '',
       name: '',
       password: '',
       password2: '',
@@ -77,12 +77,12 @@ class SignupForm extends React.Component {
           {/* <br /> */}
           <div className="signup-form-banner">Register</div>
           <div className="login-form">
-            <input type="text"
+            {/* <input type="text"
               className="signup-form-input"
               value={this.state.email}
               onChange={this.update('email')}
               placeholder="Email"
-            />
+            /> */}
             <br />
             <input type="text"
               className="signup-form-input"
