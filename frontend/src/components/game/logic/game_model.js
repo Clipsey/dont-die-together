@@ -3,7 +3,9 @@ import { sampleState } from './config';
 import { vectorMag, findDistance } from './vector_util';
 
 import {
-    moveEnemy
+    moveEnemy,
+    generateZombie,
+    animateEnemy
 } from './enemy';
 import { 
     willCollideWithEnemy,
@@ -19,6 +21,9 @@ import {
     fireBullets,
     moveBullet
 } from './bullet';
+import {
+    generateItem
+} from './item';
 
 export default class GameModel {
     constructor(initialState = sampleState) {
@@ -145,69 +150,9 @@ export default class GameModel {
         this.gameState = newState;
     }
 
-    generateItem(dt) {
-        let x = Math.random()*gameConfig.gameBounds.x;
-        let y = Math.random()*gameConfig.gameBounds.y;
-        let itemType = ['ammo', 'gun', 'medPack'][Math.floor(Math.random()*3)];
-        let newItem = {};
-        switch (itemType) {
-            case 'ammo':
-                newItem.type = 'ammo';
-                newItem.gun = [
-                    'pistol',
-                    'pistol',
-                    'pistol',
-                    'rifle',
-                    'shotgun'
-                ][Math.floor(Math.random() * 5)];
-                newItem.pos = {};
-                newItem.amount = 5;
-            case 'gun':
-                newItem.type = 'gun';
-                newItem.gun = [
-                    'pistol',
-                    'pistol',
-                    'pistol',
-                    'rifle',
-                    'shotgun'
-                ][Math.floor(Math.random() * 5)];
-                newItem.pos = {};
-            case 'medPack':
-                newItem.type = 'medPack';
-                newItem.amount = 50;
-                newItem.pos = {};
-        }
-        newItem.pos.x = x;
-        newItem.pos.y = y;
-        this.gameState.items[generateId()] = newItem; 
-    }
-
-    generateZombie() {
-        let x = Math.random()*gameConfig.gameBounds.x;
-        let y = Math.random()*gameConfig.gameBounds.y;
-        if(Math.random() < 0.5){
-            x = (Math.random() < 0.5 ? 0 : gameConfig.gameBounds.x);
-        }
-        else {
-            y = (Math.random() < 0.5 ? 0 : gameConfig.gameBounds.y);
-        }
-        let newZombie = {
-            type: 'zombie',
-            pos: {},
-            randomDir: {},
-            health: 100,
-            timeToAttack: 0,
-            timeSwitchDir: 0,
-            aimless: false
-        }
-        newZombie.pos.x = x;
-        newZombie.pos.y = y;
-        this.gameState.enemies[generateId()] = newZombie;
-    }
-
     updateTimes(dt) { 
         if (this.generateItemTime === 0) {
-            this.generateItem();
+            generateItem(this.gameState);
             this.generateItemTime = gameConfig.times.itemGenerate;
         }
         else {
@@ -217,7 +162,7 @@ export default class GameModel {
             }
         }
         if (this.generateZombieTime === 0){
-            this.generateZombie();
+            generateZombie(this.gameState);
             this.generateZombieTime = 
             (gameConfig.times.zombieGenerate)/(Object.keys(this.gameState.players).length);
         }
@@ -255,6 +200,16 @@ export default class GameModel {
                 enemy.timeSwitchDir -= dt;
                 if (enemy.timeSwitchDir < 0) {
                     enemy.timeSwitchDir = 0;
+                }
+            }
+            if (enemy.timeToAnimate === 0){
+                animateEnemy(enemy);
+                enemy.timeToAnimate = gameConfig.times.zombieAnimateTime;
+            }
+            else {
+                enemy.timeToAnimate -= dt;
+                if (enemy.timeToAnimate < 0) {
+                    enemy.timeToAnimate = 0;
                 }
             }
         });

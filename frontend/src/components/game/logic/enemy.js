@@ -4,8 +4,10 @@ import {
 } from './vector_util';
 import {
     willCollideWithEnemy,
-    willCollideWithObstacle
+    willCollideWithObstacle,
+    generateId
 } from './model_helper';
+import gameConfig from './config';
 
 export const moveEnemy = (enemy, gameState, dist, sizes, damages, times) => {
     let enemyPos = enemy.pos;
@@ -73,3 +75,34 @@ export const moveEnemy = (enemy, gameState, dist, sizes, damages, times) => {
     enemy.angle = calcRotation([moveVector[0], moveVector[1]]);
     
 };
+
+export const generateZombie = (gameState) => {
+    let x = Math.random() * gameConfig.gameBounds.x;
+    let y = Math.random() * gameConfig.gameBounds.y;
+    if (Math.random() < 0.5) {
+        x = (Math.random() < 0.5 ? 0 : gameConfig.gameBounds.x);
+    }
+    else {
+        y = (Math.random() < 0.5 ? 0 : gameConfig.gameBounds.y);
+    }
+    let newZombie = {
+        type: 'zombie',
+        pic: 0,
+        pos: {},
+        randomDir: {},
+        health: 100,
+        timeToAttack: 0,
+        timeSwitchDir: 0,
+        timeToAnimate: 0,
+        aimless: false
+    }
+    newZombie.pos.x = x;
+    newZombie.pos.y = y;
+    gameState.enemies[generateId()] = newZombie;
+}
+
+export const animateEnemy = (enemy) => {
+    enemy.pic += 1;
+    enemy.pic = enemy.pic % gameConfig.numbers.zombieAnimatePics;
+    console.log(enemy.pic);
+}
