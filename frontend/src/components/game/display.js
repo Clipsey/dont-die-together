@@ -1,26 +1,14 @@
 import * as MainConfig from './config';
 import gameConfig from './logic/config';
-const playerImage = require('../../style/images/bk_player_assets/player_chaingun.png');
+const playerRifle = require('../../style/images/bk_player_assets/player_chaingun.png');
+const playerShotgun = require('../../style/images/bk_player_assets/player_pumpgun_stand.png');
+const playerHandgun = require('../../style/images/bk_player_assets/player_9mmhandgun.png');
 
 
 class Display {
     constructor(ctx) {
         this.ctx = ctx;
         this.mode = process.env.NODE_ENV;
-    }
-
-    calcRotation(collectedInputs, playerName) {
-        let x = collectedInputs[playerName].pointX;
-        let y = collectedInputs[playerName].pointY;
-        let newX = Math.abs(x);
-        let newY = Math.abs(y);
-        let angle = Math.atan(newY/newX);
-
-        if (x < 0 && y > 0) angle += 2*(Math.PI / 2 - angle);
-        if (x < 0 && y < 0) angle += Math.PI;
-        if (y < 0 && x > 0) angle *= -1;
-
-        return angle;
     }
 
     clearScreen(){
@@ -31,7 +19,7 @@ class Display {
 
     draw(gameState, dt, playerName, collectedInputs) {
         this.clearScreen();
-        this.displayStats(gameState, playerName, collectedInputs);
+        // this.displayStats(gameState, playerName, collectedInputs);
         this.displayPlayers(gameState, collectedInputs);
         this.displayEnemies(gameState);
         this.displayBullets(gameState);
@@ -41,13 +29,13 @@ class Display {
         }
     }
 
-    displayStats(gameState, playerName, collectedInputs) {
-        const stats = gameState.players[playerName];
-        this.ctx.strokeText(`Health: ${stats.health}`, 20, 30);
-        this.ctx.strokeText(`Weapon: ${stats.weapon}`, 20, 60);
-        this.ctx.strokeText(`Ammo: ${stats.ammo}`, 20, 90);
-        this.ctx.strokeText(`angle: ${(this.calcRotation(collectedInputs, playerName) * 180 / Math.PI)}`, 20, 100);
-    }
+    // displayStats(gameState, playerName, collectedInputs) {
+    //     const stats = gameState.players[playerName];
+    //     this.ctx.strokeText(`Health: ${stats.health}`, 20, 30);
+    //     this.ctx.strokeText(`Weapon: ${stats.weapon}`, 20, 60);
+    //     this.ctx.strokeText(`Ammo: ${stats.ammo}`, 20, 90);
+    //     this.ctx.strokeText(`angle: ${(this.calcRotation(collectedInputs, playerName) * 180 / Math.PI)}`, 20, 100);
+    // }
 
     displayFPS(dt) {
         let fps = (1/dt).toFixed(1);   
@@ -114,7 +102,7 @@ class Display {
         // this.ctx.strokeText(`Ammo: ${player.ammo}`, player.pos.x - 10, player.pos.y - 12);
         const playImage = new Image();
         playImage.src = playerImage;
-        const angle = this.calcRotation(collectedInputs, playerName);
+        let angle = 0;
 
         this.drawImageCenter(playImage, player.pos.x, player.pos.y, 15, 15, 1, angle);
         this.ctx.restore();
