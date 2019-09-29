@@ -1,5 +1,6 @@
 import {
-    generateId
+    generateId,
+    willCollideWithObstacle
 } from './model_helper';
 
 import {
@@ -11,7 +12,7 @@ import {
     playerCanFire
 } from './player';
 
-export const fireBullets = (player, playerInputs, gameState, times, speeds) => {
+export const fireBullets = (player, playerId, playerInputs, gameState, times, speeds) => {
     if (playerCanFire(player) && playerInputs.fire) {
         player.timeToFire = times.reload[player.weapon];
         let fireVector = [playerInputs.pointX, playerInputs.pointY];
@@ -31,6 +32,7 @@ export const fireBullets = (player, playerInputs, gameState, times, speeds) => {
                     newFireVector[1] / vectorMag(newFireVector)
                 ];
                 let newBullet = {
+                    playerId: playerId,
                     type: player.weapon,
                     pos: {},
                     vel: {}
@@ -46,6 +48,7 @@ export const fireBullets = (player, playerInputs, gameState, times, speeds) => {
         }
         else {
             let newBullet = {
+                playerId: playerId,
                 type: player.weapon,
                 pos: {},
                 vel: {}
@@ -65,53 +68,62 @@ export const moveBullet = (bullet, id, dt, gameState, sizes, times, distances, d
     let oldPos = {x: bullet.pos.x, y: bullet.pos.y};
     let xDist = bullet.vel.x * dt;
     let yDist = bullet.vel.y * dt;
-    bullet.pos.x += xDist;
-    bullet.pos.y += yDist;
-    let slope = (bullet.pos.y - oldPos.y) / (bullet.pos.x - oldPos.x);
-    let yInt = oldPos.y - (slope * oldPos.x);
-    let perpSlope = (-1)*(1/slope);
- 
-    let bA = bullet.pos.y - (perpSlope * bullet.pos.x);
-    let bB = oldPos.y - (perpSlope * oldPos.x);
+    let moveVector = [xDist, yDist];
+    let stoppedByObstacle = willCollideWithObstacle(bullet, moveVector, gameState, 0);
+    if (!stoppedByObstacle) {
+        bullet.pos.x += xDist;
+        bullet.pos.y += yDist;
+        let slope = (bullet.pos.y - oldPos.y) / (bullet.pos.x - oldPos.x);
+        let yInt = oldPos.y - (slope * oldPos.x);
+        let perpSlope = (-1)*(1/slope);
+    
+        let bA = bullet.pos.y - (perpSlope * bullet.pos.x);
+        let bB = oldPos.y - (perpSlope * oldPos.x);
 
-    Object.keys(gameState.enemies).forEach((enemyId) => {
-        let enemy = gameState.enemies[enemyId];
-        
-        let bTwo = enemy.pos.y - (perpSlope * enemy.pos.x);
-        let interX = (bTwo - yInt) / (slope - perpSlope);
-        let interY = (slope * interX) + yInt;
-        let maxDist = findDistance([interX, interY], [enemy.pos.x, enemy.pos.y]);
+        Object.keys(gameState.enemies).forEach((enemyId) => {
+            let enemy = gameState.enemies[enemyId];
+            
+            let bTwo = enemy.pos.y - (perpSlope * enemy.pos.x);
+            let interX = (bTwo - yInt) / (slope - perpSlope);
+            let interY = (slope * interX) + yInt;
+            let maxDist = findDistance([interX, interY], [enemy.pos.x, enemy.pos.y]);
 
-        let enemyBetween = ((bTwo > bB && bTwo < bA) || (bTwo < bB && bTwo > bA));
+            let enemyBetween = ((bTwo > bB && bTwo < bA) || (bTwo < bB && bTwo > bA));
 
-        if (enemy.status !== 'dying' && 
-            maxDist < sizes[enemy.type] && 
-            enemyBetween) {
-            enemy.health -= damages[bullet.type];
-            let staggerDir = [bullet.vel.x, bullet.vel.y];
-            let unitVector = [
-                staggerDir[0] / vectorMag(staggerDir),
-                staggerDir[1] / vectorMag(staggerDir)
-            ];
-            let staggerVector = [
-                unitVector[0] * distances.stagger,
-                unitVector[1] * distances.stagger
-            ];
-            enemy.pos.x += staggerVector[0];
-            enemy.pos.y += staggerVector[1];
-            if (enemy.health <= 0) {
-                enemy.status = 'dying';
-                enemy.timeToDie = times.zombieDie;
+            if (enemy.status !== 'dying' && 
+                maxDist < sizes[enemy.type] && 
+                enemyBetween) {
+                enemy.health -= damages[bullet.type];
+                let staggerDir = [bullet.vel.x, bullet.vel.y];
+                let unitVector = [
+                    staggerDir[0] / vectorMag(staggerDir),
+                    staggerDir[1] / vectorMag(staggerDir)
+                ];
+                let staggerVector = [
+                    unitVector[0] * distances.stagger,
+                    unitVector[1] * distances.stagger
+                ];
+                enemy.pos.x += staggerVector[0];
+                enemy.pos.y += staggerVector[1];
+                if (enemy.health <= 0) {
+                    if (!gameState.players[bullet.playerId].killCount){
+                        gameState.players[bullet.playerId].killCount = 0;
+                    }
+                    gameState.players[bullet.playerId].killCount += 1;
+                    enemy.status = 'dying';
+                    enemy.timeToDie = times.zombieDie;
+                }
+                if (bullet.type !== 'rifle') {
+                    delete gameState.bullets[id];
+                }
             }
-            if (bullet.type !== 'rifle') {
-                delete gameState.bullets[id];
-            }
-        }
-    });
+        });
+    }
     if (bullet.pos.x > xBound ||
         bullet.pos.x < 0 ||
         bullet.pos.y > yBound ||
-        bullet.pos.y < 0) {
+        bullet.pos.y < 0 ||
+        stoppedByObstacle) {
         delete gameState.bullets[id];
     }
 };

@@ -25,12 +25,12 @@ export const newPlayer = {
             rifle: true
         },
         gunAmmo: {
-            pistol: 10,
+            pistol: 20,
             shotgun: 50,
             rifle: 1000
         }
     },
-    ammo: 10,
+    ammo: 20,
 }
 
 export const canvasStyle = {
