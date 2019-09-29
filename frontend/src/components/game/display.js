@@ -89,7 +89,7 @@ class Display {
         let players = Object.values(gameState.players);
         let playerNames = Object.keys(gameState.players);
         for (let i = 0; i < players.length; i++) {
-            this.displayPlayer(players[i], playerNames[i], collectedInputs);
+            this.displayPlayer(players[i]);
         }
     }
     
@@ -101,7 +101,7 @@ class Display {
         // this.ctx.strokeText(`Gun: ${player.weapon}`, player.pos.x - 10, player.pos.y - 22);
         // this.ctx.strokeText(`Ammo: ${player.ammo}`, player.pos.x - 10, player.pos.y - 12);
         const playImage = new Image();
-        playImage.src = playerImage;
+        playImage.src = playerRifle;
         let angle = 0;
 
         this.drawImageCenter(playImage, player.pos.x, player.pos.y, 15, 15, 1, angle);
