@@ -116,7 +116,7 @@ class Display {
             case 'rifle':
                 img.src = playerRifle;
                 this.drawPlayerImage(img, player.pos.x, player.pos.y, 17, 17, 1.2, angle);
-                break        
+                break;      
             default:
                 img.src = playerHandgun;
                 break;
@@ -154,13 +154,42 @@ class Display {
         img.src = zombieSprite;
         let angle = enemy.angle;
 
-        this.drawEnemyImage(img, 40, 40, 50, 50, enemy.pos.x, enemy.pos.y, 27, 15, 0.8, angle + Math.PI/2, 50, 50);
+        let x;
+        let y;
+
+        switch (enemy.pic) {
+            case 0:
+                x = 35;
+                y = 20;
+                break;
+            case 1:
+                x = 115;
+                y = 20;
+                break;
+            case 2:
+                x = 190;
+                y = 20;
+                break;
+            case 3:
+                x = 42;
+                y = 95;
+                break;
+            case 4:
+                x = 112;
+                y = 95;
+                break;
+            case 5:
+                x = 185;
+                y = 95;
+                break;
+            default:
+                x = 200;
+                y = 50;
+                break;
+        }
+        this.drawEnemyImage(img, x, y, 65, 70, enemy.pos.x, enemy.pos.y, 27, 40, 0.8, angle + Math.PI/2, 65, 70);
         this.ctx.restore();
         // this.ctx.save();
-
-    
-        // this.ctx.fillFont = 'bold 10px serif';
-        // this.ctx.strokeText(`Health: ${enemy.health}`, enemy.pos.x - 10, enemy.pos.y-15);
     
         // this.ctx.translate(enemy.pos.x, enemy.pos.y);
         // this.ctx.strokeStyle = '#215910';
