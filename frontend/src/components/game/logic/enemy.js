@@ -12,6 +12,7 @@ export const moveEnemy = (enemy, gameState, dist, sizes, damages, times) => {
     let targetPos = null;
     let closestDistance = null;
     let victim = null;
+
     Object.values(gameState.players).forEach((player) => {
         let playerPos = player.pos;
         let dx = playerPos.x - enemyPos.x;
@@ -24,9 +25,22 @@ export const moveEnemy = (enemy, gameState, dist, sizes, damages, times) => {
         }
     });
     let dirVector = [targetPos.x - enemyPos.x, targetPos.y - enemyPos.y];
-    if (Math.random() < 0.2) {
-        dirVector = [Math.random() - 0.5, Math.random() - 0.5];
-        enemy.randomDir = dirVector;
+    if (enemy.timeSwitchDir === 0){
+        if (Math.random() < 0.2){
+            enemy.aimless = true;
+            dirVector = [Math.random() - 0.5, Math.random() - 0.5];
+            enemy.randomDir = dirVector;
+        }
+        else {
+            enemy.aimless = false;
+        }
+        enemy.timeSwitchDir = times.zombieSwitchDir;
+    }
+
+
+  
+    if (enemy.aimless) {
+        dirVector = enemy.randomDir;
     }
     let unitVector = [
         dirVector[0] / vectorMag(dirVector),
@@ -37,6 +51,8 @@ export const moveEnemy = (enemy, gameState, dist, sizes, damages, times) => {
         unitVector[1] * dist
     ];
     let enemySize = sizes[enemy.type];
+    
+    
     if (closestDistance > enemySize + sizes.player) {
         if (!willCollideWithEnemy(enemy, moveVector, gameState, sizes) &&
             !willCollideWithObstacle(enemy, moveVector, gameState, sizes.zombie)) {
