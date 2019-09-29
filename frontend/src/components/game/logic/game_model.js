@@ -32,7 +32,9 @@ export default class GameModel {
         this.gameState = initialState;
         this.gameState.obstacles = {};     
         this.gameState.soundTimes = {
-            firePistol: 0
+            firePistol: 0,
+            fireShotgun: 0,
+            fireRifle: 0
         };     
         this.maxX = gameConfig.gameBounds.x;
         this.maxY = gameConfig.gameBounds.y;
@@ -52,9 +54,6 @@ export default class GameModel {
         this.moveBullets(dt);
         this.fireBullets(inputs);
         this.switchGuns(inputs);
-        if (this.gameState.soundTimes.firePistol > 0){
-            console.log('Fire!');
-        }
         return this.gameState;
     }
 

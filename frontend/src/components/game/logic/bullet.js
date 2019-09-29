@@ -2,7 +2,8 @@ import gameConfig from './config';
 
 import {
     generateId,
-    willCollideWithObstacle
+    willCollideWithObstacle,
+    willCollideWithEnemy
 } from './model_helper';
 
 import {
@@ -109,8 +110,11 @@ export const moveBullet = (bullet, id, dt, gameState, sizes, times, distances, d
                     unitVector[0] * distances.stagger,
                     unitVector[1] * distances.stagger
                 ];
-                enemy.pos.x += staggerVector[0];
-                enemy.pos.y += staggerVector[1];
+                if (!willCollideWithEnemy(enemy, staggerVector, gameState, sizes)) {
+                    enemy.pos.x += staggerVector[0];
+                    enemy.pos.y += staggerVector[1];
+                }
+                
                 if (enemy.health <= 0) {
                     if (!gameState.players[bullet.playerId].killCount){
                         gameState.players[bullet.playerId].killCount = 0;

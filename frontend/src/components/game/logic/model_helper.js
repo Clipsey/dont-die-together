@@ -22,7 +22,7 @@ export const willCollideWithEnemy = (person, moveVector, gameState, sizes) => {
             let dx = enemy.pos.x - newPos.x;
             let dy = enemy.pos.y - newPos.y;
             let distance = Math.sqrt(dx*dx + dy*dy);
-            if (distance < personSize + sizes.zombie) {
+            if (distance < personSize + sizes.zombie && enemy.status !== 'dying') {
                 answer = true;
             }
         }

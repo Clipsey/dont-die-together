@@ -11,10 +11,10 @@ const gameConfig = {
         playerMessage: 0.5,
         zombieAnimateTime: 0.1,
         itemGenerate: 40,
-        zombieGenerate: 0.5,
+        zombieGenerate: 1,
         zombieReload: 0.5,      //times in seconds      
         zombieDie: 1,
-        zombieSwitchDir: 1000,
+        zombieSwitchDir: 0.5,
         switchGuns: 0.25,
         reload: {
             pistol: 0.5,
@@ -23,7 +23,7 @@ const gameConfig = {
         }
     },
     distances: {
-        stagger: 6
+        stagger: 10
     },
     damages: {
         zombie: 10,
