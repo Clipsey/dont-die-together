@@ -1,5 +1,6 @@
 import {
-    vectorMag
+    vectorMag,
+    calcRotation
 } from './vector_util';
 import {
     willCollideWithEnemy,
@@ -49,4 +50,9 @@ export const moveEnemy = (enemy, gameState, dist, sizes, damages, times) => {
             enemy.timeToAttack = times.zombieReload;
         }
     }
+
+    if (!enemy.angle){
+        enemy.angle = 0;
+    }
+    enemy.angle = calcRotation([moveVector[0], moveVector[1]]);
 };
