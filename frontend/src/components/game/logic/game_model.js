@@ -25,106 +25,15 @@ import {
     generateItem
 } from './item';
 
+
+
 export default class GameModel {
     constructor(initialState = sampleState) {
         this.gameState = initialState;
-        this.gameState.obstacles = {};          // DELETE LATER
-        // this.gameState.obstacles[1] = {
-        //     type: 'rocks',
-        //     topLeft: {
-        //         x: 200,
-        //         y: 200,
-        //     },
-        //     bottomRight: {
-        //         x: 300,
-        //         y: 300,
-        //     }
-        // }
-        // this.gameState.obstacles[2] = {
-        //     type: 'rocks',
-        //     topLeft: {
-        //         x: 400,
-        //         y: 400,
-        //     },
-        //     bottomRight: {
-        //         x: 500,
-        //         y: 500,
-        //     }
-        // }
-        // this.gameState.items = {
-        //     1: {
-        //         type: 'ammo',
-        //         gun: 'shotgun',
-        //         pos: {
-        //             x: 205,
-        //             y: 205
-        //         },
-        //         amount: 10
-        //     },
-        //     2: {
-        //         type: 'ammo',
-        //         gun: 'shotgun',
-        //         pos: {
-        //             x: 295,
-        //             y: 205
-        //         },
-        //         amount: 10
-        //     },
-        //     3: {
-        //         type: 'ammo',
-        //         gun: 'shotgun',
-        //         pos: {
-        //             x: 295,
-        //             y: 295
-        //         },
-        //         amount: 10
-        //     },
-        //     4: {
-        //         type: 'ammo',
-        //         gun: 'shotgun',
-        //         pos: {
-        //             x: 205,
-        //             y: 295
-        //         },
-        //         amount: 10
-        //     },
-        //     5: {
-        //         type: 'ammo',
-        //         gun: 'shotgun',
-        //         pos: {
-        //             x: 405,
-        //             y: 405
-        //         },
-        //         amount: 10
-        //     },
-        //     6: {
-        //         type: 'ammo',
-        //         gun: 'shotgun',
-        //         pos: {
-        //             x: 495,
-        //             y: 405
-        //         },
-        //         amount: 10
-        //     },
-        //     7: {
-        //         type: 'ammo',
-        //         gun: 'shotgun',
-        //         pos: {
-        //             x: 495,
-        //             y: 495
-        //         },
-        //         amount: 10
-        //     },
-        //     8: {
-        //         type: 'ammo',
-        //         gun: 'shotgun',
-        //         pos: {
-        //             x: 405,
-        //             y: 495
-        //         },
-        //         amount: 10
-        //     },
-        // }                                       // DELETE LATER
+        this.gameState.obstacles = {};     
+        this.gameState.soundTimes = {
+            firePistol: 0
+        };     
         this.maxX = gameConfig.gameBounds.x;
         this.maxY = gameConfig.gameBounds.y;
         this.speeds = gameConfig.speeds;
@@ -136,13 +45,16 @@ export default class GameModel {
         this.generateItemTime = 0;
     }
     
-    update(inputs, dt) { 
+    update(inputs, dt) {
         this.updateTimes(dt);
         this.movePlayers(inputs, dt);
         this.moveEnemies(dt);
         this.moveBullets(dt);
         this.fireBullets(inputs);
         this.switchGuns(inputs);
+        if (this.gameState.soundTimes.firePistol > 0){
+            console.log('Fire!');
+        }
         return this.gameState;
     }
 
@@ -172,6 +84,12 @@ export default class GameModel {
                 this.generateZombieTime = 0;
             }
         }
+        Object.keys(this.gameState.soundTimes).forEach( (sound) => {
+            this.gameState.soundTimes[sound] -= dt;
+            if (this.gameState.soundTimes[sound] < 0) {
+                this.gameState.soundTimes[sound] = 0;
+            }
+        });
         Object.values(this.gameState.players).forEach( (player) => {
             player.timeToFire -= dt;
             if (player.timeToFire < 0){

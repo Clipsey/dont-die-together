@@ -7,6 +7,8 @@ const gameConfig = {
         zombieAnimatePics: 6
     },
     times: {
+        sounds: 0.25,
+        playerMessage: 0.5,
         zombieAnimateTime: 0.1,
         itemGenerate: 40,
         zombieGenerate: 10,

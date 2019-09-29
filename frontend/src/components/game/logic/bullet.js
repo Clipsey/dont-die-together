@@ -1,3 +1,5 @@
+import gameConfig from './config';
+
 import {
     generateId,
     willCollideWithObstacle
@@ -7,7 +9,6 @@ import {
     vectorMag,
     findDistance
 } from './vector_util';
-
 import {
     playerCanFire
 } from './player';
@@ -65,6 +66,7 @@ export const fireBullets = (player, playerId, playerInputs, gameState, times, sp
         }
         player.ammo -= 1;
         player.items.gunAmmo[player.weapon] -= 1;
+        gameState.soundTimes.firePistol = gameConfig.times.sounds;
     }
 };
 

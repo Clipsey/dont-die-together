@@ -104,5 +104,4 @@ export const generateZombie = (gameState) => {
 export const animateEnemy = (enemy) => {
     enemy.pic += 1;
     enemy.pic = enemy.pic % gameConfig.numbers.zombieAnimatePics;
-    console.log(enemy.pic);
 }
