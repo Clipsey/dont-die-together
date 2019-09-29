@@ -109,12 +109,12 @@ class Game extends React.Component {
             collectedInputs[this.props.name] = hostKeys;
             this.lastGameState = this.state.gameModel.update(collectedInputs, dt);
 
-            this.state.display.draw(this.lastGameState, dt, this.props.name, collectedInputs);
-
             const data = {};
             data.gameState = this.lastGameState;
             data.inputs = collectedInputs;
             this.props.send(data);
+
+            this.state.display.draw(this.lastGameState, dt, this.props.name, collectedInputs);
 
             if (now - this.lastUpdate > 10000) {
                 console.log(this.lastGameState);

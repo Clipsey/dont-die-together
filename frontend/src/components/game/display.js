@@ -141,10 +141,10 @@ class Display {
         this.ctx.drawImage(image, -cx, -cy);
     }
 
-    drawEnemyImage(image, sx, sy, sWidth, sHeight, x, y, dx, dy, scale, rotation, dWidth, dHeight){
+    drawEnemyImage(image, sx, sy, sWidth, sHeight, x, y, cx, cy, scale, rotation, dWidth, dHeight){
         this.ctx.setTransform(scale, 0, 0, scale, x, y); // sets scale and origin
         this.ctx.rotate(rotation);
-        this.ctx.drawImage(image, sx, sy, sWidth, sHeight, -dx, -dy, dWidth, dHeight);
+        this.ctx.drawImage(image, sx, sy, sWidth, sHeight, -cx, -cy, dWidth, dHeight);
     } 
     
     displayEnemy(enemy) {
