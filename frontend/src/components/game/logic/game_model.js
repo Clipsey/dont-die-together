@@ -194,8 +194,11 @@ export default class GameModel {
         let newZombie = {
             type: 'zombie',
             pos: {},
+            randomDir: {},
             health: 100,
-            timeToAttack: 0
+            timeToAttack: 0,
+            timeSwitchDir: 0,
+            aimless: false
         }
         newZombie.pos.x = x;
         newZombie.pos.y = y;
@@ -246,6 +249,12 @@ export default class GameModel {
                 enemy.timeToAttack -= dt;
                 if (enemy.timeToAttack < 0){
                     enemy.timeToAttack = 0;
+                }
+            }
+            if (enemy.timeSwitchDir > 0) {
+                enemy.timeSwitchDir -= dt;
+                if (enemy.timeSwitchDir < 0) {
+                    enemy.timeSwitchDir = 0;
                 }
             }
         });

@@ -8,6 +8,7 @@ const gameConfig = {
         zombieGenerate: 5,
         zombieReload: 0.5,      //times in seconds      
         zombieDie: 1,
+        zombieSwitchDir: 0.25,
         switchGuns: 0.25,
         reload: {
             pistol: 0.5,
