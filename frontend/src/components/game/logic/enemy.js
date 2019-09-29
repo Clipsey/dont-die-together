@@ -55,4 +55,5 @@ export const moveEnemy = (enemy, gameState, dist, sizes, damages, times) => {
         enemy.angle = 0;
     }
     enemy.angle = calcRotation([moveVector[0], moveVector[1]]);
+    
 };

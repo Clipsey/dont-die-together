@@ -15,7 +15,7 @@ export const calcRotation = (vector) => {
     let newY = Math.abs(vector[1]);
     let angle = Math.atan(newY/newX);
 
-    if (vector[0] < 0 && vector[1] > 0) angle += 2*(Math.PI / 2 - andgle);
+    if (vector[0] < 0 && vector[1] > 0) angle += 2*(Math.PI / 2 - angle);
     if (vector[0] < 0 && vector[1] < 0) angle += Math.PI;
     if (vector[0] > 0 && vector[1] < 0) angle *= -1;
 
