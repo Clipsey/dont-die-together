@@ -5,7 +5,8 @@ import {
 } from './model_helper';
 import {
     findDistance,
-    vectorMag
+    vectorMag,
+    calcRotation
 } from './vector_util';
 
 export const movePlayer = (player, playerInputs, gameState, sizes, dt, dist) => {
@@ -56,13 +57,10 @@ export const movePlayer = (player, playerInputs, gameState, sizes, dt, dist) => 
         player.velocity.y = 0;
     }
 
-    if (!player.direction) {
-        player.direction = {};
+    if (!player.angle) {
+        player.angle = 0;
     }
-    player.direction.x = playerInputs.pointX;
-    player.direction.y = playerInputs.pointY;
-
-    
+    player.angle = calcRotation([playerInputs.pointX, playerInputs.pointY]);
 };
 
 export const switchGuns = (player, playerInputs, times) => {
