@@ -57,6 +57,10 @@ export const fireBullets = (player, playerId, playerInputs, gameState, times, sp
             newBullet.pos.y = player.pos.y;
             newBullet.vel.x = unitVector[0] * speed;
             newBullet.vel.y = unitVector[1] * speed;
+            if (player.weapon === 'rifle'){
+                newBullet.vel.x *= 2;
+                newBullet.vel.y *= 2;
+            }
             gameState.bullets[generateId()] = newBullet;
         }
         player.ammo -= 1;

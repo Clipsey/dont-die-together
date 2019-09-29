@@ -3,9 +3,13 @@ const gameConfig = {
         x: 1200,
         y: 800
     },
+    numbers: {
+        zombieAnimatePics: 6
+    },
     times: {
+        zombieAnimateTime: 0.1,
         itemGenerate: 40,
-        zombieGenerate: 5,
+        zombieGenerate: 10,
         zombieReload: 0.5,      //times in seconds      
         zombieDie: 1,
         zombieSwitchDir: 0.25,
