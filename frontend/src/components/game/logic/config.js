@@ -5,7 +5,7 @@ const gameConfig = {
     },
     times: {
         itemGenerate: 40,
-        zombieGenerate: 30,
+        zombieGenerate: 5,
         zombieReload: 0.5,      //times in seconds      
         zombieDie: 1,
         switchGuns: 0.25,
@@ -20,6 +20,7 @@ const gameConfig = {
     },
     damages: {
         zombie: 10,
+
         pistol: 35,
         shotgun: 20,
         rifle: 100
@@ -104,12 +105,18 @@ export const sampleState = {
                 y: 50
             },
             amount: 10
-        }
-    },
-    items: {
+        },
         0.456786546: {
             type: 'gun',
             gun: 'rifle',
+            pos: {
+                x: 50,
+                y: 50
+            }
+        },
+        0.456786546: {
+            type: 'medPack',
+            amount: 30,
             pos: {
                 x: 50,
                 y: 50

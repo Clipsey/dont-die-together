@@ -56,6 +56,12 @@ export const movePlayer = (player, playerInputs, gameState, sizes, dt, dist) => 
         player.velocity.y = 0;
     }
 
+    if (!player.direction) {
+        player.direction = {};
+    }
+    player.direction.x = playerInputs.pointX;
+    player.direction.y = playerInputs.pointY;
+
     
 };
 
@@ -82,6 +88,12 @@ export const receiveItem = (player, item) => {
     }
     if (item.type === 'gun') {
         player.items.guns[item.gun] = true;
+    }
+    if (item.type === 'medPack') {
+        player.health += item.amount;
+        if (player.health > 150) {
+            player.health = 150;
+        }
     }
 }
 

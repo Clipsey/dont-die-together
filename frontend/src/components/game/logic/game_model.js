@@ -148,17 +148,34 @@ export default class GameModel {
     generateItem(dt) {
         let x = Math.random()*gameConfig.gameBounds.x;
         let y = Math.random()*gameConfig.gameBounds.y;
-        let newItem = {
-            type: 'ammo',
-            gun: [
-                'pistol', 
-                'pistol', 
-                'pistol', 
-                'rifle', 
-                'shotgun'
-            ][Math.floor(Math.random()*5)],
-            pos: {},
-            amount: 10
+        let itemType = ['ammo', 'gun', 'medPack'][Math.floor(Math.random()*3)];
+        let newItem = {};
+        switch (itemType) {
+            case 'ammo':
+                newItem.type = 'ammo';
+                newItem.gun = [
+                    'pistol',
+                    'pistol',
+                    'pistol',
+                    'rifle',
+                    'shotgun'
+                ][Math.floor(Math.random() * 5)];
+                newItem.pos = {};
+                newItem.amount = 5;
+            case 'gun':
+                newItem.type = 'gun';
+                newItem.gun = [
+                    'pistol',
+                    'pistol',
+                    'pistol',
+                    'rifle',
+                    'shotgun'
+                ][Math.floor(Math.random() * 5)];
+                newItem.pos = {};
+            case 'medPack':
+                newItem.type = 'medPack';
+                newItem.amount = 50;
+                newItem.pos = {};
         }
         newItem.pos.x = x;
         newItem.pos.y = y;
@@ -198,7 +215,8 @@ export default class GameModel {
         }
         if (this.generateZombieTime === 0){
             this.generateZombie();
-            this.generateZombieTime = gameConfig.times.zombieGenerate;
+            this.generateZombieTime = 
+            (gameConfig.times.zombieGenerate)/(Object.keys(this.gameState.players).length);
         }
         else {
             this.generateZombieTime -= dt;
@@ -254,7 +272,7 @@ export default class GameModel {
         Object.keys(this.gameState.players).forEach((playerId) => {
             let player = this.gameState.players[playerId];
             let playerInputs = inputs[playerId];
-            fireBullets(player, playerInputs, this.gameState, this.times, this.speeds);
+            fireBullets(player, playerId, playerInputs, this.gameState, this.times, this.speeds);
         });
     }
 

@@ -12,7 +12,7 @@ import {
     playerCanFire
 } from './player';
 
-export const fireBullets = (player, playerInputs, gameState, times, speeds) => {
+export const fireBullets = (player, playerId, playerInputs, gameState, times, speeds) => {
     if (playerCanFire(player) && playerInputs.fire) {
         player.timeToFire = times.reload[player.weapon];
         let fireVector = [playerInputs.pointX, playerInputs.pointY];
@@ -32,6 +32,7 @@ export const fireBullets = (player, playerInputs, gameState, times, speeds) => {
                     newFireVector[1] / vectorMag(newFireVector)
                 ];
                 let newBullet = {
+                    playerId: playerId,
                     type: player.weapon,
                     pos: {},
                     vel: {}
@@ -47,6 +48,7 @@ export const fireBullets = (player, playerInputs, gameState, times, speeds) => {
         }
         else {
             let newBullet = {
+                playerId: playerId,
                 type: player.weapon,
                 pos: {},
                 vel: {}
@@ -104,6 +106,10 @@ export const moveBullet = (bullet, id, dt, gameState, sizes, times, distances, d
                 enemy.pos.x += staggerVector[0];
                 enemy.pos.y += staggerVector[1];
                 if (enemy.health <= 0) {
+                    if (!gameState.players[bullet.playerId].killCount){
+                        gameState.players[bullet.playerId].killCount = 0;
+                    }
+                    gameState.players[bullet.playerId].killCount += 1;
                     enemy.status = 'dying';
                     enemy.timeToDie = times.zombieDie;
                 }
