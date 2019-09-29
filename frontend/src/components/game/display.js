@@ -13,7 +13,7 @@ class Display {
     }
 
     clearScreen(){
-        this.ctx.save();
+        // this.ctx.save();
         this.ctx.fillStyle = MainConfig.canvasStyle.backgroundColor;
         this.ctx.fillRect(0, 0, MainConfig.screenWidth, MainConfig.screenHeight);
     };
@@ -94,7 +94,7 @@ class Display {
         }
     }
     
-    displayPlayer (player, playerName, collectedInputs) {
+    displayPlayer (player) {
         this.ctx.save();
 
         // this.ctx.fillFont = 'bold 10px serif';
@@ -186,6 +186,11 @@ class Display {
                 x = 200;
                 y = 50;
                 break;
+        }
+
+        if (enemy.status === 'dying') {
+            x = 165;
+            y = 199;
         }
         this.drawEnemyImage(img, x, y, 65, 70, enemy.pos.x, enemy.pos.y, 27, 40, 0.8, angle + Math.PI/2, 65, 70);
         this.ctx.restore();
