@@ -1,10 +1,26 @@
-import * as MainConfig from './main_config';
+import * as MainConfig from './config';
 import gameConfig from './logic/config';
+const playerImage = require('../../style/images/bk_player_assets/player_chaingun.png');
+
 
 class Display {
     constructor(ctx) {
         this.ctx = ctx;
         this.mode = process.env.NODE_ENV;
+    }
+
+    calcRotation(collectedInputs, playerName) {
+        let x = collectedInputs[playerName].pointX;
+        let y = collectedInputs[playerName].pointY;
+        let newX = Math.abs(x);
+        let newY = Math.abs(y);
+        let angle = Math.atan(newY/newX);
+
+        if (x < 0 && y > 0) angle += 2*(Math.PI / 2 - angle);
+        if (x < 0 && y < 0) angle += Math.PI;
+        if (y < 0 && x > 0) angle *= -1;
+
+        return angle;
     }
 
     clearScreen(){
@@ -13,15 +29,29 @@ class Display {
         this.ctx.fillRect(0, 0, MainConfig.screenWidth, MainConfig.screenHeight);
     };
 
-    draw(gameState, dt) {
+    draw(gameState, dt, playerName, collectedInputs) {
         this.clearScreen();
-        this.displayPlayers(gameState);
+        this.displayStats(gameState, playerName, collectedInputs);
+        this.displayPlayers(gameState, collectedInputs);
         this.displayEnemies(gameState);
         this.displayBullets(gameState);
         this.displayItems(gameState);
         if (this.mode === 'development') {
             this.displayFPS(dt);
         }
+    }
+
+    displayStats(gameState, playerName, collectedInputs) {
+        const stats = gameState.players[playerName];
+        this.ctx.strokeText(`Health: ${stats.health}`, 20, 30);
+        this.ctx.strokeText(`Weapon: ${stats.weapon}`, 20, 60);
+        this.ctx.strokeText(`Ammo: ${stats.ammo}`, 20, 90);
+        this.ctx.strokeText(`angle: ${(this.calcRotation(collectedInputs, playerName) * 180 / Math.PI)}`, 20, 100);
+    }
+
+    displayFPS(dt) {
+        let fps = (1/dt).toFixed(1);   
+        this.ctx.strokeText(`FPS: ${fps}`, 20, 20);
     }
 
     displayBullet(bullet) {
@@ -50,12 +80,6 @@ class Display {
         }
     }
 
-    displayFPS(dt) {
-        let fps = (1/dt).toFixed(1);   
-        this.ctx.fillFont = 'bold 10px serif';
-        this.ctx.strokeText(`FPS: ${fps}`, 20, 20);
-    }
-
     displayItem(item) {
         this.ctx.save();
         this.ctx.beginPath();
@@ -73,30 +97,44 @@ class Display {
         }
     }
 
-    displayPlayers(gameState) {
+    displayPlayers(gameState, collectedInputs) {
         let players = Object.values(gameState.players);
+        let playerNames = Object.keys(gameState.players);
         for (let i = 0; i < players.length; i++) {
-            this.displayPlayer(players[i]);
+            this.displayPlayer(players[i], playerNames[i], collectedInputs);
         }
     }
     
-    displayPlayer (player) {
+    displayPlayer (player, playerName, collectedInputs) {
         this.ctx.save();
 
-        this.ctx.fillFont = 'bold 10px serif';
-        this.ctx.strokeText(`Health: ${player.health}`, player.pos.x - 10, player.pos.y - 32);
-        this.ctx.strokeText(`Gun: ${player.weapon}`, player.pos.x - 10, player.pos.y - 22);
-        this.ctx.strokeText(`Ammo: ${player.ammo}`, player.pos.x - 10, player.pos.y - 12);
+        // this.ctx.fillFont = 'bold 10px serif';
+        // this.ctx.strokeText(`Health: ${player.health}`, player.pos.x - 10, player.pos.y - 32);
+        // this.ctx.strokeText(`Gun: ${player.weapon}`, player.pos.x - 10, player.pos.y - 22);
+        // this.ctx.strokeText(`Ammo: ${player.ammo}`, player.pos.x - 10, player.pos.y - 12);
+        const playImage = new Image();
+        playImage.src = playerImage;
+        const angle = this.calcRotation(collectedInputs, playerName);
+
+        this.drawImageCenter(playImage, player.pos.x, player.pos.y, 15, 15, 1, angle);
+        this.ctx.restore();
 
         this.ctx.strokeStyle = '#234c70';
         this.ctx.fillStyle = '#234c70';
         this.ctx.lineWidth = 2;
         this.ctx.beginPath();
         this.ctx.arc(player.pos.x, player.pos.y, gameConfig.sizes.player, 0, 2 * Math.PI);
-        this.ctx.fill();
+  
         this.ctx.stroke();
         this.ctx.restore();
     }
+
+    // https://stackoverflow.com/questions/17411991/html5-canvas-rotate-image
+    drawImageCenter(image, x, y, cx, cy, scale, rotation){
+        this.ctx.setTransform(scale, 0, 0, scale, x, y); // sets scale and origin
+        this.ctx.rotate(rotation);
+        this.ctx.drawImage(image, -cx, -cy);
+    } 
     
     displayEnemy(enemy) {
         this.ctx.save();

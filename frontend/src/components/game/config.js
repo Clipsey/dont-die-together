@@ -16,6 +16,7 @@ export const newPlayer = {
     },
     health: 100,
     timeToFire: 0,   //time until able to fire
+    timeToSwitch: 0,
     weapon: 'pistol',
     items: {
         guns: {
@@ -39,5 +40,5 @@ export const canvasStyle = {
     marginRight: 'auto'
 };
 
-export const screenWidth = 800;
-export const screenHeight = 600;
+export const screenWidth = 1200;
+export const screenHeight = 800;

@@ -6,7 +6,7 @@ import GameModel from './logic/game_model';
 import '../../style/stylesheets/reset.css';
 import '../../style/stylesheets/app.css';
 import '../../style/stylesheets/game.css';
-import * as DisplayConfig from './main_config';
+import * as DisplayConfig from './config';
 
 class GameClient extends React.Component {
     constructor(props) {
@@ -20,15 +20,21 @@ class GameClient extends React.Component {
             context: null,
             display: null,
         };
-        this.ownGameModel = new GameModel();
+        this.ownGameModel = null;
         this.lastTime = Date.now();
         this.gameState = DisplayConfig.emptyState;
         this.status = '';
         this.rafId = null;
+        this.inputs = null;
     }
 
-    SOCKET_ReceiveGameState(gameState) {
-        this.gameState = gameState;
+    SOCKET_ReceiveGameState(data) {
+        if (!this.ownGameModel) {
+            this.ownGameModel = new GameModel(data.gameState);
+        }
+        this.gameState = data.gameState;
+        this.ownGameModel.replaceGameState(this.gameState);
+        this.inputs = data.inputs;
     }
 
     componentDidMount() {
@@ -49,10 +55,17 @@ class GameClient extends React.Component {
     mainLoop() {
         const now = Date.now();
         const dt = (now - this.lastTime) / 1000;
-        this.state.display.draw(this.gameState, dt);
-        const clientKeys = this.state.input.pressedKeys;
+        this.state.display.draw(this.gameState, dt, this.props.name);
+        let clientKeys = {};
+        clientKeys.name = this.props.name
+        clientKeys.inputs = this.state.input.pressedKeys;
+        if(Object.keys(this.gameState.players).includes(this.props.name)) {
+            clientKeys.inputs.pointX = this.state.input.mousePos.x - this.gameState.players[this.props.name].pos.x;
+            clientKeys.inputs.pointY = this.state.input.mousePos.y - this.gameState.players[this.props.name].pos.y;
+        }       
         this.props.send(clientKeys);
         this.lastTime = now;
+        if (this.ownGameModel) this.gameState = this.ownGameModel.update(this.inputs, dt);
         this.rafId = requestAnimationFrame(() => this.mainLoop());
     }
 
