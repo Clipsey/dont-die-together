@@ -3,6 +3,7 @@ import gameConfig from './logic/config';
 const playerRifle = require('../../style/images/bk_player_assets/player_chaingun.png');
 const playerShotgun = require('../../style/images/bk_player_assets/player_pumpgun_stand.png');
 const playerHandgun = require('../../style/images/bk_player_assets/player_9mmhandgun.png');
+const zombieSprite = require('../../style/images/zombiebasic.png')
 
 
 class Display {
@@ -100,45 +101,76 @@ class Display {
         // this.ctx.strokeText(`Health: ${player.health}`, player.pos.x - 10, player.pos.y - 32);
         // this.ctx.strokeText(`Gun: ${player.weapon}`, player.pos.x - 10, player.pos.y - 22);
         // this.ctx.strokeText(`Ammo: ${player.ammo}`, player.pos.x - 10, player.pos.y - 12);
-        const playImage = new Image();
-        playImage.src = playerRifle;
-        let angle = 0;
+        let angle = player.angle;
 
-        this.drawImageCenter(playImage, player.pos.x, player.pos.y, 15, 15, 1, angle);
+        const img = new Image();
+        switch (player.weapon) {
+            case 'pistol':
+                img.src = playerHandgun;
+                this.drawPlayerImage(img, player.pos.x, player.pos.y, 30, 32, 1.2, angle);
+                break;
+            case 'shotgun':
+                img.src = playerShotgun;
+                this.drawPlayerImage(img, player.pos.x, player.pos.y, 38, 28, 1.2, angle);
+                break;
+            case 'rifle':
+                img.src = playerRifle;
+                this.drawPlayerImage(img, player.pos.x, player.pos.y, 17, 17, 1.2, angle);
+                break        
+            default:
+                img.src = playerHandgun;
+                break;
+        }
+
         this.ctx.restore();
 
-        this.ctx.strokeStyle = '#234c70';
-        this.ctx.fillStyle = '#234c70';
-        this.ctx.lineWidth = 2;
-        this.ctx.beginPath();
-        this.ctx.arc(player.pos.x, player.pos.y, gameConfig.sizes.player, 0, 2 * Math.PI);
+        // this.ctx.strokeStyle = '#234c70';
+        // this.ctx.fillStyle = '#234c70';
+        // this.ctx.lineWidth = 2;
+        // this.ctx.beginPath();
+        // this.ctx.arc(player.pos.x, player.pos.y, gameConfig.sizes.player, 0, 2 * Math.PI);
   
-        this.ctx.stroke();
-        this.ctx.restore();
+        // this.ctx.stroke();
+        // this.ctx.restore();
     }
 
     // https://stackoverflow.com/questions/17411991/html5-canvas-rotate-image
-    drawImageCenter(image, x, y, cx, cy, scale, rotation){
+    drawPlayerImage(image, x, y, cx, cy, scale, rotation){
         this.ctx.setTransform(scale, 0, 0, scale, x, y); // sets scale and origin
         this.ctx.rotate(rotation);
         this.ctx.drawImage(image, -cx, -cy);
+    }
+
+    drawEnemyImage(image, sx, sy, sWidth, sHeight, x, y, dx, dy, scale, rotation, dWidth, dHeight){
+        this.ctx.setTransform(scale, 0, 0, scale, x, y); // sets scale and origin
+        this.ctx.rotate(rotation);
+        this.ctx.drawImage(image, sx, sy, sWidth, sHeight, -dx, -dy, dWidth, dHeight);
     } 
     
     displayEnemy(enemy) {
         this.ctx.save();
-    
-        this.ctx.fillFont = 'bold 10px serif';
-        this.ctx.strokeText(`Health: ${enemy.health}`, enemy.pos.x - 10, enemy.pos.y-15);
-    
-        this.ctx.translate(enemy.pos.x, enemy.pos.y);
-        this.ctx.strokeStyle = '#215910';
-        this.ctx.fillStyle = '#215910';
-        this.ctx.lineWidth = 2;
-        this.ctx.beginPath();
-        this.ctx.arc(0, 0, gameConfig.sizes.zombie, 0, 2 * Math.PI);
-        this.ctx.fill();
-        this.ctx.stroke();
+
+        const img = new Image();
+        img.src = zombieSprite;
+        let angle = enemy.angle;
+
+        this.drawEnemyImage(img, 40, 40, 50, 50, enemy.pos.x, enemy.pos.y, 27, 15, 0.8, angle + Math.PI/2, 50, 50);
         this.ctx.restore();
+        // this.ctx.save();
+
+    
+        // this.ctx.fillFont = 'bold 10px serif';
+        // this.ctx.strokeText(`Health: ${enemy.health}`, enemy.pos.x - 10, enemy.pos.y-15);
+    
+        // this.ctx.translate(enemy.pos.x, enemy.pos.y);
+        // this.ctx.strokeStyle = '#215910';
+      
+        // this.ctx.lineWidth = 2;
+        // this.ctx.beginPath();
+        // this.ctx.arc(0, 0, gameConfig.sizes.zombie, 0, 2 * Math.PI);
+      
+        // this.ctx.stroke();
+        // this.ctx.restore();
     }
 }
 
