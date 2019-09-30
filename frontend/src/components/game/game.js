@@ -84,6 +84,7 @@ class Game extends React.Component {
 
     startGame(initialState = MainConfig.emptyState) {
         initialState.players[this.props.name] = JSON.parse(JSON.stringify(MainConfig.newPlayer));
+        initialState.players[this.props.name].name = this.props.name;
         this.numPlayers++;
         this.lastGameState = initialState;
         const model = new GameModel(initialState);
@@ -96,31 +97,32 @@ class Game extends React.Component {
     mainLoop() {
         const now = Date.now();
         const dt = (now - this.lastTime) / 1000;
-
         const hostKeys = this.state.input.pressedKeys;
+
         if (this.state.gameMode === GameMode.StartScreen && hostKeys.enter) this.startGame();
 
         if (this.state.gameMode === GameMode.Playing) {            
             hostKeys.pointX = this.state.input.mousePos.x - this.lastGameState.players[this.props.name].pos.x;
             hostKeys.pointY = this.state.input.mousePos.y - this.lastGameState.players[this.props.name].pos.y;
-
+            hostKeys.name = this.props.name;
             let collectedInputs = this.collectInputs();
             collectedInputs[this.props.name] = hostKeys;
-
-            if ((now - this.lastUpdate) / 1000 > 20) {
-                this.lastUpdate = now;
-            }
-
             this.lastGameState = this.state.gameModel.update(collectedInputs, dt);
-            this.state.display.draw(this.lastGameState, dt);
+
             const data = {};
             data.gameState = this.lastGameState;
             data.inputs = collectedInputs;
             this.props.send(data);
+
+            this.state.display.draw(this.lastGameState, dt, this.props.name, collectedInputs);
+
+            if (now - this.lastUpdate > 10000) {
+                console.log(this.lastGameState);
+                this.lastUpdate = now;
+            }
         }
         this.lastTime = now;
         this.rafId = requestAnimationFrame(() => this.mainLoop());
-        
     }
 
     render() {

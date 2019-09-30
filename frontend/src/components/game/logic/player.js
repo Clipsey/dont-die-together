@@ -5,7 +5,8 @@ import {
 } from './model_helper';
 import {
     findDistance,
-    vectorMag
+    vectorMag,
+    calcRotation
 } from './vector_util';
 
 export const movePlayer = (player, playerInputs, gameState, sizes, dt, dist) => {
@@ -56,7 +57,10 @@ export const movePlayer = (player, playerInputs, gameState, sizes, dt, dist) => 
         player.velocity.y = 0;
     }
 
-    
+    if (!player.angle) {
+        player.angle = 0;
+    }
+    player.angle = calcRotation([playerInputs.pointX, playerInputs.pointY]);
 };
 
 export const switchGuns = (player, playerInputs, times) => {
@@ -82,6 +86,12 @@ export const receiveItem = (player, item) => {
     }
     if (item.type === 'gun') {
         player.items.guns[item.gun] = true;
+    }
+    if (item.type === 'medPack') {
+        player.health += item.amount;
+        if (player.health > 150) {
+            player.health = 150;
+        }
     }
 }
 

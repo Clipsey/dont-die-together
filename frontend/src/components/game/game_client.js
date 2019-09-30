@@ -55,7 +55,7 @@ class GameClient extends React.Component {
     mainLoop() {
         const now = Date.now();
         const dt = (now - this.lastTime) / 1000;
-        this.state.display.draw(this.gameState, dt);
+        this.state.display.draw(this.gameState, dt, this.props.name);
         let clientKeys = {};
         clientKeys.name = this.props.name
         clientKeys.inputs = this.state.input.pressedKeys;

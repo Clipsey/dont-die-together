@@ -1,18 +1,20 @@
+import gameConfig from './config';
+
 import {
     generateId,
-    willCollideWithObstacle
+    willCollideWithObstacle,
+    willCollideWithEnemy
 } from './model_helper';
 
 import {
     vectorMag,
     findDistance
 } from './vector_util';
-
 import {
     playerCanFire
 } from './player';
 
-export const fireBullets = (player, playerInputs, gameState, times, speeds) => {
+export const fireBullets = (player, playerId, playerInputs, gameState, times, speeds) => {
     if (playerCanFire(player) && playerInputs.fire) {
         player.timeToFire = times.reload[player.weapon];
         let fireVector = [playerInputs.pointX, playerInputs.pointY];
@@ -32,6 +34,7 @@ export const fireBullets = (player, playerInputs, gameState, times, speeds) => {
                     newFireVector[1] / vectorMag(newFireVector)
                 ];
                 let newBullet = {
+                    playerId: playerId,
                     type: player.weapon,
                     pos: {},
                     vel: {}
@@ -47,6 +50,7 @@ export const fireBullets = (player, playerInputs, gameState, times, speeds) => {
         }
         else {
             let newBullet = {
+                playerId: playerId,
                 type: player.weapon,
                 pos: {},
                 vel: {}
@@ -55,10 +59,15 @@ export const fireBullets = (player, playerInputs, gameState, times, speeds) => {
             newBullet.pos.y = player.pos.y;
             newBullet.vel.x = unitVector[0] * speed;
             newBullet.vel.y = unitVector[1] * speed;
+            if (player.weapon === 'rifle'){
+                newBullet.vel.x *= 2;
+                newBullet.vel.y *= 2;
+            }
             gameState.bullets[generateId()] = newBullet;
         }
         player.ammo -= 1;
         player.items.gunAmmo[player.weapon] -= 1;
+        gameState.soundTimes.firePistol = gameConfig.times.sounds;
     }
 };
 
@@ -101,9 +110,16 @@ export const moveBullet = (bullet, id, dt, gameState, sizes, times, distances, d
                     unitVector[0] * distances.stagger,
                     unitVector[1] * distances.stagger
                 ];
-                enemy.pos.x += staggerVector[0];
-                enemy.pos.y += staggerVector[1];
+                if (!willCollideWithEnemy(enemy, staggerVector, gameState, sizes)) {
+                    enemy.pos.x += staggerVector[0];
+                    enemy.pos.y += staggerVector[1];
+                }
+                
                 if (enemy.health <= 0) {
+                    if (!gameState.players[bullet.playerId].killCount){
+                        gameState.players[bullet.playerId].killCount = 0;
+                    }
+                    gameState.players[bullet.playerId].killCount += 1;
                     enemy.status = 'dying';
                     enemy.timeToDie = times.zombieDie;
                 }

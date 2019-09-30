@@ -3,7 +3,9 @@ import { sampleState } from './config';
 import { vectorMag, findDistance } from './vector_util';
 
 import {
-    moveEnemy
+    moveEnemy,
+    generateZombie,
+    animateEnemy
 } from './enemy';
 import { 
     willCollideWithEnemy,
@@ -19,107 +21,21 @@ import {
     fireBullets,
     moveBullet
 } from './bullet';
+import {
+    generateItem
+} from './item';
+
+
 
 export default class GameModel {
     constructor(initialState = sampleState) {
         this.gameState = initialState;
-        this.gameState.obstacles = {};          // DELETE LATER
-        // this.gameState.obstacles[1] = {
-        //     type: 'rocks',
-        //     topLeft: {
-        //         x: 200,
-        //         y: 200,
-        //     },
-        //     bottomRight: {
-        //         x: 300,
-        //         y: 300,
-        //     }
-        // }
-        // this.gameState.obstacles[2] = {
-        //     type: 'rocks',
-        //     topLeft: {
-        //         x: 400,
-        //         y: 400,
-        //     },
-        //     bottomRight: {
-        //         x: 500,
-        //         y: 500,
-        //     }
-        // }
-        // this.gameState.items = {
-        //     1: {
-        //         type: 'ammo',
-        //         gun: 'shotgun',
-        //         pos: {
-        //             x: 205,
-        //             y: 205
-        //         },
-        //         amount: 10
-        //     },
-        //     2: {
-        //         type: 'ammo',
-        //         gun: 'shotgun',
-        //         pos: {
-        //             x: 295,
-        //             y: 205
-        //         },
-        //         amount: 10
-        //     },
-        //     3: {
-        //         type: 'ammo',
-        //         gun: 'shotgun',
-        //         pos: {
-        //             x: 295,
-        //             y: 295
-        //         },
-        //         amount: 10
-        //     },
-        //     4: {
-        //         type: 'ammo',
-        //         gun: 'shotgun',
-        //         pos: {
-        //             x: 205,
-        //             y: 295
-        //         },
-        //         amount: 10
-        //     },
-        //     5: {
-        //         type: 'ammo',
-        //         gun: 'shotgun',
-        //         pos: {
-        //             x: 405,
-        //             y: 405
-        //         },
-        //         amount: 10
-        //     },
-        //     6: {
-        //         type: 'ammo',
-        //         gun: 'shotgun',
-        //         pos: {
-        //             x: 495,
-        //             y: 405
-        //         },
-        //         amount: 10
-        //     },
-        //     7: {
-        //         type: 'ammo',
-        //         gun: 'shotgun',
-        //         pos: {
-        //             x: 495,
-        //             y: 495
-        //         },
-        //         amount: 10
-        //     },
-        //     8: {
-        //         type: 'ammo',
-        //         gun: 'shotgun',
-        //         pos: {
-        //             x: 405,
-        //             y: 495
-        //         },
-        //         amount: 10
-        //     },
-        // }                                       // DELETE LATER
+        this.gameState.obstacles = {};     
+        this.gameState.soundTimes = {
+            firePistol: 0,
+            fireShotgun: 0,
+            fireRifle: 0
+        };     
         this.maxX = gameConfig.gameBounds.x;
         this.maxY = gameConfig.gameBounds.y;
         this.speeds = gameConfig.speeds;
@@ -131,7 +47,7 @@ export default class GameModel {
         this.generateItemTime = 0;
     }
     
-    update(inputs, dt) { 
+    update(inputs, dt) {
         this.updateTimes(dt);
         this.movePlayers(inputs, dt);
         this.moveEnemies(dt);
@@ -145,49 +61,9 @@ export default class GameModel {
         this.gameState = newState;
     }
 
-    generateItem(dt) {
-        let x = Math.random()*gameConfig.gameBounds.x;
-        let y = Math.random()*gameConfig.gameBounds.y;
-        let newItem = {
-            type: 'ammo',
-            gun: [
-                'pistol', 
-                'pistol', 
-                'pistol', 
-                'rifle', 
-                'shotgun'
-            ][Math.floor(Math.random()*5)],
-            pos: {},
-            amount: 10
-        }
-        newItem.pos.x = x;
-        newItem.pos.y = y;
-        this.gameState.items[generateId()] = newItem; 
-    }
-
-    generateZombie() {
-        let x = Math.random()*gameConfig.gameBounds.x;
-        let y = Math.random()*gameConfig.gameBounds.y;
-        if(Math.random() < 0.5){
-            x = (Math.random() < 0.5 ? 0 : gameConfig.gameBounds.x);
-        }
-        else {
-            y = (Math.random() < 0.5 ? 0 : gameConfig.gameBounds.y);
-        }
-        let newZombie = {
-            type: 'zombie',
-            pos: {},
-            health: 100,
-            timeToAttack: 0
-        }
-        newZombie.pos.x = x;
-        newZombie.pos.y = y;
-        this.gameState.enemies[generateId()] = newZombie;
-    }
-
     updateTimes(dt) { 
         if (this.generateItemTime === 0) {
-            this.generateItem();
+            generateItem(this.gameState);
             this.generateItemTime = gameConfig.times.itemGenerate;
         }
         else {
@@ -197,8 +73,9 @@ export default class GameModel {
             }
         }
         if (this.generateZombieTime === 0){
-            this.generateZombie();
-            this.generateZombieTime = gameConfig.times.zombieGenerate;
+            generateZombie(this.gameState);
+            this.generateZombieTime = 
+            (gameConfig.times.zombieGenerate)/(Object.keys(this.gameState.players).length);
         }
         else {
             this.generateZombieTime -= dt;
@@ -206,6 +83,12 @@ export default class GameModel {
                 this.generateZombieTime = 0;
             }
         }
+        Object.keys(this.gameState.soundTimes).forEach( (sound) => {
+            this.gameState.soundTimes[sound] -= dt;
+            if (this.gameState.soundTimes[sound] < 0) {
+                this.gameState.soundTimes[sound] = 0;
+            }
+        });
         Object.values(this.gameState.players).forEach( (player) => {
             player.timeToFire -= dt;
             if (player.timeToFire < 0){
@@ -228,6 +111,22 @@ export default class GameModel {
                 enemy.timeToAttack -= dt;
                 if (enemy.timeToAttack < 0){
                     enemy.timeToAttack = 0;
+                }
+            }
+            if (enemy.timeSwitchDir > 0) {
+                enemy.timeSwitchDir -= dt;
+                if (enemy.timeSwitchDir < 0) {
+                    enemy.timeSwitchDir = 0;
+                }
+            }
+            if (enemy.timeToAnimate === 0){
+                animateEnemy(enemy);
+                enemy.timeToAnimate = gameConfig.times.zombieAnimateTime;
+            }
+            else {
+                enemy.timeToAnimate -= dt;
+                if (enemy.timeToAnimate < 0) {
+                    enemy.timeToAnimate = 0;
                 }
             }
         });
@@ -254,7 +153,7 @@ export default class GameModel {
         Object.keys(this.gameState.players).forEach((playerId) => {
             let player = this.gameState.players[playerId];
             let playerInputs = inputs[playerId];
-            fireBullets(player, playerInputs, this.gameState, this.times, this.speeds);
+            fireBullets(player, playerId, playerInputs, this.gameState, this.times, this.speeds);
         });
     }
 

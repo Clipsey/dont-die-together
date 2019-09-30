@@ -3,11 +3,18 @@ const gameConfig = {
         x: 1200,
         y: 800
     },
+    numbers: {
+        zombieAnimatePics: 6
+    },
     times: {
+        sounds: 0.25,
+        playerMessage: 0.5,
+        zombieAnimateTime: 0.1,
         itemGenerate: 40,
-        zombieGenerate: 30,
+        zombieGenerate: 1,
         zombieReload: 0.5,      //times in seconds      
         zombieDie: 1,
+        zombieSwitchDir: 0.5,
         switchGuns: 0.25,
         reload: {
             pistol: 0.5,
@@ -16,10 +23,11 @@ const gameConfig = {
         }
     },
     distances: {
-        stagger: 6
+        stagger: 10
     },
     damages: {
         zombie: 10,
+
         pistol: 35,
         shotgun: 20,
         rifle: 100
@@ -27,7 +35,7 @@ const gameConfig = {
     speeds: {                   //speeds in pixels/second
         player: 150,
         bullet: 1500,
-        zombie: 30
+        zombie: 20
     },
     acceleration: {
         player: 100000             //acc in pixels/second/second
@@ -35,7 +43,7 @@ const gameConfig = {
     sizes: {
         item: 5,
         player: 10,
-        zombie: 12,
+        zombie: 20,
         bullets: 2
     }
 }
@@ -104,12 +112,18 @@ export const sampleState = {
                 y: 50
             },
             amount: 10
-        }
-    },
-    items: {
+        },
         0.456786546: {
             type: 'gun',
             gun: 'rifle',
+            pos: {
+                x: 50,
+                y: 50
+            }
+        },
+        0.456786546: {
+            type: 'medPack',
+            amount: 30,
             pos: {
                 x: 50,
                 y: 50

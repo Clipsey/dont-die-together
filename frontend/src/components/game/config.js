@@ -7,8 +7,8 @@ export const emptyState = {
 
 export const newPlayer = {
     pos: {
-        x: 100,
-        y: 100
+        x: 600,
+        y: 400
     },
     velocity: {
         x: 0,
