@@ -9,7 +9,7 @@ const gameConfig = {
     times: {
         zombieAnimateTime: 0.1,
         itemGenerate: 40,
-        zombieGenerate: 0.5,
+        zombieGenerate: 1,
         zombieReload: 0.5,      //times in seconds      
         zombieDie: 1,
         zombieSwitchDir: 1000,

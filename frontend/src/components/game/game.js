@@ -6,7 +6,7 @@ import GameModel from './logic/game_model';
 import '../../style/stylesheets/reset.css';
 import '../../style/stylesheets/app.css';
 import '../../style/stylesheets/game.css';
-import * as MainConfig from './config';
+import * as config from './config';
 import Display from './display';
 
 const GameMode = {
@@ -15,8 +15,6 @@ const GameMode = {
     GameOver: 2
 };
 
-const nullKeys = { left: false, right: false, up: false, down: false, fire: false, enter: false, pointX: 1, pointY: 1};
-
 class Game extends React.Component {
     constructor(props) {
         super(props);
@@ -24,8 +22,8 @@ class Game extends React.Component {
         this.state = {
             input: new InputManager(),
             screen: {
-                width: MainConfig.screenWidth,
-                height: MainConfig.screenHeight,
+                width: config.screenWidth,
+                height: config.screenHeight,
             },
             gameMode: GameMode.StartScreen,
             context: null,
@@ -33,7 +31,7 @@ class Game extends React.Component {
             gameModel: null,
         };
         this.lastTime = Date.now();
-        this.lastGameState = null;
+        this.gameState = null;
         this.status = '';
         this.otherInputs = [];
         this.rafId = null;
@@ -42,9 +40,7 @@ class Game extends React.Component {
     }
 
     SOCKET_ReceiveInputs(inputs) {
-        if (!Object.keys(this.lastGameState.players).includes(inputs.name)) {
-            this.addPlayer(inputs);
-        }
+        if (!Object.keys(this.gameState.players).includes(inputs.name)) this.addPlayer(inputs);
         this.otherInputs.push(inputs);
     }
 
@@ -53,16 +49,14 @@ class Game extends React.Component {
     }
 
     addPlayer(inputs) {        
-        let newPlayer = JSON.parse(JSON.stringify(MainConfig.newPlayer));
-        this.lastGameState.players[inputs.name] = newPlayer;
-        this.state.gameModel.replaceGameState(this.lastGameState);
+        let newPlayer = JSON.parse(JSON.stringify(config.newPlayer));
+        this.gameState.players[inputs.name] = newPlayer;
+        this.state.gameModel.replaceGameState(this.gameState);
     }
 
     collectInputs() {
         let collected = {};
-        this.otherInputs.forEach(input => {
-            collected[input.name] = input.inputs;
-        });
+        this.otherInputs.forEach(input => collected[input.name] = input.inputs);
         return collected;
     }
 
@@ -82,11 +76,11 @@ class Game extends React.Component {
         cancelAnimationFrame(this.rafId);
     }
 
-    startGame(initialState = MainConfig.emptyState) {
-        initialState.players[this.props.name] = JSON.parse(JSON.stringify(MainConfig.newPlayer));
+    startGame(initialState = config.emptyState) {
+        initialState.players[this.props.name] = JSON.parse(JSON.stringify(config.newPlayer));
         initialState.players[this.props.name].name = this.props.name;
         this.numPlayers++;
-        this.lastGameState = initialState;
+        this.gameState = initialState;
         const model = new GameModel(initialState);
         this.setState({
             gameMode: GameMode.Playing,
@@ -101,25 +95,20 @@ class Game extends React.Component {
 
         if (this.state.gameMode === GameMode.StartScreen && hostKeys.enter) this.startGame();
 
-        if (this.state.gameMode === GameMode.Playing) {            
-            hostKeys.pointX = this.state.input.mousePos.x - this.lastGameState.players[this.props.name].pos.x;
-            hostKeys.pointY = this.state.input.mousePos.y - this.lastGameState.players[this.props.name].pos.y;
-            hostKeys.name = this.props.name;
+        if (this.state.gameMode === GameMode.Playing) {        
             let collectedInputs = this.collectInputs();
+            hostKeys.pointX = this.state.input.mousePos.x - this.gameState.players[this.props.name].pos.x;
+            hostKeys.pointY = this.state.input.mousePos.y - this.gameState.players[this.props.name].pos.y;
+            hostKeys.name = this.props.name;
             collectedInputs[this.props.name] = hostKeys;
-            this.lastGameState = this.state.gameModel.update(collectedInputs, dt);
 
-            const data = {};
-            data.gameState = this.lastGameState;
-            data.inputs = collectedInputs;
-            this.props.send(data);
+            this.gameState = this.state.gameModel.update(collectedInputs, dt);
 
-            this.state.display.draw(this.lastGameState, dt, this.props.name, collectedInputs);
-
-            if (now - this.lastUpdate > 10000) {
-                console.log(this.lastGameState);
-                this.lastUpdate = now;
-            }
+            this.props.send({
+                gameState: this.gameState,
+                inputs: collectedInputs
+            });
+            this.state.display.draw(this.gameState, dt, this.props.name);
         }
         this.lastTime = now;
         this.rafId = requestAnimationFrame(() => this.mainLoop());
@@ -133,7 +122,7 @@ class Game extends React.Component {
                     id="canvas"
                     width={this.state.screen.width}
                     height={this.state.screen.height}
-                    style={MainConfig.canvasStyle}
+                    style={config.canvasStyle}
                 />
             </div>
         );
