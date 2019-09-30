@@ -79,6 +79,9 @@ export const moveEnemy = (enemy, gameState, dist, sizes, damages, times) => {
 export const generateZombie = (gameState) => {
     let x = Math.random() * gameConfig.gameBounds.x;
     let y = Math.random() * gameConfig.gameBounds.y;
+
+    
+
     if (Math.random() < 0.5) {
         x = (Math.random() < 0.5 ? 0 : gameConfig.gameBounds.x);
     }
@@ -98,11 +101,15 @@ export const generateZombie = (gameState) => {
     }
     newZombie.pos.x = x;
     newZombie.pos.y = y;
-    gameState.enemies[generateId()] = newZombie;
+
+    let moveVector = [0, 0];
+    if (!willCollideWithEnemy(newZombie, moveVector, gameState, gameConfig.sizes) &&
+        !willCollideWithObstacle(newZombie, moveVector, gameState, gameConfig.sizes.zombie)) {
+        gameState.enemies[generateId()] = newZombie;
+    }
 }
 
 export const animateEnemy = (enemy) => {
     enemy.pic += 1;
     enemy.pic = enemy.pic % gameConfig.numbers.zombieAnimatePics;
-    console.log(enemy.pic);
 }

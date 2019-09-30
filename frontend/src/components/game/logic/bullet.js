@@ -1,13 +1,15 @@
+import gameConfig from './config';
+
 import {
     generateId,
-    willCollideWithObstacle
+    willCollideWithObstacle,
+    willCollideWithEnemy
 } from './model_helper';
 
 import {
     vectorMag,
     findDistance
 } from './vector_util';
-
 import {
     playerCanFire
 } from './player';
@@ -65,6 +67,7 @@ export const fireBullets = (player, playerId, playerInputs, gameState, times, sp
         }
         player.ammo -= 1;
         player.items.gunAmmo[player.weapon] -= 1;
+        gameState.soundTimes.firePistol = gameConfig.times.sounds;
     }
 };
 
@@ -107,8 +110,11 @@ export const moveBullet = (bullet, id, dt, gameState, sizes, times, distances, d
                     unitVector[0] * distances.stagger,
                     unitVector[1] * distances.stagger
                 ];
-                enemy.pos.x += staggerVector[0];
-                enemy.pos.y += staggerVector[1];
+                if (!willCollideWithEnemy(enemy, staggerVector, gameState, sizes)) {
+                    enemy.pos.x += staggerVector[0];
+                    enemy.pos.y += staggerVector[1];
+                }
+                
                 if (enemy.health <= 0) {
                     if (!gameState.players[bullet.playerId].killCount){
                         gameState.players[bullet.playerId].killCount = 0;
