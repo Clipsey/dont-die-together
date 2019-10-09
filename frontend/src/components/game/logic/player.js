@@ -79,6 +79,10 @@ export const movePlayer = (player, playerInputs, gameState, sizes, dt, dist) => 
             player.pos.x += moveVector[0];
             player.pos.y += moveVector[1];
         }
+        else if (player.status === 'dead'){
+            player.pos.x += moveVector[0];
+            player.pos.y += moveVector[1];
+        }
     }
     else {
         player.velocity.x = 0;
