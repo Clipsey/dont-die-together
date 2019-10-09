@@ -18,7 +18,7 @@ import '../style/stylesheets/snowy.css'
 
 import socketIOClient from 'socket.io-client';
 import { emitSetup, onSetup } from '../util/sockets_util';
-import {audioSetup, playSound} from './game/logic/sounds/soundsUtil';
+import {audioSetup, playSound, playHeartBeat} from './game/logic/sounds/soundsUtil';
 
 class App extends React.Component {
   constructor(props) {
@@ -50,7 +50,7 @@ class App extends React.Component {
 
     audioSetup();
     // window.addEventListener('click', () => {
-    //   playSound('rifle');
+    //   playHeartBeat(2.0);
     // })
   }
 

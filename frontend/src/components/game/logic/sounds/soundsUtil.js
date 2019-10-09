@@ -6,9 +6,15 @@ const AudioAbstractions = {
     rifle: 'rifle.mp3',
     shotgun: 'shotgun.mp3',
     playerDeath: 'playerDeath.mp3',
-    lowHealth: 'lowHealth.mp3'
+    lowHealth: 'lowHealth.mp3',
+    fleshEating: 'fleshEating.mp3',
+    fleshEating2: 'fleshEating2.mp3',
+    creepyScream: 'creepyScream.mp3',
+    thunk: 'thunk.mp3',
+    heartbeat: 'heartbeat.mp3'
   },
-  audioBuffers: {}
+  audioBuffers: {},
+  heartbeat: null
 }
 const audioContext = new AudioContext();
 
@@ -33,11 +39,31 @@ export const playSound = (selector) => {
   audioBufferSourceNode.start();
 }
 
-export const stopSound = (selector) => {
-  let audioBufferSourceNode = audioContext.createBufferSource();
-  audioBufferSourceNode.buffer = AudioAbstractions.audioBuffers[selector];
-  audioBufferSourceNode.connect(audioContext.destination);
-  audioBufferSourceNode.stop();
+// export const stopSound = (selector) => {
+//   let audioBufferSourceNode = audioContext.createBufferSource();
+//   audioBufferSourceNode.buffer = AudioAbstractions.audioBuffers[selector];
+//   audioBufferSourceNode.connect(audioContext.destination);
+//   audioBufferSourceNode.stop();
+// }
+
+export const playHeartBeat = (multiplier) => {
+  if (AudioAbstractions.heartbeat) {
+    let oldAudioBufferSourceNode = AudioAbstractions.heartbeat;
+    oldAudioBufferSourceNode.stop();
+    let newAudioBufferSourceNode = audioContext.createBufferSource();
+    newAudioBufferSourceNode.buffer = AudioAbstractions.audioBuffers['heartbeat'];
+    newAudioBufferSourceNode.playbackRate.value = multiplier;
+    newAudioBufferSourceNode.connect(audioContext.destination);
+    newAudioBufferSourceNode.start();
+    AudioAbstractions.heartbeat = newAudioBufferSourceNode;
+  } else {
+    let audioBufferSourceNode = audioContext.createBufferSource();
+    audioBufferSourceNode.buffer = AudioAbstractions.audioBuffers['heartbeat'];
+    audioBufferSourceNode.playbackRate.value = multiplier;
+    audioBufferSourceNode.connect(audioContext.destination);
+    audioBufferSourceNode.start();
+    AudioAbstractions.heartbeat = audioBufferSourceNode;
+  }
 }
 
 
