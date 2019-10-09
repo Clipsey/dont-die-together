@@ -31,7 +31,7 @@ import {
 export default class GameModel {
     constructor(initialState = sampleState) {
         this.gameState = initialState;
-        this.gameState.obstacles = {};     
+        
         this.gameState.soundTimes = {
             firePistol: 0,
             fireShotgun: 0,
