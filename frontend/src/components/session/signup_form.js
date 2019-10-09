@@ -83,7 +83,7 @@ class SignupForm extends React.Component {
               onChange={this.update('email')}
               placeholder="Email"
             /> */}
-            <br />
+            {/* <br /> */}
             <input type="text"
               className="signup-form-input"
               value={this.state.name}
