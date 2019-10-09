@@ -25,12 +25,13 @@ export const newPlayer = {
             rifle: true
         },
         gunAmmo: {
-            pistol: 1000000,
-            shotgun: 1000000,
-            rifle: 1000000
+            pistol: 100,
+            shotgun: 8,
+            rifle: 30
         }
     },
-    ammo: 20,
+    ammo: 100,
+    killCount: 0
 }
 
 export const canvasStyle = {
@@ -40,5 +41,5 @@ export const canvasStyle = {
     marginRight: 'auto'
 };
 
-export const screenWidth = 1200;
-export const screenHeight = 800;
+export const screenWidth = 1000;
+export const screenHeight = 833;

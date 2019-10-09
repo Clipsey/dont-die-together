@@ -116,7 +116,12 @@ class Game extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className='game-window'>               
+                <ul className="self-data">
+                    <li id="score"></li>
+                    <li id="current-gun"></li>
+                    <li id="ammo"></li>
+                </ul>               
                 {this.state.gameMode === GameMode.StartScreen && <Welcome />}
                 <canvas ref="canvas"
                     id="canvas"

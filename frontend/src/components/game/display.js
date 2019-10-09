@@ -1,9 +1,14 @@
 import * as MainConfig from './config';
 import logicConfig from './logic/config';
+import gameConfig from './logic/config';
 const playerRifle = require('../../style/images/bk_player_assets/player_chaingun.png');
 const playerShotgun = require('../../style/images/bk_player_assets/player_pumpgun_stand.png');
 const playerHandgun = require('../../style/images/bk_player_assets/player_9mmhandgun.png');
-const zombieSprite = require('../../style/images/zombiebasic.png')
+const zombieSprite = require('../../style/images/zombiebasic.png');
+const backgroundImg = require('../../style/images/forest.png')
+
+
+
 
 class Display {
     constructor(ctx) {
@@ -12,22 +17,41 @@ class Display {
     }
 
     clearScreen(){
-        this.ctx.save();
-        this.ctx.fillStyle = MainConfig.canvasStyle.backgroundColor;
-        this.ctx.fillRect(0, 0, MainConfig.screenWidth, MainConfig.screenHeight);
-        this.ctx.restore();
+        const background = new Image();
+        background.src = backgroundImg;
+        this.ctx.drawImage(background, 0, 0);
+        // this.ctx.save();
+        // this.ctx.fillStyle = MainConfig.canvasStyle.backgroundColor;
+        // this.ctx.fillRect(0, 0, MainConfig.screenWidth, MainConfig.screenHeight);
+        // this.ctx.restore();
     };
 
-    draw(gameState, dt) {
+    draw(gameState, dt, name) {
         this.clearScreen();
         Object.values(gameState.enemies).forEach(enemy => this.displayEnemy(enemy));
         Object.values(gameState.bullets).forEach(bullet => this.displayBullet(bullet));
         Object.values(gameState.items).forEach(item => this.displayItem(item));
         Object.values(gameState.players).forEach(player => this.displayPlayer(player));
-
+        const selfData = gameState.players[name];
+        if (selfData) this.displaySelfData(selfData);
         if (this.mode === 'development') {
             this.displayFPS(dt);
         }
+    }
+
+    displaySelfData(data) {
+        const score = document.getElementById("score");
+        const currentGun = document.getElementById("current-gun");
+        const ammo = document.getElementById("ammo");
+        score.innerHTML = `Score: ${data.killCount}`;
+        ammo.innerHTML = `Ammo: ${data.ammo}`;
+        currentGun.innerHTML = `Weapon: ${data.weapon}`;
+
+        this.ctx.lineWidth = 3;
+        this.ctx.strokeStyle = 'rgba(0,128,0,0.5)';
+        this.ctx.beginPath();
+        this.ctx.arc(data.pos.x, data.pos.y, 25, 0, Math.PI*2*data.health/100);
+        this.ctx.stroke();
     }
 
     displayFPS(dt) {
@@ -39,11 +63,11 @@ class Display {
         this.ctx.save();
         this.ctx.translate(bullet.pos.x, bullet.pos.y);
         this.ctx.strokeStyle = '#4a200d';
-        this.ctx.fillStyle = '#4a200d';
+        this.ctx.fillStyle = 'black';
         this.ctx.lineWidth = 2;
         this.ctx.beginPath();
-        this.ctx.arc(0, 0, logicConfig.sizes.bullets, 0, 2 * Math.PI);
-        this.ctx.stroke();
+        this.ctx.arc(0, 0, logicConfig.sizes.bullets * 2.2, 0, 2 * Math.PI);
+        this.ctx.fill();
         this.ctx.restore();
     }
 
@@ -78,6 +102,7 @@ class Display {
                 break;
         }
         this.ctx.restore();
+
     }
 
     // https://stackoverflow.com/questions/17411991/html5-canvas-rotate-image
