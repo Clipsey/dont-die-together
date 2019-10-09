@@ -31,7 +31,7 @@ import {
 export default class GameModel {
     constructor(initialState = sampleState) {
         this.gameState = initialState;
-        this.gameState.obstacles = {};     
+        
         this.gameState.soundTimes = {
             firePistol: 0,
             fireShotgun: 0,
@@ -65,7 +65,7 @@ export default class GameModel {
     updateTimes(dt) { 
         if (this.generateItemTime === 0) {
             generateItem(this.gameState);
-            this.generateItemTime = gameConfig.times.itemGenerate;
+            this.generateItemTime = gameConfig.times.itemGenerate / (Object.keys(this.gameState.players).length);
         }
         else {
             this.generateItemTime -= dt;

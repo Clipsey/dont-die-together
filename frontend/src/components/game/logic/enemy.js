@@ -8,6 +8,9 @@ import {
     generateId
 } from './model_helper';
 import gameConfig from './config';
+import {
+    playSound
+} from './sounds/soundsUtil';
 
 export const moveEnemy = (enemy, gameState, dist, sizes, damages, times) => {
     let enemyPos = enemy.pos;
@@ -74,11 +77,15 @@ export const moveEnemy = (enemy, gameState, dist, sizes, damages, times) => {
         if (enemy.timeToAttack === 0 && victim && victim.status !== 'dead') {
             victim.health -= damages[enemy.type];
             enemy.timeToAttack = times.zombieReload;
+            playSound('zombieAttack');
+            if (victim.health < 20 && victim.health > 15) {
+                playSound('lowHealth');
+            }
             if (victim.health < 0) {
                 victim.timeToSpawn = gameConfig.times.playerSpawn;
                 victim.killCount = 0;
                 victim.status = 'dead';
-                console.log('player dies');
+                playSound('playerDeath');
             }
         }
     }

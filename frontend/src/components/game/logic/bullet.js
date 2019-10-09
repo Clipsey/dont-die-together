@@ -1,4 +1,7 @@
 import gameConfig from './config';
+import {
+    playSound
+} from './sounds/soundsUtil';
 
 import {
     generateId,
@@ -24,6 +27,7 @@ export const fireBullets = (player, playerId, playerInputs, gameState, times, sp
         ]
         let speed = speeds.bullet;
         if (player.weapon === 'shotgun') {
+            playSound('shotgun');
             for (let i = 0; i < 8; i++){
                 let newFireVector = [
                     unitVector[0] + (Math.random()/5 - 0.1),
@@ -65,10 +69,16 @@ export const fireBullets = (player, playerId, playerInputs, gameState, times, sp
                 newBullet.vel.y *= 2;
             }
             gameState.bullets[generateId()] = newBullet;
+            if (newBullet.type === 'pistol') {
+                playSound('pistol');
+            }
+            else {
+                playSound('rifle');
+            }
         }
         player.ammo -= 1;
         player.items.gunAmmo[player.weapon] -= 1;
-        gameState.soundTimes.firePistol = gameConfig.times.sounds;
+        
     }
 };
 
@@ -130,6 +140,9 @@ export const moveBullet = (bullet, id, dt, gameState, sizes, times, distances, d
                 }
             }
         });
+    }
+    else {
+        playSound('thunk');
     }
     if (bullet.pos.x > xBound ||
         bullet.pos.x < 0 ||

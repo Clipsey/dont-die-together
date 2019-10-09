@@ -18,6 +18,7 @@ import '../style/stylesheets/snowy.css'
 
 import socketIOClient from 'socket.io-client';
 import { emitSetup, onSetup } from '../util/sockets_util';
+import {audioSetup, playSound} from './game/logic/sounds/soundsUtil';
 
 class App extends React.Component {
   constructor(props) {
@@ -46,6 +47,11 @@ class App extends React.Component {
     this.connectSocket = this.connectSocket.bind(this);
     this.joinSocket = this.joinSocket.bind(this);
     this.closeSockets = this.closeSockets.bind(this);
+
+    audioSetup();
+    // window.addEventListener('click', () => {
+    //   playSound('rifle');
+    // })
   }
 
   closeSockets() {

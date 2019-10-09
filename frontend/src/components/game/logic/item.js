@@ -23,9 +23,6 @@ export const generateItem = (gameState) => {
         case 'gun':
             newItem.type = 'gun';
             newItem.gun = [
-                'pistol',
-                'pistol',
-                'pistol',
                 'rifle',
                 'shotgun'
             ][Math.floor(Math.random() * 5)];
