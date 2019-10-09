@@ -49,9 +49,9 @@ class App extends React.Component {
     this.closeSockets = this.closeSockets.bind(this);
 
     audioSetup();
-    // window.addEventListener('click', () => {
-    //   playHeartBeat(2.0);
-    // })
+    window.addEventListener('click', () => {
+      // playHeartBeat(1.0);
+    })
   }
 
   closeSockets() {

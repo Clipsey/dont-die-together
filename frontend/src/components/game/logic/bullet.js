@@ -68,6 +68,7 @@ export const fireBullets = (player, playerId, playerInputs, gameState, times, sp
                 newBullet.vel.x *= 2;
                 newBullet.vel.y *= 2;
             }
+            newBullet.expire = calculateBulletExpiration(newBullet);
             gameState.bullets[generateId()] = newBullet;
             if (newBullet.type === 'pistol') {
                 playSound('pistol');
@@ -81,6 +82,15 @@ export const fireBullets = (player, playerId, playerInputs, gameState, times, sp
         
     }
 };
+
+const calculateBulletExpiration = (bullet) => {
+    if (bullet.vel.x === 0 || bullet.vel.y === 0) return 'never';
+    let point1 = [bullet.pos.x, bullet.pos.y];
+    let point2 = [point1[0] + bullet.vel.x, point1[1] + bullet.vel.y];
+    let m = (point2[1] - point1[1]) / (point2[0] - point1[0]);
+    //let b = //////////////////////////////////////////you were here...
+
+}
 
 export const moveBullet = (bullet, id, dt, gameState, sizes, times, distances, damages, xBound, yBound) => {
     bullet.status = 'normal';
