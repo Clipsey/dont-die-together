@@ -6,7 +6,11 @@ const AudioAbstractions = {
     rifle: 'rifle.mp3',
     shotgun: 'shotgun.mp3',
     playerDeath: 'playerDeath.mp3',
-    lowHealth: 'lowHealth.mp3'
+    lowHealth: 'lowHealth.mp3',
+    fleshEating: 'fleshEating.mp3',
+    fleshEating2: 'fleshEating2.mp3',
+    creepyScream: 'creepyScream.mp3',
+    thunk: 'thunk.mp3'
   },
   audioBuffers: {}
 }
