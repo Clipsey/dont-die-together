@@ -2,7 +2,11 @@
 
 const AudioAbstractions = {
   audioFiles: {
-    pistol: 'pistol.mp3'
+    pistol: 'pistol.mp3',
+    rifle: 'rifle.mp3',
+    shotgun: 'shotgun.mp3',
+    playerDeath: 'playerDeath.mp3',
+    lowHealth: 'lowHealth.mp3'
   },
   audioBuffers: {}
 }
@@ -17,13 +21,6 @@ export const audioSetup = async () => {
       .then(buffer => {
         audioContext.decodeAudioData(buffer, decoded => {
           AudioAbstractions.audioBuffers[key] = decoded;
-          // window.addEventListener('click', (e) => {
-          //   console.log(e);
-          //   let audioBufferSourceNode = audioContext.createBufferSource();
-          //   audioBufferSourceNode.buffer = decoded;
-          //   audioBufferSourceNode.connect(audioContext.destination);
-          //   audioBufferSourceNode.start();
-          // })
         })
       })
   }
@@ -34,6 +31,13 @@ export const playSound = (selector) => {
   audioBufferSourceNode.buffer = AudioAbstractions.audioBuffers[selector];
   audioBufferSourceNode.connect(audioContext.destination);
   audioBufferSourceNode.start();
+}
+
+export const stopSound = (selector) => {
+  let audioBufferSourceNode = audioContext.createBufferSource();
+  audioBufferSourceNode.buffer = AudioAbstractions.audioBuffers[selector];
+  audioBufferSourceNode.connect(audioContext.destination);
+  audioBufferSourceNode.stop();
 }
 
 
