@@ -3,10 +3,10 @@ import InputManager from './input_manager';
 import Display from './display';
 import Welcome from './welcome';
 import GameModel from './logic/game_model';
+import * as config from './config';
 import '../../style/stylesheets/reset.css';
 import '../../style/stylesheets/app.css';
 import '../../style/stylesheets/game.css';
-import * as config from './config';
 
 class GameClient extends React.Component {
     constructor(props) {
@@ -78,7 +78,7 @@ class GameClient extends React.Component {
     render() {
         return (
             <div>
-                WASD to move, mouse to aim, click to shoot, and Q to switch guns. Stay alive as long as possible!
+                <div className="games">WASD to move, Q to switch guns, mouse to aim, click to shoot. Stay alive as long as possible and kill some zombies!</div>
                 <canvas ref="canvas"
                     id="canvas"
                     width={this.state.screen.width}
