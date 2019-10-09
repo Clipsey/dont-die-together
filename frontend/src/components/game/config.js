@@ -88,8 +88,8 @@ export const newPlayer = {
         },
         gunAmmo: {
             pistol: 100,
-            shotgun: 8000000,
-            rifle: 300000
+            shotgun: 80,
+            rifle: 300
         }
     },
     ammo: 100,

@@ -1,5 +1,4 @@
 import React from 'react';
-
 import InputManager from './input_manager';
 import Welcome from './welcome';
 import GameModel from './logic/game_model';
