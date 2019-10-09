@@ -27,9 +27,7 @@ class Display {
         Object.values(gameState.players).forEach(player => this.displayPlayer(player));
         const selfData = gameState.players[name];
         if (selfData) this.displaySelfData(selfData);
-        if (this.mode === 'development') {
-            this.displayFPS(dt);
-        }
+        if (this.mode === 'development') this.displayFPS(dt);
     }
 
     displaySelfData(data) {

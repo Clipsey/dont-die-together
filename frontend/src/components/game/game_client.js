@@ -7,7 +7,6 @@ import * as config from './config';
 import '../../style/stylesheets/reset.css';
 import '../../style/stylesheets/app.css';
 import '../../style/stylesheets/game.css';
-import * as config from './config';
 const backgroundImg = require('../../style/images/forest.png');
 
 
