@@ -59,6 +59,9 @@ class Display {
         this.ctx.rect(item.pos.x - 2.5, item.pos.y - 2.5, 5, 5)
         this.ctx.stroke();
         this.ctx.restore();
+        // const img = new Image();
+        // img.src = medPack;
+        // this.drawPlayerImage(img, item.pos.x, item.pos.y);
     }
     
     displayPlayer (player) {
