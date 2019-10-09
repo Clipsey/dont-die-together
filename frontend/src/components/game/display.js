@@ -5,7 +5,7 @@ const playerRifle = require('../../style/images/bk_player_assets/player_chaingun
 const playerShotgun = require('../../style/images/bk_player_assets/player_pumpgun_stand.png');
 const playerHandgun = require('../../style/images/bk_player_assets/player_9mmhandgun.png');
 const zombieSprite = require('../../style/images/zombiebasic.png');
-const backgroundImg = require('../../style/images/forest.png')
+
 
 
 
@@ -17,13 +17,7 @@ class Display {
     }
 
     clearScreen(){
-        const background = new Image();
-        background.src = backgroundImg;
-        this.ctx.drawImage(background, 0, 0);
-        // this.ctx.save();
-        // this.ctx.fillStyle = MainConfig.canvasStyle.backgroundColor;
-        // this.ctx.fillRect(0, 0, MainConfig.screenWidth, MainConfig.screenHeight);
-        // this.ctx.restore();
+        this.ctx.clearRect(0,0, MainConfig.screenWidth, MainConfig.screenHeight);
     };
 
     draw(gameState, dt, name) {
@@ -48,7 +42,7 @@ class Display {
         currentGun.innerHTML = `Weapon: ${data.weapon}`;
 
         this.ctx.lineWidth = 3;
-        this.ctx.strokeStyle = 'rgba(0,128,0,0.5)';
+        this.ctx.strokeStyle = 'rgba(0,255,0,0.5)';
         this.ctx.beginPath();
         this.ctx.arc(data.pos.x, data.pos.y, 25, 0, Math.PI*2*data.health/100);
         this.ctx.stroke();
@@ -60,25 +54,33 @@ class Display {
     }
 
     displayBullet(bullet) {
-        this.ctx.save();
-        this.ctx.translate(bullet.pos.x, bullet.pos.y);
-        this.ctx.strokeStyle = '#4a200d';
-        this.ctx.fillStyle = 'black';
-        this.ctx.lineWidth = 2;
-        this.ctx.beginPath();
-        this.ctx.arc(0, 0, logicConfig.sizes.bullets * 2.2, 0, 2 * Math.PI);
-        this.ctx.fill();
-        this.ctx.restore();
+        if (bullet.status === 'flash') {
+            this.ctx.strokeStyle = '#4a200d';
+            this.ctx.fillStyle = 'orange';
+            this.ctx.lineWidth = 2;
+            this.ctx.beginPath();
+            this.ctx.arc(bullet.pos.x, bullet.pos.y, logicConfig.sizes.bullets *100, 0, 2 * Math.PI);
+            this.ctx.fill();
+
+        } else {            
+            this.ctx.strokeStyle = '#4a200d';
+            this.ctx.fillStyle = 'black';
+            this.ctx.lineWidth = 2;
+            this.ctx.beginPath();
+            this.ctx.arc(bullet.pos.x, bullet.pos.y, logicConfig.sizes.bullets * 2.2, 0, 2 * Math.PI);
+            this.ctx.fill();
+        }
+        
     }
 
     displayItem(item) {
-        this.ctx.save();
+      
         this.ctx.beginPath();
         this.ctx.lineWidth = "6";
         this.ctx.strokeStyle = "red";
         this.ctx.rect(item.pos.x - 2.5, item.pos.y - 2.5, 5, 5)
         this.ctx.stroke();
-        this.ctx.restore();
+     
     }
     
     displayPlayer (player) {

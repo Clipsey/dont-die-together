@@ -2,7 +2,69 @@ export const emptyState = {
     players: { },
     enemies: { },
     bullets: { },
-    items: { }
+    items: { },
+    obstacles: {
+        1: {
+            topLeft: {
+                x: 39,
+                y: 65,
+            },
+            bottomRight: {
+                x: 50,
+                y: 220
+            }
+        },
+        2: {
+            topLeft: {
+                x: 51,
+                y: 65,
+            },
+            bottomRight: {
+                x: 199,
+                y: 76
+            }
+        },
+        3: {
+            topLeft: {
+                x: 51,
+                y: 210,
+            },
+            bottomRight: {
+                x: 120,
+                y: 220
+            }
+        },
+        4: {
+            topLeft: {
+                x: 154,
+                y: 208,
+            },
+            bottomRight: {
+                x: 190,
+                y: 217
+            }
+        },
+        5: {
+            topLeft: {
+                x: 191,
+                y: 77,
+            },
+            bottomRight: {
+                x: 200,
+                y: 140
+            }
+        },
+        6: {
+            topLeft: {
+                x: 190,
+                y: 175,
+            },
+            bottomRight: {
+                x: 199,
+                y: 217
+            }
+        },
+    }
 };
 
 export const newPlayer = {

@@ -12,7 +12,7 @@ const gameConfig = {
         playerSpawn: 20,
         zombieAnimateTime: 0.1,
         itemGenerate: 40,
-        zombieGenerate: 10,
+        zombieGenerate: 100,
         zombieReload: 0.5,      //times in seconds      
         zombieDie: 10,
         zombieSwitchDir: 0.5,
