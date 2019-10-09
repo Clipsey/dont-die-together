@@ -1,5 +1,4 @@
 import React from 'react';
-
 import InputManager from './input_manager';
 import Welcome from './welcome';
 import GameModel from './logic/game_model';
@@ -8,6 +7,7 @@ import '../../style/stylesheets/app.css';
 import '../../style/stylesheets/game.css';
 import * as config from './config';
 import Display from './display';
+const backgroundImg = require('../../style/images/forest.png');
 
 const GameMode = {
     StartScreen: 0,
@@ -37,6 +37,7 @@ class Game extends React.Component {
         this.rafId = null;
         this.numPlayers = 0;
         this.lastUpdate = Date.now();
+        this.loggedYet = false;
     }
 
     SOCKET_ReceiveInputs(inputs) {
@@ -89,6 +90,7 @@ class Game extends React.Component {
     }
 
     mainLoop() {
+        
         const now = Date.now();
         const dt = (now - this.lastTime) / 1000;
         const hostKeys = this.state.input.pressedKeys;
@@ -104,6 +106,8 @@ class Game extends React.Component {
 
             this.gameState = this.state.gameModel.update(collectedInputs, dt);
 
+            console.log(this.gameState);
+
             this.props.send({
                 gameState: this.gameState,
                 inputs: collectedInputs
@@ -115,14 +119,23 @@ class Game extends React.Component {
     }
 
     render() {
+        const style = {
+            cursor: 'crosshair',
+            backgroundImage: `url(${backgroundImg})`
+        };
         return (
-            <div>
+            <div className='game-window'>               
+                <ul className="self-data">
+                    <li id="score"></li>
+                    <li id="current-gun"></li>
+                    <li id="ammo"></li>
+                </ul>               
                 {this.state.gameMode === GameMode.StartScreen && <Welcome />}
                 <canvas ref="canvas"
                     id="canvas"
                     width={this.state.screen.width}
                     height={this.state.screen.height}
-                    style={config.canvasStyle}
+                    style={style}
                 />
             </div>
         );

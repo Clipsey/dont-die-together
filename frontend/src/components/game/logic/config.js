@@ -20,7 +20,7 @@ const gameConfig = {
         reload: {
             pistol: 0.5,
             rifle: 0.05,
-            shotgun: 1
+            shotgun: .1
         }
     },
     distances: {
