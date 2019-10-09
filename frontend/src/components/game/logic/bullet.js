@@ -53,7 +53,8 @@ export const fireBullets = (player, playerId, playerInputs, gameState, times, sp
                 playerId: playerId,
                 type: player.weapon,
                 pos: {},
-                vel: {}
+                vel: {},
+                status: 'flash'
             };
             newBullet.pos.x = player.pos.x;
             newBullet.pos.y = player.pos.y;
@@ -72,6 +73,7 @@ export const fireBullets = (player, playerId, playerInputs, gameState, times, sp
 };
 
 export const moveBullet = (bullet, id, dt, gameState, sizes, times, distances, damages, xBound, yBound) => {
+    bullet.status = 'normal';
     let oldPos = {x: bullet.pos.x, y: bullet.pos.y};
     let xDist = bullet.vel.x * dt;
     let yDist = bullet.vel.y * dt;
