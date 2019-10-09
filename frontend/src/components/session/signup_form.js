@@ -8,7 +8,7 @@ class SignupForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: '',
+      // email: '',
       name: '',
       password: '',
       password2: '',
@@ -19,13 +19,13 @@ class SignupForm extends React.Component {
     this.clearedErrors = false;
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.signedIn === true) {
-      // this.props.history.push('/join');
-    }
+  // componentWillReceiveProps(nextProps) {
+  //   if (nextProps.signedIn === true) {
+  //     // this.props.history.push('/join');
+  //   }
 
-    this.setState({ errors: nextProps.errors })
-  }
+  //   this.setState({ errors: nextProps.errors })
+  // }
 
   update(field) {
     return e => this.setState({
@@ -45,8 +45,17 @@ class SignupForm extends React.Component {
     // this.props.signup(user).then(this.props.login(user))
     // this.props.login(user, this.props.history)
 
-    let promise1 = new Promise(user => this.props.signup(user))
-    promise1.then(this.props.login(user))
+    // let promise1 = new Promise(user => this.props.signup(user))
+    // promise1.then(this.props.login(user))
+
+    // let signup = this.props.signup;
+    // let login = this.props.login;
+
+    // let run = (ms) => new Promise((signup) => setTimeout(signup, ms))
+
+    // run(1000).then(login);
+
+    this.props.signup(user);
   }
 
   renderErrors() {
@@ -68,12 +77,12 @@ class SignupForm extends React.Component {
           {/* <br /> */}
           <div className="signup-form-banner">Register</div>
           <div className="login-form">
-            <input type="text"
+            {/* <input type="text"
               className="signup-form-input"
               value={this.state.email}
               onChange={this.update('email')}
               placeholder="Email"
-            />
+            /> */}
             <br />
             <input type="text"
               className="signup-form-input"

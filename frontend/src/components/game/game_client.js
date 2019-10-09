@@ -6,7 +6,7 @@ import GameModel from './logic/game_model';
 import '../../style/stylesheets/reset.css';
 import '../../style/stylesheets/app.css';
 import '../../style/stylesheets/game.css';
-import * as DisplayConfig from './config';
+import * as config from './config';
 
 class GameClient extends React.Component {
     constructor(props) {
@@ -14,15 +14,15 @@ class GameClient extends React.Component {
         this.state = {
             input: new InputManager(),
             screen: {
-                width: DisplayConfig.screenWidth,
-                height: DisplayConfig.screenHeight,
+                width: config.screenWidth,
+                height: config.screenHeight,
             },
             context: null,
             display: null,
         };
         this.ownGameModel = null;
         this.lastTime = Date.now();
-        this.gameState = DisplayConfig.emptyState;
+        this.gameState = config.emptyState;
         this.status = '';
         this.rafId = null;
         this.inputs = null;
@@ -38,9 +38,15 @@ class GameClient extends React.Component {
     }
 
     componentDidMount() {
+        let initialState = config.emptyState;
         this.state.input.bindKeys();
         const context = this.refs.canvas.getContext('2d');
         const display = new Display(context);
+        initialState.players[this.props.name] = JSON.parse(JSON.stringify(config.newPlayer));
+        initialState.players[this.props.name].name = this.props.name;
+        this.numPlayers++;
+        this.lastGameState = initialState;
+        const model = new GameModel(initialState);
         this.setState({ 
             context: context,
             display: display
@@ -76,7 +82,7 @@ class GameClient extends React.Component {
                     id="canvas"
                     width={this.state.screen.width}
                     height={this.state.screen.height}
-                    style={DisplayConfig.canvasStyle}
+                    style={config.canvasStyle}
                 />
             </div>
         )

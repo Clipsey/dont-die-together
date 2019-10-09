@@ -18,6 +18,7 @@ import '../style/stylesheets/snowy.css'
 
 import socketIOClient from 'socket.io-client';
 import { emitSetup, onSetup } from '../util/sockets_util';
+import {audioSetup, playSound} from './game/logic/sounds/soundsUtil';
 
 class App extends React.Component {
   constructor(props) {
@@ -34,8 +35,10 @@ class App extends React.Component {
       },
       sockets: {}
     }
+
+    this.changeRoute = this.changeRoute.bind(this);
+
     this.send = this.send.bind(this);
-    this.setHealth = this.setHealth.bind(this);
 
     this.sockets = [];
     this.isHost = null;
@@ -44,10 +47,16 @@ class App extends React.Component {
     this.connectSocket = this.connectSocket.bind(this);
     this.joinSocket = this.joinSocket.bind(this);
     this.closeSockets = this.closeSockets.bind(this);
+
+    audioSetup();
+    // window.addEventListener('click', () => {
+    //   playSound('pistol');
+    // })
   }
 
   closeSockets() {
     if (this.sockets.length > 0) {
+      console.log(this.sockets);
       this.sockets.forEach((socket, idx) => {
         socket.off('From Client Input');
         socket.off('From Host GameState');
@@ -63,14 +72,16 @@ class App extends React.Component {
 
     this.closeSockets();
 
-    let socket;
+    console.log(window.location);
+    console.log(this.room);
+
+    let socket = null;
     if (process.env.NODE_ENV === 'development') {
       socket = socketIOClient('localhost:5000', { query: { room: this.room } });
     } else {
-      socket = socketIOClient(window.location, { query: { room: this.room } });
+      socket = socketIOClient(undefined, { query: { room: this.room } });
     }
     this.sockets.push(socket);
-
 
     if (this.isHost) {
       socket.on('From Client Input', (receivedInput) => {
@@ -87,7 +98,7 @@ class App extends React.Component {
     if (process.env.NODE_ENV === 'development') {
       socket = socketIOClient('localhost:5000', { query: { room: this.room } });
     } else {
-      socket = socketIOClient(window.location, { query: { room: this.room } });
+      socket = socketIOClient(undefined, { query: { room: this.room } });
     }
 
     if (this.isHost) {
@@ -135,20 +146,115 @@ class App extends React.Component {
     }
   }
 
-  setHealth(health) {
+  changeRoute(route) {
     return () => {
-      const gameState = this.state.gameState;
-      gameState['player']['health'] = health;
-      return () => this.setState({ gameState });
+      this.props.history.push(`${route}`);
     }
+  }
+
+  dashboard() {
+    // container
+    // leftBar
+      // Icon
+    // middleBar
+      // welcomeContainer
+      // options
+    // rightBar
+      //log
+    const container = {
+      display: 'flex',
+      justifyContent: 'space-around',
+      width: '100vw',
+      height: '70px',
+      borderBottom: 'solid 2px'
+    }
+    const leftBar = {
+      borderRight: 'solid 1px'
+    }
+    const icon = {}
+    const middleBar = {
+      borderRight: 'solid 1px',
+      display: 'flex',
+      flexDirection: 'column',
+      alignContent: 'space-between'
+    }
+    const welcomeContainer = {
+      display: 'flex'
+    }
+    const optionsStyle = {
+      display: 'flex',
+      justifyContent: 'flex-start',
+    }
+    const selectedOption = {
+      marginRight: '10px',
+      borderBottom: 'solid 5px',
+      paddingBottom: '2px'
+    }
+    const unselectedOption = {
+      marginRight: '10px',
+      paddingBottom: '2px'
+    }
+    const rightBar = {}
+    const logging = {}
+
+
+    const options = [
+      <div onClick={this.changeRoute('/')}          style={unselectedOption}>DASHBOARD</div>,
+      <div onClick={this.changeRoute('/login')}     style={unselectedOption}>LOGIN</div>,
+      <div onClick={this.changeRoute('/register')}  style={unselectedOption}>REGISTER</div>,
+      <div onClick={this.changeRoute('/join')}      style={unselectedOption}>JOIN</div>,
+      <div onClick={this.changeRoute('/create')}    style={unselectedOption}>CREATE</div>,
+      <div onClick={this.changeRoute('/game')}      style={unselectedOption}>GAME</div>
+    ]
+    
+    if (this.props.location.pathname === '/') {
+      options[0] = <div onClick={this.changeRoute('/')} style={selectedOption}>DASHBOARD</div>
+    } else if (this.props.location.pathname === '/login') {
+      options[1] = <div onClick={this.changeRoute('/login')} style={selectedOption}>LOGIN</div>
+    } else if (this.props.location.pathname === '/register') {
+      options[2] = <div onClick={this.changeRoute('/register')} style={selectedOption}>REGISTER</div>
+    } else if (this.props.location.pathname === '/join') {
+      options[3] = <div onClick={this.changeRoute('/join')} style={selectedOption}>JOIN</div>
+    } else if (this.props.location.pathname === '/create') {
+      options[4] = <div onClick={this.changeRoute('/create')} style={selectedOption}>CREATE</div>
+    } else if (this.props.location.pathname === '/game') {
+      options[5] = <div onClick={this.changeRoute('/game')} style={selectedOption}>GAME</div>
+    }
+
+    let userShowText = "YOU ARE NOT SIGNED IN";
+    if (this.props.currentUser) {
+      userShowText = `WELCOME BACK ${this.props.currentUser.name}`
+    }
+
+    const dash = (
+      <div style={container}>
+        <div style={leftBar}>
+          <div style={icon}></div>
+        </div>
+        <div style={middleBar}>
+          <div style={welcomeContainer}>{userShowText}</div>
+          <div style={optionsStyle}>
+            {options}
+          </div>
+        </div>
+        <div style={rightBar}>
+          <div style={logging}></div>
+        </div>
+
+      </div>
+    )
+
+    return dash;
   }
 
   render() {
     console.log(`host: ${this.isHost}`);
+    console.log(this.props)
     return (
       <div className="app">
         {/* } */}
         <NavBarContainer closeSockets={this.closeSockets}/>
+        {/* {this.dashboard()} */}
         <Switch>
           <AuthRoute exact path="/" component={MainPage} />
           <AuthRoute exact path="/login" component={LoginFormContainer} />
