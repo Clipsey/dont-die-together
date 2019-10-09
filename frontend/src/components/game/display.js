@@ -1,6 +1,5 @@
 import * as MainConfig from './config';
 import logicConfig from './logic/config';
-import gameConfig from './logic/config';
 const playerRifle = require('../../style/images/bk_player_assets/player_chaingun.png');
 const playerShotgun = require('../../style/images/bk_player_assets/player_pumpgun_stand.png');
 const playerHandgun = require('../../style/images/bk_player_assets/player_9mmhandgun.png');

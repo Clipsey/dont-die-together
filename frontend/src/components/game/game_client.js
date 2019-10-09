@@ -7,6 +7,9 @@ import * as config from './config';
 import '../../style/stylesheets/reset.css';
 import '../../style/stylesheets/app.css';
 import '../../style/stylesheets/game.css';
+import * as config from './config';
+const backgroundImg = require('../../style/images/forest.png');
+
 
 class GameClient extends React.Component {
     constructor(props) {
@@ -76,14 +79,22 @@ class GameClient extends React.Component {
     }
 
     render() {
+        const style = {
+            cursor: 'crosshair',
+            backgroundImage: `url(${backgroundImg})`
+        };
         return (
             <div>
-                {/* <div className="games">WASD to move, Q to switch guns, mouse to aim, click to shoot. Stay alive as long as possible and kill some zombies!</div> */}
+                <ul className="self-data">
+                    <li id="score"></li>
+                    <li id="current-gun"></li>
+                    <li id="ammo"></li>
+                </ul>  
                 <canvas ref="canvas"
                     id="canvas"
                     width={this.state.screen.width}
                     height={this.state.screen.height}
-                    style={config.canvasStyle}
+                    style={style}
                 />
             </div>
         )
