@@ -52,16 +52,29 @@ class Display {
     }
 
     displayItem(item) {
-        // this.ctx.save();
+        this.ctx.save();
+        const img = new Image();
         // this.ctx.beginPath();
         // this.ctx.lineWidth = "6";
         // this.ctx.strokeStyle = "red";
         // this.ctx.rect(item.pos.x - 2.5, item.pos.y - 2.5, 5, 5)
         // this.ctx.stroke();
         // this.ctx.restore();
-        const img = new Image();
-        img.src = medPack;
-        this.ctx.drawImage(img, item.pos.x, item.pos.y, 25, 25);
+        switch (item.type) {
+            case 'medPack':
+                img.src = medPack;
+                this.ctx.drawImage(img, item.pos.x, item.pos.y, 25, 25);
+                break;
+            case 'ammo':
+                img.src = ammo;
+                this.ctx.drawImage(img, 150, 25, 50, 20, item.pos.x, item.pos.y, 50, 20);
+                break;
+            case 'gun':
+                img.src = gunSprites;
+                this.ctx.drawImage(img, item.pos.x, item.pos.y, 90, 30);
+                break;
+        }
+        this.ctx.restore();
     }
     
     displayPlayer (player) {
