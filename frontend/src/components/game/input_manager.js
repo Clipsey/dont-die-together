@@ -48,24 +48,31 @@ class InputManager extends React.Component {
         let keys = this.pressedKeys;
         switch (e.keyCode) {
             case KEY.UP:
+                e.preventDefault();
                 keys.up = value;
                 break;
             case KEY.DOWN:
+                e.preventDefault();
                 keys.down = value;
                 break;
             case KEY.LEFT:
+                e.preventDefault();
                 keys.left  = value;
                 break;
             case KEY.RIGHT:
+                e.preventDefault();
                 keys.right  = value;
                 break;
             case KEY.FIRE:
+                e.preventDefault();
                 keys.fire  = value;
                 break;
             case KEY.ENTER:
+                e.preventDefault();
                 keys.enter = value;
                 break;
             case KEY.CYCLEGUN:
+                e.preventDefault();
                 keys.cycleGun = value;
                 break;
             default:
