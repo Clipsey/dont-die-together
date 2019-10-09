@@ -1,6 +1,15 @@
 import {
     findDistance
 } from './vector_util';
+import gameConfig from './config.js';
+
+export const willLeavePlayArea = (person, moveVector, size) => {
+    let x = person.pos.x + moveVector[0];
+    let y = person.pos.y + moveVector[1];
+    let maxX = gameConfig.gameBounds.x;
+    let maxY = gameConfig.gameBounds.y;
+    return !(x > 0 && x < maxX && y > 0 && y < maxY);
+}
 
 export const willCollideWithEnemy = (person, moveVector, gameState, sizes) => {
     let newPos = {

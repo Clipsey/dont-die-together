@@ -1,13 +1,39 @@
 import gameConfig from './config';
 import {
     willCollideWithEnemy,
-    willCollideWithObstacle
+    willCollideWithObstacle,
+    willLeavePlayArea
 } from './model_helper';
 import {
     findDistance,
     vectorMag,
     calcRotation
 } from './vector_util';
+
+export const reSpawn = (player, gameState) => {
+    let x = gameConfig.gameBounds.x / 2;
+    let y = gameConfig.gameBounds.y / 2;
+    let ghostPlayer = {
+        pos: {
+            x: 0,
+            y: 0
+        }
+    };
+    while (willCollideWithEnemy(ghostPlayer, [x, y], gameState, gameConfig.sizes) ||
+            willCollideWithObstacle(ghostPlayer, [x, y], gameState, gameConfig.sizes.player)
+            ) {
+        x = gameConfig.gameBounds.x / 2 - 150 + (300 * Math.random());
+        y = gameConfig.gameBounds.y / 2 - 150 + (300 * Math.random());
+    }
+    player.status = 'alive';
+    player.health = 100;
+    player.killCount = 0;
+    player.timeAlive = 0;
+    player.pos = {
+        x: x,
+        y: y
+    }
+}
 
 export const movePlayer = (player, playerInputs, gameState, sizes, dt, dist) => {
     //// BEGIN ACC
@@ -47,7 +73,9 @@ export const movePlayer = (player, playerInputs, gameState, sizes, dt, dist) => 
         let moveVector = [player.velocity.x * dt, player.velocity.y * dt];
         
         if (!willCollideWithEnemy(player, moveVector, gameState, sizes) &&
-            !willCollideWithObstacle(player, moveVector, gameState, sizes.player)) {
+            !willCollideWithObstacle(player, moveVector, gameState, sizes.player) &&
+            !willLeavePlayArea(player, moveVector, sizes.player)) {
+            
             player.pos.x += moveVector[0];
             player.pos.y += moveVector[1];
         }

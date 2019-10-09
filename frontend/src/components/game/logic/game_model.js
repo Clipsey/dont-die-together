@@ -15,7 +15,8 @@ import {
     movePlayer,
     pickUpItems,
     switchGuns,
-    playerCanFire
+    playerCanFire,
+    reSpawn
 } from './player';
 import {
     fireBullets,
@@ -90,6 +91,12 @@ export default class GameModel {
             }
         });
         Object.values(this.gameState.players).forEach( (player) => {
+            if (player.status === 'dead') {
+                player.timeToSpawn -= dt;
+                if (player.timeToSpawn < 0) {
+                    reSpawn(player, this.gameState);
+                }
+            }
             player.timeToFire -= dt;
             if (player.timeToFire < 0){
                 player.timeToFire = 0;
