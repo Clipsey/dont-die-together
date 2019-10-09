@@ -52,16 +52,16 @@ class Display {
     }
 
     displayItem(item) {
-        this.ctx.save();
-        this.ctx.beginPath();
-        this.ctx.lineWidth = "6";
-        this.ctx.strokeStyle = "red";
-        this.ctx.rect(item.pos.x - 2.5, item.pos.y - 2.5, 5, 5)
-        this.ctx.stroke();
-        this.ctx.restore();
-        // const img = new Image();
-        // img.src = medPack;
-        // this.drawPlayerImage(img, item.pos.x, item.pos.y);
+        // this.ctx.save();
+        // this.ctx.beginPath();
+        // this.ctx.lineWidth = "6";
+        // this.ctx.strokeStyle = "red";
+        // this.ctx.rect(item.pos.x - 2.5, item.pos.y - 2.5, 5, 5)
+        // this.ctx.stroke();
+        // this.ctx.restore();
+        const img = new Image();
+        img.src = medPack;
+        this.ctx.drawImage(img, item.pos.x, item.pos.y, 25, 25);
     }
     
     displayPlayer (player) {
