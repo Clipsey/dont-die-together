@@ -15,7 +15,7 @@ import {
 } from './player';
 
 export const fireBullets = (player, playerId, playerInputs, gameState, times, speeds) => {
-    if (playerCanFire(player) && playerInputs.fire) {
+    if (playerCanFire(player) && playerInputs.fire && player.status !== 'dead') {
         player.timeToFire = times.reload[player.weapon];
         let fireVector = [playerInputs.pointX, playerInputs.pointY];
         let unitVector = [
