@@ -19,6 +19,7 @@ class GameSession extends React.Component {
     render() {
         return(
             <div>
+                {/* <div>HELLO WORLD</div> */}
                 <div className="gameboy"></div>
                 <div ref={this.bottom} />
             </div>
