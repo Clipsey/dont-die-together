@@ -37,9 +37,9 @@ class Display {
         const score = document.getElementById("score");
         const currentGun = document.getElementById("current-gun");
         const ammo = document.getElementById("ammo");
-        score.innerHTML = `Score: ${data.killCount}`;
-        ammo.innerHTML = `Ammo: ${data.ammo}`;
-        currentGun.innerHTML = `Weapon: ${data.weapon}`;
+        // score.innerHTML = `Score: ${data.killCount}`;
+        // ammo.innerHTML = `Ammo: ${data.ammo}`;
+        // currentGun.innerHTML = `Weapon: ${data.weapon}`;
 
         this.ctx.lineWidth = 3;
         this.ctx.strokeStyle = 'rgba(0,255,0,0.5)';
@@ -59,7 +59,7 @@ class Display {
             this.ctx.fillStyle = 'orange';
             this.ctx.lineWidth = 2;
             this.ctx.beginPath();
-            this.ctx.arc(bullet.pos.x, bullet.pos.y, logicConfig.sizes.bullets *100, 0, 2 * Math.PI);
+            this.ctx.arc(bullet.pos.x, bullet.pos.y, logicConfig.sizes.bullets * 13, 0, 2 * Math.PI);
             this.ctx.fill();
 
         } else {            
@@ -82,6 +82,7 @@ class Display {
         // this.ctx.stroke();
         // this.ctx.restore();
         // console.log(item.type);
+        console.log(item.type);
         switch (item.type) {
             case 'medPack':
                 img.src = medPack;
