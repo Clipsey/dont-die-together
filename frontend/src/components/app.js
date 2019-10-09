@@ -49,9 +49,9 @@ class App extends React.Component {
     this.closeSockets = this.closeSockets.bind(this);
 
     audioSetup();
-    // window.addEventListener('click', () => {
-    //   playSound('pistol');
-    // })
+    window.addEventListener('click', () => {
+      playSound('rifle');
+    })
   }
 
   closeSockets() {
