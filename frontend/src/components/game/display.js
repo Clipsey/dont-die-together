@@ -23,9 +23,7 @@ class Display {
         Object.values(gameState.players).forEach(player => this.displayPlayer(player));
         const selfData = gameState.players[name];
         if (selfData) this.displaySelfData(selfData);
-        if (this.mode === 'development') {
-            this.displayFPS(dt);
-        }
+        if (this.mode === 'development') this.displayFPS(dt);
     }
 
     displaySelfData(data) {
@@ -69,13 +67,11 @@ class Display {
     }
 
     displayItem(item) {
-      
         this.ctx.beginPath();
         this.ctx.lineWidth = "6";
         this.ctx.strokeStyle = "red";
         this.ctx.rect(item.pos.x - 2.5, item.pos.y - 2.5, 5, 5)
         this.ctx.stroke();
-     
     }
     
     displayPlayer (player) {
