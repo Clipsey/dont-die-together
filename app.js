@@ -8,6 +8,7 @@ const http = require('http');
 
 const users = require('./routes/api/users');
 const tweets = require('./routes/api/tweets');
+const audio = require('./routes/api/audio');
 
 const GameState = require('./models/GameState');
 
@@ -30,6 +31,7 @@ const port = process.env.PORT || 5000;
 
 app.use('/api/users', users);
 app.use('/api/tweets', tweets);
+app.use('/api/audio', audio);
 
 // moved these down
 
