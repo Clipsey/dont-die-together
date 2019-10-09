@@ -9,7 +9,8 @@ import {
 } from './model_helper';
 import gameConfig from './config';
 import {
-    playSound
+    playSound,
+    playHeartBeat
 } from './sounds/soundsUtil';
 
 export const moveEnemy = (enemy, gameState, dist, sizes, damages, times) => {
@@ -78,8 +79,9 @@ export const moveEnemy = (enemy, gameState, dist, sizes, damages, times) => {
             victim.health -= damages[enemy.type];
             enemy.timeToAttack = times.zombieReload;
             playSound('zombieAttack');
-            if (victim.health < 20 && victim.health > 15) {
-                playSound('lowHealth');
+            if (victim.health < 60) {
+                playHeartBeat(1.0);
+                console.log('heartbeat');
             }
             if (victim.health < 0) {
                 victim.timeToSpawn = gameConfig.times.playerSpawn;
