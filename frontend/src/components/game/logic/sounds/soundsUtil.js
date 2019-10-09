@@ -50,7 +50,7 @@ export const playSound = (selector) => {
 export const playHeartBeat = (multiplier) => {
   const gainNode = heartbeatContext.createGain();
   console.log('playing Heartbeat');
-  gainNode.gain.value = 8.0//1.0 * multiplier > 1.0 ? 1.0 * multiplier > 1.0 : 1.0;
+  gainNode.gain.value = 3.0//1.0 * multiplier > 1.0 ? 1.0 * multiplier > 1.0 : 1.0;
   if (AudioAbstractions.heartbeat) {
     let oldAudioBufferSourceNode = AudioAbstractions.heartbeat;
     oldAudioBufferSourceNode.stop();

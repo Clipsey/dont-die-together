@@ -50,7 +50,7 @@ class App extends React.Component {
 
     audioSetup();
     window.addEventListener('click', () => {
-      playHeartBeat(1.0);
+      // playHeartBeat(1.0);
     })
   }
 
