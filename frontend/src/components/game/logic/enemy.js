@@ -16,16 +16,24 @@ export const moveEnemy = (enemy, gameState, dist, sizes, damages, times) => {
     let victim = null;
 
     Object.values(gameState.players).forEach((player) => {
-        let playerPos = player.pos;
-        let dx = playerPos.x - enemyPos.x;
-        let dy = playerPos.y - enemyPos.y;
-        let thisDistance = Math.sqrt(dx * dx + dy * dy);
-        if (closestDistance === null || thisDistance < closestDistance) {
-            victim = player;
-            closestDistance = thisDistance;
-            targetPos = playerPos;
+        if (player.status !== 'dead'){
+            let playerPos = player.pos;
+            let dx = playerPos.x - enemyPos.x;
+            let dy = playerPos.y - enemyPos.y;
+            let thisDistance = Math.sqrt(dx * dx + dy * dy);
+            if (closestDistance === null || thisDistance < closestDistance) {
+                victim = player;
+                closestDistance = thisDistance;
+                targetPos = playerPos;
+            }
         }
     });
+    if (targetPos === null) {
+        targetPos = {x: gameConfig.gameBounds.x / 2, y: gameConfig.gameBounds.y / 2};
+        let dx = targetPos.x - enemyPos.x;
+        let dy = targetPos.y - enemyPos.y;
+        closestDistance = Math.sqrt((dx * dx) + (dy + dy));
+    }
     let dirVector = [targetPos.x - enemyPos.x, targetPos.y - enemyPos.y];
     if (enemy.timeSwitchDir === 0){
         if (Math.random() < 0.2){
@@ -63,9 +71,15 @@ export const moveEnemy = (enemy, gameState, dist, sizes, damages, times) => {
         }
     }
     else {
-        if (enemy.timeToAttack === 0) {
+        if (enemy.timeToAttack === 0 && victim && victim.status !== 'dead') {
             victim.health -= damages[enemy.type];
             enemy.timeToAttack = times.zombieReload;
+            if (victim.health < 0) {
+                victim.timeToSpawn = gameConfig.times.playerSpawn;
+                victim.killCount = 0;
+                victim.status = 'dead';
+                console.log('player dies');
+            }
         }
     }
 
