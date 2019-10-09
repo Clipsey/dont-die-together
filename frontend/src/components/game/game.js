@@ -18,7 +18,6 @@ const GameMode = {
 class Game extends React.Component {
     constructor(props) {
         super(props);
-
         this.state = {
             input: new InputManager(),
             screen: {
@@ -90,24 +89,17 @@ class Game extends React.Component {
     }
 
     mainLoop() {
-        
         const now = Date.now();
         const dt = (now - this.lastTime) / 1000;
         const hostKeys = this.state.input.pressedKeys;
-
         if (this.state.gameMode === GameMode.StartScreen && hostKeys.enter) this.startGame();
-
         if (this.state.gameMode === GameMode.Playing) {        
             let collectedInputs = this.collectInputs();
             hostKeys.pointX = this.state.input.mousePos.x - this.gameState.players[this.props.name].pos.x;
             hostKeys.pointY = this.state.input.mousePos.y - this.gameState.players[this.props.name].pos.y;
             hostKeys.name = this.props.name;
             collectedInputs[this.props.name] = hostKeys;
-
             this.gameState = this.state.gameModel.update(collectedInputs, dt);
-
-            console.log(this.gameState);
-
             this.props.send({
                 gameState: this.gameState,
                 inputs: collectedInputs
@@ -141,5 +133,4 @@ class Game extends React.Component {
         );
     }
 }
-
 export default Game;
