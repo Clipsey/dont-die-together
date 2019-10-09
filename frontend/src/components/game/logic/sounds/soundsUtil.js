@@ -17,6 +17,7 @@ const AudioAbstractions = {
   heartbeat: null
 }
 const audioContext = new AudioContext();
+const heartbeatContext = new AudioContext();
 
 export const audioSetup = async () => {
   for (let key in AudioAbstractions.audioFiles) {
@@ -47,23 +48,30 @@ export const playSound = (selector) => {
 // }
 
 export const playHeartBeat = (multiplier) => {
+  const gainNode = heartbeatContext.createGain();
+  console.log('playing Heartbeat');
+  gainNode.gain.value = 8.0//1.0 * multiplier > 1.0 ? 1.0 * multiplier > 1.0 : 1.0;
   if (AudioAbstractions.heartbeat) {
     let oldAudioBufferSourceNode = AudioAbstractions.heartbeat;
     oldAudioBufferSourceNode.stop();
-    let newAudioBufferSourceNode = audioContext.createBufferSource();
+    let newAudioBufferSourceNode = heartbeatContext.createBufferSource();
     newAudioBufferSourceNode.buffer = AudioAbstractions.audioBuffers['heartbeat'];
     newAudioBufferSourceNode.playbackRate.value = multiplier;
     newAudioBufferSourceNode.loop = true;
-    newAudioBufferSourceNode.connect(audioContext.destination);
+    newAudioBufferSourceNode.connect(gainNode);
+    gainNode.connect(heartbeatContext.destination);
+    // gainNode.start();
     newAudioBufferSourceNode.start();
     AudioAbstractions.heartbeat = newAudioBufferSourceNode;
   } else {
-    let audioBufferSourceNode = audioContext.createBufferSource();
+    let audioBufferSourceNode = heartbeatContext.createBufferSource();
     audioBufferSourceNode.buffer = AudioAbstractions.audioBuffers['heartbeat'];
     audioBufferSourceNode.playbackRate.value = multiplier;
     audioBufferSourceNode.loop = true;
-    audioBufferSourceNode.connect(audioContext.destination);
+    audioBufferSourceNode.connect(gainNode);
+    gainNode.connect(heartbeatContext.destination);
     audioBufferSourceNode.start();
+    // gainNode.start();
     AudioAbstractions.heartbeat = audioBufferSourceNode;
   }
 }
