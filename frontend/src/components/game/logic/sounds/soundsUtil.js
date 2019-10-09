@@ -53,6 +53,7 @@ export const playHeartBeat = (multiplier) => {
     let newAudioBufferSourceNode = audioContext.createBufferSource();
     newAudioBufferSourceNode.buffer = AudioAbstractions.audioBuffers['heartbeat'];
     newAudioBufferSourceNode.playbackRate.value = multiplier;
+    newAudioBufferSourceNode.loop = true;
     newAudioBufferSourceNode.connect(audioContext.destination);
     newAudioBufferSourceNode.start();
     AudioAbstractions.heartbeat = newAudioBufferSourceNode;
@@ -60,6 +61,7 @@ export const playHeartBeat = (multiplier) => {
     let audioBufferSourceNode = audioContext.createBufferSource();
     audioBufferSourceNode.buffer = AudioAbstractions.audioBuffers['heartbeat'];
     audioBufferSourceNode.playbackRate.value = multiplier;
+    audioBufferSourceNode.loop = true;
     audioBufferSourceNode.connect(audioContext.destination);
     audioBufferSourceNode.start();
     AudioAbstractions.heartbeat = audioBufferSourceNode;
