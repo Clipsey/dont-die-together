@@ -78,7 +78,7 @@ class GameClient extends React.Component {
     render() {
         return (
             <div>
-                <div className="games">WASD to move, Q to switch guns, mouse to aim, click to shoot. Stay alive as long as possible and kill some zombies!</div>
+                {/* <div className="games">WASD to move, Q to switch guns, mouse to aim, click to shoot. Stay alive as long as possible and kill some zombies!</div> */}
                 <canvas ref="canvas"
                     id="canvas"
                     width={this.state.screen.width}
