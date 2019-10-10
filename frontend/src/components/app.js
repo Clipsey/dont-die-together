@@ -47,11 +47,17 @@ class App extends React.Component {
     this.connectSocket = this.connectSocket.bind(this);
     this.joinSocket = this.joinSocket.bind(this);
     this.closeSockets = this.closeSockets.bind(this);
+    let heartbeatBool = false;
 
     audioSetup();
-    window.addEventListener('click', () => {
-      // playHeartBeat(1.0);
-    })
+    // window.addEventListener('click', () => {
+    //   if (!heartbeatBool) {
+    //     playHeartBeat(1.0);
+    //   } else {
+    //     playHeartBeat(-1.0);
+    //   }
+    //   heartbeatBool = !heartbeatBool;
+    // })
   }
 
   closeSockets() {
