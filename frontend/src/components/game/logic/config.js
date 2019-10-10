@@ -44,7 +44,7 @@ const gameConfig = {
     sizes: {
         item: 5,
         player: 10,
-        zombie: 20,
+        zombie: 10,
         bullets: 2
     }
 }
