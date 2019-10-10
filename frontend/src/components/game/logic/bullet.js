@@ -41,7 +41,8 @@ export const fireBullets = (player, playerId, playerInputs, gameState, times, sp
                     playerId: playerId,
                     type: player.weapon,
                     pos: {},
-                    vel: {}
+                    vel: {},
+                    status: 'flash'
                 };
                 newBullet.pos.x = player.pos.x;
                 newBullet.pos.y = player.pos.y;
