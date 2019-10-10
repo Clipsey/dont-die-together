@@ -154,7 +154,7 @@ class Display {
             x = 165;
             y = 199;
         }
-        this.drawEnemyImage(img, x, y, 65, 70, enemy.pos.x, enemy.pos.y, 27, 40, 0.8, enemy.angle + Math.PI/2, 65, 70);
+        this.drawEnemyImage(img, x, y, 65, 70, enemy.pos.x, enemy.pos.y, 27, 40, 0.6, enemy.angle + Math.PI/2, 65, 70);
         this.ctx.restore();
 
         // this.ctx.save();
