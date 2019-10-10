@@ -78,16 +78,26 @@ export const moveEnemy = (enemy, gameState, dist, sizes, damages, times) => {
         if (enemy.timeToAttack === 0 && victim && victim.status !== 'dead') {
             victim.health -= damages[enemy.type];
             enemy.timeToAttack = times.zombieReload;
-            playSound('zombieAttack');
-            if (victim.health < 60) {
-                playHeartBeat(1.0);
-                console.log('heartbeat');
+            if (Math.random() < 0.5){
+                playSound('fleshEating');
+            }
+            else {
+                playSound('fleshEating2');
+            }
+            if (victim.health < 50) {
+                playHeartBeat(2 * ((100 - victim.health) / 100));
+            }
+            else {
+                if (Math.random() < 0.05){
+                    playSound('creepyScream');
+                }
             }
             if (victim.health < 0) {
                 victim.timeToSpawn = gameConfig.times.playerSpawn;
                 victim.killCount = 0;
                 victim.status = 'dead';
                 playSound('playerDeath');
+                playHeartBeat(-1);
             }
         }
     }

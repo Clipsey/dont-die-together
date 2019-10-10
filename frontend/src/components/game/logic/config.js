@@ -19,12 +19,12 @@ const gameConfig = {
         switchGuns: 0.25,
         reload: {
             pistol: 0.5,
-            rifle: 0.05,
-            shotgun: .1
+            rifle: 2,
+            shotgun: 1
         }
     },
     distances: {
-        stagger: 1
+        stagger: 15
     },
     damages: {
         zombie: 10,
