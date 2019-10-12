@@ -1,4 +1,3 @@
-import gameConfig from './config';
 import {
     playSound
 } from './sounds/soundsUtil';
