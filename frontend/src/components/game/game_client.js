@@ -25,18 +25,21 @@ class GameClient extends React.Component {
         this.ownGameModel = null;
         this.lastTime = Date.now();
         this.gameState = config.emptyState;
+        this.receievedFirstState = false;
         this.status = '';
         this.rafId = null;
-        this.inputs = null;
+        this.inputs = {};
     }
 
     SOCKET_ReceiveGameState(data) {
+        // if (this.receievedFirstState) return;
         if (!this.ownGameModel) {
             this.ownGameModel = new GameModel(data.gameState);
         }
         this.gameState = data.gameState;
         this.ownGameModel.replaceGameState(this.gameState);
         this.inputs = data.inputs;
+        this.receievedFirstState = true;
     }
 
     componentDidMount() {
@@ -70,6 +73,8 @@ class GameClient extends React.Component {
         if(Object.keys(this.gameState.players).includes(this.props.name)) {
             clientKeys.inputs.pointX = this.state.input.mousePos.x - this.gameState.players[this.props.name].pos.x;
             clientKeys.inputs.pointY = this.state.input.mousePos.y - this.gameState.players[this.props.name].pos.y;
+            // override your name in this.inputs
+            this.inputs[clientKeys.name] = clientKeys.inputs;
         }       
         this.props.send(clientKeys);
         this.lastTime = now;
