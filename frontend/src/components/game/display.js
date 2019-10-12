@@ -79,7 +79,7 @@ class Display {
         // this.ctx.stroke();
         // this.ctx.restore();
         // console.log(item.type);
-        console.log(item.type);
+        // console.log(item.type);
         switch (item.type) {
             case 'medPack':
                 img.src = medPack;
