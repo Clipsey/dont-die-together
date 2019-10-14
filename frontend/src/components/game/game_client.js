@@ -22,6 +22,7 @@ class GameClient extends React.Component {
             context: null,
             display: null,
         };
+        this.input = new InputManager();
         this.ownGameModel = null;
         this.lastTime = Date.now();
         this.gameState = config.emptyState;
@@ -32,19 +33,18 @@ class GameClient extends React.Component {
     }
 
     SOCKET_ReceiveGameState(data) {
-        // if (this.receievedFirstState) return;
         if (!this.ownGameModel) {
             this.ownGameModel = new GameModel(data.gameState);
         }
         this.gameState = data.gameState;
-        this.ownGameModel.replaceGameState(this.gameState);
+        this.ownGameModel.replaceGameState(this.gameStatez);
         this.inputs = data.inputs;
         this.receievedFirstState = true;
     }
 
     componentDidMount() {
         let initialState = config.emptyState;
-        this.state.input.bindKeys();
+        this.input.bindKeys();
         const context = this.refs.canvas.getContext('2d');
         const display = new Display(context);
         initialState.players[this.props.name] = JSON.parse(JSON.stringify(config.newPlayer));
@@ -59,7 +59,7 @@ class GameClient extends React.Component {
     }
 
     componentWillUnmount() {
-        this.state.input.unbindKeys();
+        this.input.unbindKeys();
         cancelAnimationFrame(this.rafId);
     }
     
@@ -69,11 +69,10 @@ class GameClient extends React.Component {
         this.state.display.draw(this.gameState, dt, this.props.name);
         let clientKeys = {};
         clientKeys.name = this.props.name
-        clientKeys.inputs = this.state.input.pressedKeys;
+        clientKeys.inputs = this.input.pressedKeys;
         if(Object.keys(this.gameState.players).includes(this.props.name)) {
-            clientKeys.inputs.pointX = this.state.input.mousePos.x - this.gameState.players[this.props.name].pos.x;
-            clientKeys.inputs.pointY = this.state.input.mousePos.y - this.gameState.players[this.props.name].pos.y;
-            // override your name in this.inputs
+            clientKeys.inputs.pointX = this.input.mousePos.x - this.gameState.players[this.props.name].pos.x;
+            clientKeys.inputs.pointY = this.input.mousePos.y - this.gameState.players[this.props.name].pos.y;
             this.inputs[clientKeys.name] = clientKeys.inputs;
         }       
         this.props.send(clientKeys);
