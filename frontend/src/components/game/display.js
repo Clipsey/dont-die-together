@@ -5,6 +5,10 @@ const playerShotgun = require('../../style/images/bk_player_assets/player_pumpgu
 const playerHandgun = require('../../style/images/bk_player_assets/player_9mmhandgun.png');
 const zombieSprite = require('../../style/images/zombiebasic.png');
 
+const medPack = require('../../style/images/MedPack.png');
+const gunSprites = require('../../style/images/gun_sprites.png');
+const ammo = require('../../style/images/ammo.png');
+
 class Display {
     constructor(ctx) {
         this.ctx = ctx;
@@ -30,9 +34,9 @@ class Display {
         const score = document.getElementById("score");
         const currentGun = document.getElementById("current-gun");
         const ammo = document.getElementById("ammo");
-        score.innerHTML = `Score: ${data.killCount}`;
-        ammo.innerHTML = `Ammo: ${data.ammo}`;
-        currentGun.innerHTML = `Weapon: ${data.weapon}`;
+        // score.innerHTML = `Score: ${data.killCount}`;
+        // ammo.innerHTML = `Ammo: ${data.ammo}`;
+        // currentGun.innerHTML = `Weapon: ${data.weapon}`;
 
         this.ctx.lineWidth = 3;
         this.ctx.strokeStyle = 'rgba(0,255,0,0.5)';
@@ -52,7 +56,7 @@ class Display {
             this.ctx.fillStyle = 'orange';
             this.ctx.lineWidth = 2;
             this.ctx.beginPath();
-            this.ctx.arc(bullet.pos.x, bullet.pos.y, logicConfig.sizes.bullets *100, 0, 2 * Math.PI);
+            this.ctx.arc(bullet.pos.x, bullet.pos.y, logicConfig.sizes.bullets * 13, 0, 2 * Math.PI);
             this.ctx.fill();
 
         } else {            
@@ -63,15 +67,34 @@ class Display {
             this.ctx.arc(bullet.pos.x, bullet.pos.y, logicConfig.sizes.bullets * 2.2, 0, 2 * Math.PI);
             this.ctx.fill();
         }
-        
     }
 
     displayItem(item) {
-        this.ctx.beginPath();
-        this.ctx.lineWidth = "6";
-        this.ctx.strokeStyle = "red";
-        this.ctx.rect(item.pos.x - 2.5, item.pos.y - 2.5, 5, 5)
-        this.ctx.stroke();
+        this.ctx.save();
+        const img = new Image();
+        // this.ctx.beginPath();
+        // this.ctx.lineWidth = "6";
+        // this.ctx.strokeStyle = "red";
+        // this.ctx.rect(item.pos.x - 2.5, item.pos.y - 2.5, 5, 5)
+        // this.ctx.stroke();
+        // this.ctx.restore();
+        // console.log(item.type);
+        // console.log(item.type);
+        switch (item.type) {
+            case 'medPack':
+                img.src = medPack;
+                this.ctx.drawImage(img, item.pos.x, item.pos.y, 25, 25);
+                break;
+            case 'ammo':
+                img.src = ammo;
+                this.ctx.drawImage(img, 150, 25, 50, 20, item.pos.x, item.pos.y, 50, 20);
+                break;
+            case 'gun':
+                img.src = gunSprites;
+                this.ctx.drawImage(img, item.pos.x, item.pos.y, 90, 30);
+                break;
+        }
+        this.ctx.restore();
     }
     
     displayPlayer (player) {
@@ -154,7 +177,7 @@ class Display {
             x = 165;
             y = 199;
         }
-        this.drawEnemyImage(img, x, y, 65, 70, enemy.pos.x, enemy.pos.y, 27, 40, 0.8, enemy.angle + Math.PI/2, 65, 70);
+        this.drawEnemyImage(img, x, y, 65, 70, enemy.pos.x, enemy.pos.y, 27, 40, 0.6, enemy.angle + Math.PI/2, 65, 70);
         this.ctx.restore();
 
         // this.ctx.save();
