@@ -58,8 +58,15 @@ export default class GameModel {
         return this.gameState;
     }
 
-    replaceGameState(newState) {
+    replaceGameState(newState, playerName) {
+        let oldPos = this.gameState.players[playerName].pos;
         this.gameState = newState;
+        this.gameState.players[playerName].pos = oldPos;
+        return this.gameState;
+    }
+
+    replacePlayerPos(newPos, playerName) {
+        this.gameState.players[playerName].pos = newPos;
     }
 
     updateTimes(dt) { 
