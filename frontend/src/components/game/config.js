@@ -217,12 +217,12 @@ export const newPlayer = {
             rifle: true
         },
         gunAmmo: {
-            pistol: 500000,
-            shotgun: 500000,
-            rifle: 500000,
+            pistol: 50,
+            shotgun: 10,
+            rifle: 10,
         }
     },
-    ammo: 100,
+    ammo: 50,
     killCount: 0
 }
 

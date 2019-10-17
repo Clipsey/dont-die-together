@@ -25,7 +25,6 @@ class GameClient extends React.Component {
         this.ownGameModel = null;
         this.lastTime = Date.now();
         this.gameState = config.emptyState;
-        this.receievedFirstState = false;
         this.status = '';
         this.rafId = null;
         this.inputs = {};
@@ -37,9 +36,8 @@ class GameClient extends React.Component {
             this.ownGameModel = new GameModel(data.gameState);
         }
         this.gameState = data.gameState;
-        this.ownGameModel.replaceGameState(this.gameState);
+        this.ownGameModel.replaceGameState(this.gameState, this.props.name);
         this.inputs = data.inputs;
-        this.receievedFirstState = true;
     }
 
     componentDidMount() {
@@ -49,9 +47,8 @@ class GameClient extends React.Component {
         const display = new Display(context);
         initialState.players[this.props.name] = JSON.parse(JSON.stringify(config.newPlayer));
         initialState.players[this.props.name].name = this.props.name;
-        this.numPlayers++;
         this.lastGameState = initialState;
-        const model = new GameModel(initialState);
+        this.ownGameModel = new GameModel(initialState);
         this.setState({ 
             context: context,
             display: display
@@ -78,7 +75,7 @@ class GameClient extends React.Component {
         }       
         this.props.send(clientKeys);
         this.lastTime = now;
-        if (this.ownGameModel) this.gameState = this.ownGameModel.update(this.inputs, dt);
+        if (this.ownGameModel) this.gameState = this.ownGameModel.update(this.inputs, dt, this.props.name);
         this.rafId = requestAnimationFrame(() => this.mainLoop());
     }
 

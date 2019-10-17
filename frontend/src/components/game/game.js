@@ -18,16 +18,12 @@ const GameMode = {
 class Game extends React.Component {
     constructor(props) {
         super(props);
+        this.input = new InputManager();
         this.state = {
-            input: new InputManager(),
-            screen: {
-                width: config.screenWidth,
-                height: config.screenHeight,
-            },
             gameMode: GameMode.StartScreen,
             context: null,
-            display: null,
             gameModel: null,
+            display: null
         };
         this.lastTime = Date.now();
         this.gameState = null;
@@ -51,7 +47,7 @@ class Game extends React.Component {
     addPlayer(inputs) {        
         let newPlayer = JSON.parse(JSON.stringify(config.newPlayer));
         this.gameState.players[inputs.name] = newPlayer;
-        this.state.gameModel.replaceGameState(this.gameState);
+        this.state.gameModel.replaceGameState(this.gameState, this.props.name);
     }
 
     collectInputs() {
@@ -61,7 +57,7 @@ class Game extends React.Component {
     }
 
     componentDidMount() {
-        this.state.input.bindKeys();
+        this.input.bindKeys();
         const context = this.refs.canvas.getContext('2d');
         const display = new Display(context);
         this.setState({ 
@@ -72,7 +68,7 @@ class Game extends React.Component {
     }
 
     componentWillUnmount() {
-        this.state.input.unbindKeys();
+        this.input.unbindKeys();
         cancelAnimationFrame(this.rafId);
     }
 
@@ -91,15 +87,15 @@ class Game extends React.Component {
     mainLoop() {
         const now = Date.now();
         const dt = (now - this.lastTime) / 1000;
-        const hostKeys = this.state.input.pressedKeys;
+        const hostKeys = this.input.pressedKeys;
         if (this.state.gameMode === GameMode.StartScreen && hostKeys.enter) this.startGame();
         if (this.state.gameMode === GameMode.Playing) {        
             let collectedInputs = this.collectInputs();
-            hostKeys.pointX = this.state.input.mousePos.x - this.gameState.players[this.props.name].pos.x;
-            hostKeys.pointY = this.state.input.mousePos.y - this.gameState.players[this.props.name].pos.y;
+            hostKeys.pointX = this.input.mousePos.x - this.gameState.players[this.props.name].pos.x;
+            hostKeys.pointY = this.input.mousePos.y - this.gameState.players[this.props.name].pos.y;
             hostKeys.name = this.props.name;
             collectedInputs[this.props.name] = hostKeys;
-            this.gameState = this.state.gameModel.update(collectedInputs, dt);
+            this.gameState = this.state.gameModel.update(collectedInputs, dt, this.props.name);
             this.props.send({
                 gameState: this.gameState,
                 inputs: collectedInputs
@@ -125,8 +121,8 @@ class Game extends React.Component {
                 {this.state.gameMode === GameMode.StartScreen && <Welcome />}
                 <canvas ref="canvas"
                     id="canvas"
-                    width={this.state.screen.width}
-                    height={this.state.screen.height}
+                    width={config.screenWidth}
+                    height={config.screenHeight}
                     style={style}
                 />
             </div>
