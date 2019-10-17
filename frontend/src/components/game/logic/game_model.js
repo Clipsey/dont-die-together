@@ -182,13 +182,9 @@ export default class GameModel {
 
     movePlayers(inputs, dt, playerName) {
         let dist = dt*this.speeds.player;
-        Object.keys(this.gameState.players).forEach((playerId) => {
-            if (playerId === playerName) {
-                let player = this.gameState.players[playerId];
-                let playerInputs = inputs[playerId];
-                movePlayer(player, playerInputs, this.gameState, this.sizes, dt, dist);
-                pickUpItems(player, this.gameState, this.sizes);
-            }
-        });
+        let player = this.gameState.players[playerName];
+        let playerInputs = inputs[playerName];
+        movePlayer(player, playerInputs, this.gameState, this.sizes, dt, dist);
+        pickUpItems(player, this.gameState, this.sizes);
     }
 }

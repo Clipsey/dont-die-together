@@ -34,9 +34,9 @@ class Display {
         const score = document.getElementById("score");
         const currentGun = document.getElementById("current-gun");
         const ammo = document.getElementById("ammo");
-        // score.innerHTML = `Score: ${data.killCount}`;
-        // ammo.innerHTML = `Ammo: ${data.ammo}`;
-        // currentGun.innerHTML = `Weapon: ${data.weapon}`;
+        score.innerHTML = `Score: ${data.killCount}`;
+        ammo.innerHTML = `Ammo: ${data.ammo}`;
+        currentGun.innerHTML = `Weapon: ${data.weapon}`;
 
         this.ctx.lineWidth = 3;
         this.ctx.strokeStyle = 'rgba(0,255,0,0.5)';
