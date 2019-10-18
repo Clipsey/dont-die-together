@@ -14,6 +14,7 @@ class GameClient extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            gameModel: null,
             input: new InputManager(),
             screen: {
                 width: config.screenWidth,
@@ -23,20 +24,17 @@ class GameClient extends React.Component {
             display: null,
         };
         this.receivedHostState = false;
-        this.ownGameModel = null;
         this.lastTime = Date.now();
         this.gameState = config.emptyState;
         this.status = '';
         this.rafId = null;
         this.inputs = {};
+        this.receivedData = false;
     }
 
     SOCKET_ReceiveGameState(data) {
-        if (!this.receivedHostState) {
-            this.receivedHostState = true;
-            this.ownGameModel.replaceGameState(data.gameState);
-        } else {
-            this.gameState = this.ownGameModel.replaceGameState(data.gameState, this.props.name);
+        if (Object.keys(data.gameState.players).includes(this.props.name)) {
+            this.gameState = this.state.gameModel.replaceGameState(data.gameState, this.props.name);
             this.inputs = data.inputs;
         }
     }
@@ -49,8 +47,9 @@ class GameClient extends React.Component {
         initialState.players[this.props.name] = JSON.parse(JSON.stringify(config.newPlayer));
         initialState.players[this.props.name].name = this.props.name;
         this.lastGameState = initialState;
-        this.ownGameModel = new GameModel(initialState);
-        this.setState({ 
+        const model = new GameModel(initialState);
+        this.setState({
+            gameModel: model,
             context: context,
             display: display
         }, () => this.mainLoop());
@@ -74,7 +73,7 @@ class GameClient extends React.Component {
             clientData.pos = this.gameState.players[this.props.name].pos;
             clientData.angle = this.gameState.players[this.props.name].angle;
             this.inputs[clientData.name] = clientData.inputs;
-            this.gameState = this.ownGameModel.update(this.inputs, dt, this.props.name);
+            this.gameState = this.state.gameModel.update(this.inputs, dt, this.props.name);
         }
         this.props.send(clientData);
         this.lastTime = now;
