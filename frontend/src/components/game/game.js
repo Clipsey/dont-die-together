@@ -30,7 +30,6 @@ class Game extends React.Component {
         this.status = '';
         this.otherInputs = [];
         this.rafId = null;
-        this.numPlayers = 0;
         this.lastUpdate = Date.now();
         this.loggedYet = false;
     }
@@ -38,6 +37,7 @@ class Game extends React.Component {
     SOCKET_ReceiveInputs(inputs) {
         if (!Object.keys(this.gameState.players).includes(inputs.name)) this.addPlayer(inputs);
         this.otherInputs.push(inputs);
+        this.state.gameModel.replacePlayerPos(inputs.pos, inputs.name, inputs.angle);
     }
 
     SOCKET_ReceiveInitialState(gameState) {
@@ -47,7 +47,7 @@ class Game extends React.Component {
     addPlayer(inputs) {        
         let newPlayer = JSON.parse(JSON.stringify(config.newPlayer));
         this.gameState.players[inputs.name] = newPlayer;
-        this.state.gameModel.replaceGameState(this.gameState, this.props.name);
+        this.state.gameModel.replaceGameState(this.gameState);
     }
 
     collectInputs() {
@@ -75,7 +75,6 @@ class Game extends React.Component {
     startGame(initialState = config.emptyState) {
         initialState.players[this.props.name] = JSON.parse(JSON.stringify(config.newPlayer));
         initialState.players[this.props.name].name = this.props.name;
-        this.numPlayers++;
         this.gameState = initialState;
         const model = new GameModel(initialState);
         this.setState({

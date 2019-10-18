@@ -7,13 +7,13 @@ class MainPage extends React.Component {
     return (
       <div className="main-main">
         <br />
-        December 25th, 2020.
+        You wake up on December 25th, 2020.
         <br />
         <br />
         Big Pharma has released a new drug called Ambrosia, marketed to promote health and increase longevity.
         <br />
         <br />
-        You believe that the drug has been distributed without sufficient testing... With your pistol in hand, the new dawn arrives.
+        The drug has been distributed without sufficient testing... Those who took it seem to have developed some strange effects.
       </div>
     );
   }

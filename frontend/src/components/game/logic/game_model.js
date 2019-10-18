@@ -48,25 +48,39 @@ export default class GameModel {
         this.generateItemTime = 0;
     }
     
-    update(inputs, dt, playerName) {
+    update(inputs, dt, playerName, positions) {
         this.updateTimes(dt);
         this.movePlayers(inputs, dt, playerName);
         this.moveEnemies(dt);
         this.moveBullets(dt);
         this.fireBullets(inputs);
         this.switchGuns(inputs);
+        // for (let name in inputs) {
+        //     if (name !== playerName) {
+        //         this.replacePlayerPos(inputs[name].pos, name);
+        //     }
+        // }
         return this.gameState;
     }
 
     replaceGameState(newState, playerName) {
-        let oldPos = this.gameState.players[playerName].pos;
+        let oldPos, oldAngle;
+        if (playerName) {
+            oldAngle = this.gameState.players[playerName].angle;
+            oldPos = this.gameState.players[playerName].pos;
+            this.gameState.players[playerName].pos = oldPos;
+        }
         this.gameState = newState;
-        this.gameState.players[playerName].pos = oldPos;
+        if (oldPos) {
+            this.gameState.players[playerName].pos = oldPos;
+            this.gameState.players[playerName].angle = oldAngle;
+        }
         return this.gameState;
     }
 
-    replacePlayerPos(newPos, playerName) {
+    replacePlayerPos(newPos, playerName, angle) {
         this.gameState.players[playerName].pos = newPos;
+        this.gameState.players[playerName].angle = angle;
     }
 
     updateTimes(dt) { 
