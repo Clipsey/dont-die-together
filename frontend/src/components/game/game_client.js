@@ -22,6 +22,7 @@ class GameClient extends React.Component {
             context: null,
             display: null,
         };
+        this.receivedHostState = false;
         this.ownGameModel = null;
         this.lastTime = Date.now();
         this.gameState = config.emptyState;
@@ -31,13 +32,13 @@ class GameClient extends React.Component {
     }
 
     SOCKET_ReceiveGameState(data) {
-        // if (this.receievedFirstState) return;
-        if (!this.ownGameModel) {
-            this.ownGameModel = new GameModel(data.gameState);
+        if (!this.receivedHostState) {
+            this.receivedHostState = true;
+            this.ownGameModel.replaceGameState(data.gameState);
+        } else {
+            this.gameState = this.ownGameModel.replaceGameState(data.gameState, this.props.name);
+            this.inputs = data.inputs;
         }
-        this.gameState = data.gameState;
-        this.ownGameModel.replaceGameState(this.gameState, this.props.name);
-        this.inputs = data.inputs;
     }
 
     componentDidMount() {
@@ -64,18 +65,19 @@ class GameClient extends React.Component {
         const now = Date.now();
         const dt = (now - this.lastTime) / 1000;
         this.state.display.draw(this.gameState, dt, this.props.name);
-        let clientKeys = {};
-        clientKeys.name = this.props.name
-        clientKeys.inputs = this.state.input.pressedKeys;
+        let clientData = {};
+        clientData.name = this.props.name
+        clientData.inputs = this.state.input.pressedKeys;
         if(Object.keys(this.gameState.players).includes(this.props.name)) {
-            clientKeys.inputs.pointX = this.state.input.mousePos.x - this.gameState.players[this.props.name].pos.x;
-            clientKeys.inputs.pointY = this.state.input.mousePos.y - this.gameState.players[this.props.name].pos.y;
-            // override your name in this.inputs
-            this.inputs[clientKeys.name] = clientKeys.inputs;
-        }       
-        this.props.send(clientKeys);
+            clientData.inputs.pointX = this.state.input.mousePos.x - this.gameState.players[this.props.name].pos.x;
+            clientData.inputs.pointY = this.state.input.mousePos.y - this.gameState.players[this.props.name].pos.y;
+            clientData.pos = this.gameState.players[this.props.name].pos;
+            clientData.angle = this.gameState.players[this.props.name].angle;
+            this.inputs[clientData.name] = clientData.inputs;
+            this.gameState = this.ownGameModel.update(this.inputs, dt, this.props.name);
+        }
+        this.props.send(clientData);
         this.lastTime = now;
-        if (this.ownGameModel) this.gameState = this.ownGameModel.update(this.inputs, dt, this.props.name);
         this.rafId = requestAnimationFrame(() => this.mainLoop());
     }
 
