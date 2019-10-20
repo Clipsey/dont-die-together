@@ -37,12 +37,14 @@ class Display {
         score.innerHTML = `Score: ${data.killCount}`;
         ammo.innerHTML = `Ammo: ${data.ammo}`;
         currentGun.innerHTML = `Weapon: ${data.weapon}`;
-
-        this.ctx.lineWidth = 3;
-        this.ctx.strokeStyle = 'rgba(0,255,0,0.5)';
-        this.ctx.beginPath();
-        this.ctx.arc(data.pos.x, data.pos.y, 25, 0, Math.PI*2*data.health/100);
-        this.ctx.stroke();
+        
+        if (data.status !== 'dead') {
+            this.ctx.lineWidth = 3;
+            this.ctx.strokeStyle = 'rgba(0,255,0,0.5)';
+            this.ctx.beginPath();
+            this.ctx.arc(data.pos.x, data.pos.y, 25, 0, Math.PI*2*data.health/100);
+            this.ctx.stroke();
+        }
     }
 
     displayFPS(dt) {
@@ -99,6 +101,7 @@ class Display {
     
     displayPlayer (player) {
         this.ctx.save();
+        if (player.status === 'dead') this.ctx.globalAlpha = 0.7;
         const img = new Image();
         switch (player.weapon) {
             case 'pistol':
@@ -118,7 +121,6 @@ class Display {
                 break;
         }
         this.ctx.restore();
-
     }
 
     // https://stackoverflow.com/questions/17411991/html5-canvas-rotate-image

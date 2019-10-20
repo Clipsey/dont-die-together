@@ -140,6 +140,7 @@ export const pickUpItems = (player, gameState, sizes) => {
         if (dist < sizes.player + sizes.item) {
             receiveItem(player, item);
             delete gameState.items[itemId];
+            player.deletedItemId = itemId;
         }
     });
 }

@@ -37,7 +37,7 @@ class Game extends React.Component {
     SOCKET_ReceiveInputs(inputs) {
         if (!Object.keys(this.gameState.players).includes(inputs.name)) this.addPlayer(inputs);
         this.otherInputs.push(inputs);
-        this.state.gameModel.replacePlayerPos(inputs.pos, inputs.name, inputs.angle);
+        this.state.gameModel.replacePlayerInfo(inputs.playerInfo, inputs.name);
     }
 
     SOCKET_ReceiveInitialState(gameState) {
