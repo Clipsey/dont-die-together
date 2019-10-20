@@ -9,6 +9,7 @@ import {
     vectorMag,
     calcRotation
 } from './vector_util';
+import { playHeartBeat } from './sounds/soundsUtil';
 
 export const reSpawn = (player, gameState) => {
     let x = gameConfig.gameBounds.x / 2;
@@ -123,6 +124,9 @@ export const receiveItem = (player, item) => {
         player.health += item.amount;
         if (player.health > 150) {
             player.health = 150;
+        }
+        if (player.health > 50) {
+            playHeartBeat(-1);
         }
     }
 }

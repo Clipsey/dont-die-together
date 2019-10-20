@@ -213,13 +213,13 @@ export const newPlayer = {
     items: {
         guns: {
             pistol: true,
-            shotgun: true,
-            rifle: true
+            shotgun: false,
+            rifle: false
         },
         gunAmmo: {
             pistol: 50,
-            shotgun: 10,
-            rifle: 10,
+            shotgun: 0,
+            rifle: 0,
         }
     },
     ammo: 50,
