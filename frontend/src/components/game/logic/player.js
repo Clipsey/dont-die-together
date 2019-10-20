@@ -9,6 +9,7 @@ import {
     vectorMag,
     calcRotation
 } from './vector_util';
+import { playHeartBeat } from './sounds/soundsUtil';
 
 export const reSpawn = (player, gameState) => {
     let x = gameConfig.gameBounds.x / 2;
@@ -124,6 +125,9 @@ export const receiveItem = (player, item) => {
         if (player.health > 150) {
             player.health = 150;
         }
+        if (player.health > 50) {
+            playHeartBeat(-1);
+        }
     }
 }
 
@@ -136,6 +140,7 @@ export const pickUpItems = (player, gameState, sizes) => {
         if (dist < sizes.player + sizes.item) {
             receiveItem(player, item);
             delete gameState.items[itemId];
+            player.deletedItemId = itemId;
         }
     });
 }

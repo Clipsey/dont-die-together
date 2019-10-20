@@ -70,8 +70,8 @@ class GameClient extends React.Component {
         if(Object.keys(this.gameState.players).includes(this.props.name)) {
             clientData.inputs.pointX = this.state.input.mousePos.x - this.gameState.players[this.props.name].pos.x;
             clientData.inputs.pointY = this.state.input.mousePos.y - this.gameState.players[this.props.name].pos.y;
-            clientData.pos = this.gameState.players[this.props.name].pos;
-            clientData.angle = this.gameState.players[this.props.name].angle;
+            clientData.playerInfo = this.gameState.players[this.props.name];
+
             this.inputs[clientData.name] = clientData.inputs;
             this.gameState = this.state.gameModel.update(this.inputs, dt, this.props.name);
         }

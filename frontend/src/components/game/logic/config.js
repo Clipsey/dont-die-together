@@ -19,7 +19,7 @@ const gameConfig = {
         switchGuns: 0.25,
         reload: {
             pistol: 0.5,
-            rifle: 0.1,
+            rifle: 2,
             shotgun: 1
         }
     },
@@ -31,7 +31,7 @@ const gameConfig = {
 
         pistol: 35,
         shotgun: 34,
-        rifle: 35
+        rifle: 100
     },
     speeds: {                   //speeds in pixels/second
         player: 150,

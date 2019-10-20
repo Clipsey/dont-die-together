@@ -78,9 +78,11 @@ export default class GameModel {
         return this.gameState;
     }
 
-    replacePlayerPos(newPos, playerName, angle) {
-        this.gameState.players[playerName].pos = newPos;
-        this.gameState.players[playerName].angle = angle;
+    replacePlayerInfo(info, playerName) {
+        this.gameState.players[playerName] = info;
+        if (info.deletedItemId) {
+            delete this.gameState.items[info.deletedItemId];
+        }
     }
 
     updateTimes(dt) { 
