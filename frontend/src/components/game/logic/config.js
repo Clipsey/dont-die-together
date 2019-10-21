@@ -4,23 +4,24 @@ const gameConfig = {
         y: 800
     },
     numbers: {
-        zombieAnimatePics: 6
+        zombieAnimatePics: 6,
+        maxZombies: 80
     },
     times: {
         sounds: 0.25,
         playerMessage: 0.5,
         playerSpawn: 20,
-        zombieAnimateTime: 10,
-        itemGenerate: 10,
-        zombieGenerate: 3,
+        zombieAnimateTime: .1,
+        itemGenerate: 2,
+        zombieGenerate: 1,
         zombieReload: 0.5,      //times in seconds      
         zombieDie: 10,
         zombieSwitchDir: 0.5,
         switchGuns: 0.25,
         reload: {
             pistol: 0.5,
-            rifle: 2,
-            shotgun: 1
+            rifle: .1,
+            shotgun: 1.3
         }
     },
     distances: {

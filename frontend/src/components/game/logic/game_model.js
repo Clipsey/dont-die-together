@@ -96,7 +96,7 @@ export default class GameModel {
                 this.generateItemTime = 0;
             }
         }
-        if (this.generateZombieTime === 0){
+        if (this.generateZombieTime === 0 && Object.values(this.gameState.enemies).length < gameConfig.numbers.maxZombies) {
             generateZombie(this.gameState);
             this.generateZombieTime = 
             (gameConfig.times.zombieGenerate)/(Object.keys(this.gameState.players).length);
