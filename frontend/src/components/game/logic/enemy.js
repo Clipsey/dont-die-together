@@ -113,8 +113,6 @@ export const generateZombie = (gameState) => {
     let x = Math.random() * gameConfig.gameBounds.x;
     let y = Math.random() * gameConfig.gameBounds.y;
 
-    
-
     if (Math.random() < 0.5) {
         x = (Math.random() < 0.5 ? 0 : gameConfig.gameBounds.x);
     }
