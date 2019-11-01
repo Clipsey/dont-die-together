@@ -14,6 +14,7 @@ class GameClient extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            gameModel: null,
             input: new InputManager(),
             screen: {
                 width: config.screenWidth,
@@ -22,24 +23,20 @@ class GameClient extends React.Component {
             context: null,
             display: null,
         };
-        this.input = new InputManager();
-        this.ownGameModel = null;
+        this.receivedHostState = false;
         this.lastTime = Date.now();
         this.gameState = config.emptyState;
-        this.receievedFirstState = false;
         this.status = '';
         this.rafId = null;
         this.inputs = {};
+        this.receivedData = false;
     }
 
     SOCKET_ReceiveGameState(data) {
-        if (!this.ownGameModel) {
-            this.ownGameModel = new GameModel(data.gameState);
+        if (Object.keys(data.gameState.players).includes(this.props.name)) {
+            this.gameState = this.state.gameModel.replaceGameState(data.gameState, this.props.name);
+            this.inputs = data.inputs;
         }
-        this.gameState = data.gameState;
-        this.ownGameModel.replaceGameState(this.gameStatez);
-        this.inputs = data.inputs;
-        this.receievedFirstState = true;
     }
 
     componentDidMount() {
@@ -49,10 +46,10 @@ class GameClient extends React.Component {
         const display = new Display(context);
         initialState.players[this.props.name] = JSON.parse(JSON.stringify(config.newPlayer));
         initialState.players[this.props.name].name = this.props.name;
-        this.numPlayers++;
         this.lastGameState = initialState;
         const model = new GameModel(initialState);
-        this.setState({ 
+        this.setState({
+            gameModel: model,
             context: context,
             display: display
         }, () => this.mainLoop());
@@ -67,17 +64,19 @@ class GameClient extends React.Component {
         const now = Date.now();
         const dt = (now - this.lastTime) / 1000;
         this.state.display.draw(this.gameState, dt, this.props.name);
-        let clientKeys = {};
-        clientKeys.name = this.props.name
-        clientKeys.inputs = this.input.pressedKeys;
+        let clientData = {};
+        clientData.name = this.props.name
+        clientData.inputs = this.state.input.pressedKeys;
         if(Object.keys(this.gameState.players).includes(this.props.name)) {
-            clientKeys.inputs.pointX = this.input.mousePos.x - this.gameState.players[this.props.name].pos.x;
-            clientKeys.inputs.pointY = this.input.mousePos.y - this.gameState.players[this.props.name].pos.y;
-            this.inputs[clientKeys.name] = clientKeys.inputs;
-        }       
-        this.props.send(clientKeys);
+            clientData.inputs.pointX = this.state.input.mousePos.x - this.gameState.players[this.props.name].pos.x;
+            clientData.inputs.pointY = this.state.input.mousePos.y - this.gameState.players[this.props.name].pos.y;
+            clientData.playerInfo = this.gameState.players[this.props.name];
+
+            this.inputs[clientData.name] = clientData.inputs;
+            this.gameState = this.state.gameModel.update(this.inputs, dt, this.props.name);
+        }
+        this.props.send(clientData);
         this.lastTime = now;
-        if (this.ownGameModel) this.gameState = this.ownGameModel.update(this.inputs, dt);
         this.rafId = requestAnimationFrame(() => this.mainLoop());
     }
 

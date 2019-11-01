@@ -8,6 +8,8 @@ const zombieSprite = require('../../style/images/zombiebasic.png');
 const medPack = require('../../style/images/MedPack.png');
 const gunSprites = require('../../style/images/gun_sprites.png');
 const ammo = require('../../style/images/ammo.png');
+const shotgun = require('../../style/images/shotgun.png');
+
 
 class Display {
     constructor(ctx) {
@@ -25,38 +27,46 @@ class Display {
         Object.values(gameState.bullets).forEach(bullet => this.displayBullet(bullet));
         Object.values(gameState.items).forEach(item => this.displayItem(item));
         Object.values(gameState.players).forEach(player => this.displayPlayer(player));
+        // Object.values(gameState.obstacles).forEach(obstacle => this.displayObstacle(obstacle));
         const selfData = gameState.players[name];
         if (selfData) this.displaySelfData(selfData);
         if (this.mode === 'development') this.displayFPS(dt);
+    }
+
+    displayObstacle(obstacle) {
+        this.ctx.fillStyle = 'black';
+        this.ctx.fillRect(obstacle.topLeft.x, obstacle.topLeft.y, obstacle.bottomRight.x - obstacle.topLeft.x, obstacle.bottomRight.y - obstacle.topLeft.y);
     }
 
     displaySelfData(data) {
         const score = document.getElementById("score");
         const currentGun = document.getElementById("current-gun");
         const ammo = document.getElementById("ammo");
-        // score.innerHTML = `Score: ${data.killCount}`;
-        // ammo.innerHTML = `Ammo: ${data.ammo}`;
-        // currentGun.innerHTML = `Weapon: ${data.weapon}`;
-
-        this.ctx.lineWidth = 3;
-        this.ctx.strokeStyle = 'rgba(0,255,0,0.5)';
-        this.ctx.beginPath();
-        this.ctx.arc(data.pos.x, data.pos.y, 25, 0, Math.PI*2*data.health/100);
-        this.ctx.stroke();
+        score.innerHTML = `Score: ${data.killCount}`;
+        ammo.innerHTML = `Ammo: ${data.ammo}`;
+        currentGun.innerHTML = `Weapon: ${data.weapon === 'rifle' ? 'Machine Gun' : data.weapon}`;
+        
+        if (data.status !== 'dead') {
+            this.ctx.lineWidth = 3;
+            this.ctx.strokeStyle = 'rgba(0,255,0,0.5)';
+            this.ctx.beginPath();
+            this.ctx.arc(data.pos.x, data.pos.y, 25, 0, Math.PI*2*data.health/100);
+            this.ctx.stroke();
+        }
     }
 
     displayFPS(dt) {
-        let fps = (1/dt).toFixed(1);   
+        let fps = (1/dt).toFixed(1);
         this.ctx.strokeText(`FPS: ${fps}`, 1120, 20);
     }
 
     displayBullet(bullet) {
         if (bullet.status === 'flash') {
             this.ctx.strokeStyle = '#4a200d';
-            this.ctx.fillStyle = 'orange';
+            this.ctx.fillStyle = 'rgba(252, 253, 3, 0.5)';
             this.ctx.lineWidth = 2;
             this.ctx.beginPath();
-            this.ctx.arc(bullet.pos.x, bullet.pos.y, logicConfig.sizes.bullets * 13, 0, 2 * Math.PI);
+            this.ctx.arc(bullet.pos.x, bullet.pos.y, logicConfig.sizes.bullets * 12, 0, 2 * Math.PI);
             this.ctx.fill();
 
         } else {            
@@ -83,15 +93,25 @@ class Display {
         switch (item.type) {
             case 'medPack':
                 img.src = medPack;
-                this.ctx.drawImage(img, item.pos.x, item.pos.y, 25, 25);
+                this.ctx.drawImage(img, item.pos.x - 13, item.pos.y -13, 26, 26);
                 break;
             case 'ammo':
                 img.src = ammo;
-                this.ctx.drawImage(img, 150, 25, 50, 20, item.pos.x, item.pos.y, 50, 20);
+                this.ctx.drawImage(img, 150, 25, 50, 20, item.pos.x - 10, item.pos.y - 10, 25, 5);
+                this.ctx.drawImage(img, 150, 25, 50, 20, item.pos.x - 10, item.pos.y - 6, 25, 5);
+                this.ctx.drawImage(img, 150, 25, 50, 20, item.pos.x - 10, item.pos.y - 2, 25, 5);
+                this.ctx.drawImage(img, 150, 25, 50, 20, item.pos.x - 10, item.pos.y + 2, 25, 5);
+
                 break;
             case 'gun':
-                img.src = gunSprites;
-                this.ctx.drawImage(img, item.pos.x, item.pos.y, 90, 30);
+                if (item.gun === 'rifle') {
+                    img.src = gunSprites;
+                    this.ctx.drawImage(img, item.pos.x - 30, item.pos.y - 10, 60, 20);
+                } else {
+                    img.src = shotgun;
+                    this.ctx.drawImage(img, item.pos.x - 30, item.pos.y - 10, 60, 20);
+                }
+                
                 break;
         }
         this.ctx.restore();
@@ -99,6 +119,7 @@ class Display {
     
     displayPlayer (player) {
         this.ctx.save();
+        if (player.status === 'dead') this.ctx.globalAlpha = 0.7;
         const img = new Image();
         switch (player.weapon) {
             case 'pistol':
@@ -118,7 +139,6 @@ class Display {
                 break;
         }
         this.ctx.restore();
-
     }
 
     // https://stackoverflow.com/questions/17411991/html5-canvas-rotate-image

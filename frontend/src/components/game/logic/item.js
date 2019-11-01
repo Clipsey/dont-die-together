@@ -6,7 +6,7 @@ import {
 export const generateItem = (gameState) => {
     let x = Math.random() * gameConfig.gameBounds.x;
     let y = Math.random() * gameConfig.gameBounds.y;
-    let itemType = ['gun', 'medPack', 'ammo'][Math.floor(Math.random() * 3)];
+    let itemType = ['gun', 'medPack', 'ammo', 'ammo', 'ammo'][Math.floor(Math.random() * 5)];
     const newItem = {};
     switch (itemType) {
         case 'ammo':
@@ -16,10 +16,11 @@ export const generateItem = (gameState) => {
                 'pistol',
                 'pistol',
                 'rifle',
+                'shotgun',
                 'shotgun'
-            ][Math.floor(Math.random() * 5)];
+            ][Math.floor(Math.random() * 6)];
             newItem.pos = {};
-            newItem.amount = 5;
+            newItem.amount = newItem.gun === 'rifle' ? 20 : 5;
             break;
         case 'gun':
             newItem.type = 'gun';

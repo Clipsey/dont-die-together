@@ -48,25 +48,41 @@ export default class GameModel {
         this.generateItemTime = 0;
     }
     
-    update(inputs, dt, playerName) {
+    update(inputs, dt, playerName, positions) {
         this.updateTimes(dt);
         this.movePlayers(inputs, dt, playerName);
         this.moveEnemies(dt);
         this.moveBullets(dt);
         this.fireBullets(inputs);
         this.switchGuns(inputs);
+        // for (let name in inputs) {
+        //     if (name !== playerName) {
+        //         this.replacePlayerPos(inputs[name].pos, name);
+        //     }
+        // }
         return this.gameState;
     }
 
     replaceGameState(newState, playerName) {
-        let oldPos = this.gameState.players[playerName].pos;
+        let oldPos, oldAngle;
+        if (playerName) {
+            oldAngle = this.gameState.players[playerName].angle;
+            oldPos = this.gameState.players[playerName].pos;
+            this.gameState.players[playerName].pos = oldPos;
+        }
         this.gameState = newState;
-        this.gameState.players[playerName].pos = oldPos;
+        if (oldPos) {
+            this.gameState.players[playerName].pos = oldPos;
+            this.gameState.players[playerName].angle = oldAngle;
+        }
         return this.gameState;
     }
 
-    replacePlayerPos(newPos, playerName) {
-        this.gameState.players[playerName].pos = newPos;
+    replacePlayerInfo(info, playerName) {
+        this.gameState.players[playerName] = info;
+        if (info.deletedItemId) {
+            delete this.gameState.items[info.deletedItemId];
+        }
     }
 
     updateTimes(dt) { 
@@ -80,7 +96,7 @@ export default class GameModel {
                 this.generateItemTime = 0;
             }
         }
-        if (this.generateZombieTime === 0){
+        if (this.generateZombieTime === 0 && Object.values(this.gameState.enemies).length < gameConfig.numbers.maxZombies) {
             generateZombie(this.gameState);
             this.generateZombieTime = 
             (gameConfig.times.zombieGenerate)/(Object.keys(this.gameState.players).length);
@@ -182,13 +198,9 @@ export default class GameModel {
 
     movePlayers(inputs, dt, playerName) {
         let dist = dt*this.speeds.player;
-        Object.keys(this.gameState.players).forEach((playerId) => {
-            if (playerId === playerName) {
-                let player = this.gameState.players[playerId];
-                let playerInputs = inputs[playerId];
-                movePlayer(player, playerInputs, this.gameState, this.sizes, dt, dist);
-                pickUpItems(player, this.gameState, this.sizes);
-            }
-        });
+        let player = this.gameState.players[playerName];
+        let playerInputs = inputs[playerName];
+        movePlayer(player, playerInputs, this.gameState, this.sizes, dt, dist);
+        pickUpItems(player, this.gameState, this.sizes);
     }
 }

@@ -9,6 +9,7 @@ import {
     vectorMag,
     calcRotation
 } from './vector_util';
+import { playHeartBeat } from './sounds/soundsUtil';
 
 export const reSpawn = (player, gameState) => {
     let x = gameConfig.gameBounds.x / 2;
@@ -32,7 +33,21 @@ export const reSpawn = (player, gameState) => {
     player.pos = {
         x: x,
         y: y
-    }
+    };
+    player.items = {
+        guns: {
+            pistol: true,
+            shotgun: false,
+            rifle: false,
+        },
+        gunAmmo: {
+            pistol: 50,
+            shotgun: 0,
+            rifle: 0,
+        }        
+    };
+    player.ammo = 50;
+    player.weapon = 'pistol';
 }
 
 export const movePlayer = (player, playerInputs, gameState, sizes, dt, dist) => {
@@ -118,11 +133,16 @@ export const receiveItem = (player, item) => {
     }
     if (item.type === 'gun') {
         player.items.guns[item.gun] = true;
+        player.items.gunAmmo[item.gun] += 5;
+        if (player.weapon === item.gun) player.ammo += 5;
     }
     if (item.type === 'medPack') {
         player.health += item.amount;
         if (player.health > 150) {
             player.health = 150;
+        }
+        if (player.health > 50) {
+            playHeartBeat(-1);
         }
     }
 }
@@ -133,9 +153,10 @@ export const pickUpItems = (player, gameState, sizes) => {
         let itemPos = [item.pos.x, item.pos.y];
         let playerPos = [player.pos.x, player.pos.y];
         let dist = findDistance(itemPos, playerPos);
-        if (dist < sizes.player + sizes.item) {
+        if (dist < sizes.player + sizes.item && player.status !== 'dead') {
             receiveItem(player, item);
             delete gameState.items[itemId];
+            player.deletedItemId = itemId;
         }
     });
 }

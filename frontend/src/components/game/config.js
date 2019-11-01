@@ -194,6 +194,126 @@ export const emptyState = {
                 y: 548
             }
         },
+        20: {
+            topLeft: {
+                x: 45,
+                y: 585,
+            },
+            bottomRight: {
+                x: 53,
+                y: 746
+            },
+        },
+        21: {
+            topLeft: {
+                x: 45,
+                y: 585,
+            },
+            bottomRight: {
+                x: 117,
+                y: 594
+            },
+        },
+        22: {
+            topLeft: {
+                x: 45,
+                y: 736,
+            },
+            bottomRight: {
+                x: 197,
+                y: 746
+            },
+        },
+        23: {
+            topLeft: {
+                x: 152,
+                y: 585,
+            },
+            bottomRight: {
+                x: 197,
+                y: 595
+            },
+        },
+        24: {
+            topLeft: {
+                x: 189,
+                y: 585,
+            },
+            bottomRight: {
+                x: 197,
+                y: 629
+            },
+        },
+        25: {
+            topLeft: {
+                x: 188,
+                y: 666
+            },
+            bottomRight: {
+                x: 198,
+                y: 744
+            },
+        },
+        26: {
+            topLeft: {
+                x: 743,
+                y: 586
+            },
+            bottomRight: {
+                x: 752,
+                y: 627
+            },
+        },
+        27: {
+            topLeft: {
+                x: 745,
+                y: 588
+            },
+            bottomRight: {
+                x: 801,
+                y: 596
+            },
+        },
+        28: {
+            topLeft: {
+                x: 742,
+                y: 661
+            },
+            bottomRight: {
+                x: 752,
+                y: 743
+            },
+        },
+        29: {
+            topLeft: {
+                x: 745,
+                y: 736
+            },
+            bottomRight: {
+                x: 900,
+                y: 746
+            },
+        },
+        30: {
+            topLeft: {
+                x: 836,
+                y: 585
+            },
+            bottomRight: {
+                x: 904,
+                y: 598
+            },
+        },
+        31: {
+            topLeft: {
+                x: 893,
+                y: 597
+            },
+            bottomRight: {
+                x: 904,
+                y: 745
+            },
+        },
     }
 };
 
@@ -213,16 +333,16 @@ export const newPlayer = {
     items: {
         guns: {
             pistol: true,
-            shotgun: true,
-            rifle: true
+            shotgun: false,
+            rifle: false
         },
         gunAmmo: {
-            pistol: 500000,
-            shotgun: 500000,
-            rifle: 500000,
+            pistol: 50,
+            shotgun: 0,
+            rifle: 0,
         }
     },
-    ammo: 100,
+    ammo: 50,
     killCount: 0
 }
 
