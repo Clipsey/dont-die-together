@@ -9,7 +9,7 @@ import Display from './display';
 const backgroundImg = require('../../style/images/forest.png');
 const GameMode = {
     StartScreen: 1,
-    Plyaing: 2,
+    Playing: 2,
 };
 
 class Game extends React.Component {
