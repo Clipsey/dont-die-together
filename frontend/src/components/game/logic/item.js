@@ -4,6 +4,7 @@ import {
 } from './model_helper';
 
 export const generateItem = (gameState) => {
+    if (Object.keys(gameState.items).length > gameConfig.numbers.maxItems) return;
     let x = Math.random() * gameConfig.gameBounds.x;
     let y = Math.random() * gameConfig.gameBounds.y;
     let itemType = ['gun', 'medPack', 'ammo', 'ammo', 'ammo'][Math.floor(Math.random() * 5)];

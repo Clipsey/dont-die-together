@@ -5,6 +5,13 @@
     display: inline-block;
 } */
 
+.game-window {
+    display: flex;
+    position: relative;
+    align-items: center;
+    flex-direction: column;
+}
+
 canvas {
     margin-top: 2vw;
     margin-bottom: 2vw;
@@ -12,4 +19,16 @@ canvas {
 
 .games {
     color: #0d9e61 !important;
+}
+
+.self-data {
+    position: absolute;
+    top: 60px;
+    font-family: 'Roboto Mono', monospace;
+    color: orange;
+    text-shadow: white 1px 0 10px;
+}
+
+.controls {
+    font-family: 'Roboto Mono', monospace;
 }

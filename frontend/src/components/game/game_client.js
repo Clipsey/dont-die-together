@@ -86,7 +86,10 @@ class GameClient extends React.Component {
             backgroundImage: `url(${backgroundImg})`
         };
         return (
-            <div>
+            <div className='game-window'>
+                <div className="controls">
+                    <p>Controls: WASD to move | Click to shoot | Q to switch gun |</p>
+                </div>
                 <ul className="self-data">
                     <li id="score"></li>
                     <li id="current-gun"></li>

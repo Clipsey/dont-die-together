@@ -1,11 +1,12 @@
 const gameConfig = {
     gameBounds: {
-        x: 1200,
-        y: 800
+        x: 1000,
+        y: 833
     },
     numbers: {
         zombieAnimatePics: 6,
-        maxZombies: 80
+        maxZombies: 80,
+        maxItems: 10
     },
     times: {
         sounds: 0.25,
