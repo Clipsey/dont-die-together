@@ -62,9 +62,9 @@ class Game extends React.Component {
         const display = new Display(context);
         this.setState({ 
             context: context,
-            display: display
+            display: display,
         })
-        this.mainLoop();
+        this.startGame();
     }
 
     componentWillUnmount() {
@@ -81,6 +81,7 @@ class Game extends React.Component {
             gameMode: GameMode.Playing,
             gameModel: model
         });
+        this.mainLoop();
     }
 
     mainLoop() {
@@ -111,7 +112,10 @@ class Game extends React.Component {
             backgroundImage: `url(${backgroundImg})`
         };
         return (
-            <div className='game-window'>               
+            <div className='game-window'>
+                <div className="controls">
+                    <p>Controls: WASD to move | Click to shoot | Q to switch gun |</p>
+                </div>             
                 <ul className="self-data">
                     <li id="score"></li>
                     <li id="current-gun"></li>
