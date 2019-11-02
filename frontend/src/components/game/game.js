@@ -7,6 +7,10 @@ import '../../style/stylesheets/game.css';
 import * as config from './config';
 import Display from './display';
 const backgroundImg = require('../../style/images/forest.png');
+const GameMode = {
+    StartScreen: 1,
+    Plyaing: 2,
+};
 
 class Game extends React.Component {
     constructor(props) {
