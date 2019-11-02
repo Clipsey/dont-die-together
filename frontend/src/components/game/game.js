@@ -1,6 +1,5 @@
 import React from 'react';
 import InputManager from './input_manager';
-import Welcome from './welcome';
 import GameModel from './logic/game_model';
 import '../../style/stylesheets/reset.css';
 import '../../style/stylesheets/app.css';
@@ -8,12 +7,6 @@ import '../../style/stylesheets/game.css';
 import * as config from './config';
 import Display from './display';
 const backgroundImg = require('../../style/images/forest.png');
-
-const GameMode = {
-    StartScreen: 0,
-    Playing: 1,
-    GameOver: 2
-};
 
 class Game extends React.Component {
     constructor(props) {
@@ -27,7 +20,6 @@ class Game extends React.Component {
         };
         this.lastTime = Date.now();
         this.gameState = null;
-        this.status = '';
         this.otherInputs = [];
         this.rafId = null;
         this.lastUpdate = Date.now();
@@ -47,7 +39,7 @@ class Game extends React.Component {
     addPlayer(inputs) {        
         let newPlayer = JSON.parse(JSON.stringify(config.newPlayer));
         this.gameState.players[inputs.name] = newPlayer;
-        this.state.gameModel.replaceGameState(this.gameState);
+        this.gameModel.replaceGameState(this.gameState);
     }
 
     collectInputs() {
@@ -121,7 +113,6 @@ class Game extends React.Component {
                     <li id="current-gun"></li>
                     <li id="ammo"></li>
                 </ul>               
-                {this.state.gameMode === GameMode.StartScreen && <Welcome />}
                 <canvas ref="canvas"
                     id="canvas"
                     width={config.screenWidth}

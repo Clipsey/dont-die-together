@@ -41,7 +41,7 @@ class GameClient extends React.Component {
 
     componentDidMount() {
         let initialState = config.emptyState;
-        this.state.input.bindKeys();
+        this.input.bindKeys();
         const context = this.refs.canvas.getContext('2d');
         const display = new Display(context);
         initialState.players[this.props.name] = JSON.parse(JSON.stringify(config.newPlayer));
@@ -56,7 +56,7 @@ class GameClient extends React.Component {
     }
 
     componentWillUnmount() {
-        this.state.input.unbindKeys();
+        this.input.unbindKeys();
         cancelAnimationFrame(this.rafId);
     }
     
